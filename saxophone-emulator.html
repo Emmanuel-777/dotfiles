@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emulador de Saxofón</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #f0a500;
+      text-shadow: 0 0 20px #f0a50088;
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .control-group {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-group label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #f0a500;
+    }
+
+    select, input[type=range] {
+      background: #0f3460;
+      color: #eee;
+      border: 1px solid #f0a50066;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select:focus { border-color: #f0a500; }
+
+    input[type=range] {
+      padding: 0;
+      width: 140px;
+      accent-color: #f0a500;
+    }
+
+    .octave-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .octave-btn {
+      background: #0f3460;
+      border: 1px solid #f0a50066;
+      color: #eee;
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.15s;
+    }
+
+    .octave-btn:hover { background: #f0a50033; }
+
+    .octave-display {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #f0a500;
+      text-align: center;
+      min-width: 28px;
+    }
+
+    /* Scale info bar */
+    .scale-info {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 10px;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .scale-info strong { color: #f0a500; }
+
+    /* Keys container */
+    .keys-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .keys-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .key {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #f0a500;
+      background: radial-gradient(circle at 35% 35%, #2a2a4a, #0f0f1e);
+      color: #f0a500;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: all 0.1s ease;
+      user-select: none;
+      box-shadow: 0 4px 12px #00000066, inset 0 1px 1px #ffffff11;
+    }
+
+    .key .note-name {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .key .note-freq {
+      font-size: 0.6rem;
+      color: #f0a50088;
+    }
+
+    .key .key-hint {
+      font-size: 0.65rem;
+      color: #ffffff44;
+      position: absolute;
+      bottom: 8px;
+    }
+
+    .key:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 18px #f0a50066, inset 0 1px 1px #ffffff11;
+      background: radial-gradient(circle at 35% 35%, #3a3a6a, #1a1a3e);
+    }
+
+    .key.active, .key:active {
+      transform: scale(0.94);
+      background: radial-gradient(circle at 35% 35%, #f0a50033, #1a0a00);
+      border-color: #fff;
+      box-shadow: 0 0 30px #f0a500aa, 0 0 60px #f0a50033;
+      color: #fff;
+    }
+
+    .key.tonic {
+      border-color: #ff6b35;
+      box-shadow: 0 0 14px #ff6b3544;
+    }
+
+    .key.tonic .note-name { color: #ff6b35; }
+
+    /* Visualizer */
+    .visualizer-wrap {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 20px;
+    }
+
+    canvas#viz {
+      width: 100%;
+      height: 70px;
+      border-radius: 10px;
+      background: #0a0a1a;
+      border: 1px solid #0f3460;
+      display: block;
+    }
+
+    /* SAX SVG display */
+    .sax-display {
+      position: relative;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .sax-display svg { height: 55px; }
+
+    .breath-ring {
+      position: absolute;
+      width: 40px; height: 40px;
+      border: 2px solid #f0a500;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      top: 50%; left: 50%;
+    }
+
+    @keyframes breathe {
+      0%   { transform: translate(-50%,-50%) scale(1);   opacity: 0.8; }
+      100% { transform: translate(-50%,-50%) scale(2.4); opacity: 0; }
+    }
+
+    .breath-ring.animate { animation: breathe 0.5s ease-out forwards; }
+
+    /* Mode buttons */
+    .mode-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .mode-btn {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      color: #aaa;
+      border-radius: 20px;
+      padding: 6px 16px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.15s;
+    }
+
+    .mode-btn.active {
+      background: #f0a500;
+      color: #1a1a2e;
+      border-color: #f0a500;
+      font-weight: bold;
+    }
+
+    .mode-btn:hover:not(.active) {
+      border-color: #f0a50066;
+      color: #eee;
+    }
+
+    /* Reverb / volume row */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .slider-row span { min-width: 28px; color: #f0a500; font-weight: bold; }
+
+    /* Keyboard shortcuts legend */
+    .shortcuts {
+      margin-top: 24px;
+      font-size: 0.75rem;
+      color: #555;
+      text-align: center;
+    }
+
+    .shortcuts kbd {
+      background: #16213e;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #aaa;
+    }
+
+    /* Glowing sax color on active */
+    body.playing svg .sax-body { fill: #c47a00 !important; }
+
+    @media (max-width: 600px) {
+      .key { width: 76px; height: 76px; font-size: 0.9rem; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎷 Saxofón Digital</h1>
+<p class="subtitle">Toca escalas sin saber tocar saxofón</p>
+
+<!-- SAX SVG icon -->
+<div class="sax-display">
+  <div class="breath-ring" id="breathRing"></div>
+  <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+    <path class="sax-body" fill="#c8850a" stroke="#8b5e00" stroke-width="2"
+      d="M70,8 C80,8 88,14 88,22 L88,60 C88,72 80,80 72,84
+         L60,90 C52,94 44,92 40,86 C36,80 38,72 46,68
+         L52,64 C56,62 56,58 54,54 L50,40 L50,22
+         C50,14 58,8 70,8 Z"/>
+    <!-- keys dots -->
+    <circle cx="64" cy="26" r="5" fill="#f0a500" stroke="#8b5e00" stroke-width="1"/>
+    <circle cx="64" cy="38" r="5" fill="#f0a500" stroke="#8b5e00" stroke-width="1"/>
+    <circle cx="64" cy="50" r="5" fill="#f0a500" stroke="#8b5e00" stroke-width="1"/>
+    <circle cx="76" cy="32" r="4" fill="#d4900a" stroke="#8b5e00" stroke-width="1"/>
+    <circle cx="76" cy="44" r="4" fill="#d4900a" stroke="#8b5e00" stroke-width="1"/>
+    <!-- mouthpiece -->
+    <rect x="66" y="2" width="8" height="12" rx="3" fill="#444" stroke="#222" stroke-width="1"/>
+  </svg>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="control-group">
+    <label>Tonalidad (Raíz)</label>
+    <select id="rootSelect">
+      <option value="C">Do (C)</option>
+      <option value="C#">Do# / Re♭ (C#)</option>
+      <option value="D">Re (D)</option>
+      <option value="D#">Re# / Mi♭ (D#)</option>
+      <option value="E">Mi (E)</option>
+      <option value="F">Fa (F)</option>
+      <option value="F#">Fa# / Sol♭ (F#)</option>
+      <option value="G">Sol (G)</option>
+      <option value="G#">Sol# / La♭ (G#)</option>
+      <option value="A">La (A)</option>
+      <option value="A#">La# / Si♭ (A#)</option>
+      <option value="B">Si (B)</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <label>Escala</label>
+    <select id="scaleSelect">
+      <option value="major">Mayor</option>
+      <option value="minor">Menor Natural</option>
+      <option value="harmonicMinor">Menor Armónica</option>
+      <option value="pentatonicMajor">Pentatónica Mayor</option>
+      <option value="pentatonicMinor">Pentatónica Menor</option>
+      <option value="blues">Blues</option>
+      <option value="dorian">Dorian</option>
+      <option value="phrygian">Frigio</option>
+      <option value="lydian">Lidio</option>
+      <option value="mixolydian">Mixolidio</option>
+      <option value="chromatic">Cromática</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <label>Octava</label>
+    <div class="octave-btns">
+      <button class="octave-btn" id="octDown">−</button>
+      <div class="octave-display" id="octDisplay">4</div>
+      <button class="octave-btn" id="octUp">+</button>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label>Volumen</label>
+    <div class="slider-row">
+      <span id="volVal">70</span>
+      <input type="range" id="volRange" min="0" max="100" value="70">
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label>Reverb</label>
+    <div class="slider-row">
+      <span id="revVal">40</span>
+      <input type="range" id="revRange" min="0" max="100" value="40">
+    </div>
+  </div>
+</div>
+
+<!-- Mode buttons -->
+<div class="mode-row">
+  <button class="mode-btn active" data-mode="free">Libre</button>
+  <button class="mode-btn" data-mode="arpeggio">Arpegio Auto</button>
+  <button class="mode-btn" data-mode="melody">Melodía Aleatoria</button>
+</div>
+
+<!-- Scale info -->
+<div class="scale-info" id="scaleInfo">
+  <strong>Do Mayor</strong> — Do Re Mi Fa Sol La Si Do
+</div>
+
+<!-- Waveform visualizer -->
+<div class="visualizer-wrap">
+  <canvas id="viz" width="900" height="70"></canvas>
+</div>
+
+<!-- Note keys -->
+<div class="keys-container" id="keysContainer">
+  <!-- Generated by JS -->
+</div>
+
+<p class="shortcuts">
+  Teclado: <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd><kbd>G</kbd><kbd>H</kbd><kbd>J</kbd><kbd>K</kbd> = notas  |
+  <kbd>Z</kbd> baja octava  <kbd>X</kbd> sube octava  |
+  Espacio = escala completa (arpegio)
+</p>
+
+<script>
+// ─────────────────────────────────────────────
+//  AUDIO ENGINE
+// ─────────────────────────────────────────────
+let audioCtx = null;
+let masterGain, reverbGain, dryGain, convolver;
+let analyser, vizBuf;
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.7;
+
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 512;
+  vizBuf = new Float32Array(analyser.fftSize);
+
+  // Simple reverb via delay network
+  convolver = audioCtx.createConvolver();
+  convolver.buffer = makeReverbIR(audioCtx, 2.5, 2, false);
+
+  reverbGain = audioCtx.createGain();
+  reverbGain.gain.value = 0.4;
+
+  dryGain = audioCtx.createGain();
+  dryGain.gain.value = 0.85;
+
+  masterGain.connect(dryGain);
+  masterGain.connect(convolver);
+  convolver.connect(reverbGain);
+
+  dryGain.connect(analyser);
+  reverbGain.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  drawViz();
+}
+
+function makeReverbIR(ctx, duration, decay, reverse) {
+  const sr = ctx.sampleRate;
+  const len = sr * duration;
+  const buf = ctx.createBuffer(2, len, sr);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < len; i++) {
+      const t = reverse ? len - i : i;
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t / len, decay);
+    }
+  }
+  return buf;
+}
+
+// Saxophone timbre: sawtooth + narrow bandpass stack + ADSR
+function playNote(freq, duration = 0.5) {
+  initAudio();
+  const t = audioCtx.currentTime;
+
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const osc3 = audioCtx.createOscillator();
+
+  osc1.type = 'sawtooth';
+  osc2.type = 'sawtooth';
+  osc3.type = 'square';
+
+  osc1.frequency.value = freq;
+  osc2.frequency.value = freq * 1.003; // slight detune for warmth
+  osc3.frequency.value = freq * 0.5;   // sub octave for body
+
+  // ADSR envelope
+  const env = audioCtx.createGain();
+  const att = 0.04, dec = 0.08, sus = 0.65, rel = 0.22;
+  env.gain.setValueAtTime(0, t);
+  env.gain.linearRampToValueAtTime(0.9, t + att);
+  env.gain.linearRampToValueAtTime(sus, t + att + dec);
+  env.gain.setValueAtTime(sus, t + duration - rel);
+  env.gain.linearRampToValueAtTime(0, t + duration);
+
+  // Low-pass filter to shape sax timbre
+  const lp = audioCtx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = freq * 5.5;
+  lp.Q.value = 0.8;
+
+  // Bandpass resonance (formant) like a reed
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.value = freq * 2.2;
+  bp.Q.value = 2.5;
+
+  // Highpass to remove mud
+  const hp = audioCtx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 80;
+
+  // Vibrato LFO
+  const lfo = audioCtx.createOscillator();
+  const lfoGain = audioCtx.createGain();
+  lfo.frequency.value = 5.2;
+  lfoGain.gain.setValueAtTime(0, t);
+  lfoGain.gain.linearRampToValueAtTime(freq * 0.008, t + 0.18); // vibrato kicks in late
+  lfo.connect(lfoGain);
+  lfoGain.connect(osc1.frequency);
+  lfoGain.connect(osc2.frequency);
+  lfo.start(t);
+  lfo.stop(t + duration);
+
+  // Gain mix
+  const mix1 = audioCtx.createGain(); mix1.gain.value = 0.55;
+  const mix2 = audioCtx.createGain(); mix2.gain.value = 0.30;
+  const mix3 = audioCtx.createGain(); mix3.gain.value = 0.15;
+
+  osc1.connect(mix1); osc2.connect(mix2); osc3.connect(mix3);
+  mix1.connect(hp); mix2.connect(hp); mix3.connect(hp);
+  hp.connect(lp);
+  lp.connect(bp);
+  bp.connect(env);
+  env.connect(masterGain);
+
+  osc1.start(t); osc2.start(t); osc3.start(t);
+  osc1.stop(t + duration);
+  osc2.stop(t + duration);
+  osc3.stop(t + duration);
+
+  return duration;
+}
+
+// ─────────────────────────────────────────────
+//  SCALES & MUSIC THEORY
+// ─────────────────────────────────────────────
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NOTE_LABELS = ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+const SPANISH_NAMES = {
+  'C':'Do','C#':'Do#','D':'Re','D#':'Re#','E':'Mi',
+  'F':'Fa','F#':'Fa#','G':'Sol','G#':'Sol#','A':'La','A#':'La#','B':'Si'
+};
+
+const SCALES = {
+  major:          { name:'Mayor',             intervals:[0,2,4,5,7,9,11,12] },
+  minor:          { name:'Menor Natural',     intervals:[0,2,3,5,7,8,10,12] },
+  harmonicMinor:  { name:'Menor Armónica',    intervals:[0,2,3,5,7,8,11,12] },
+  pentatonicMajor:{ name:'Pentatónica Mayor', intervals:[0,2,4,7,9,12] },
+  pentatonicMinor:{ name:'Pentatónica Menor', intervals:[0,3,5,7,10,12] },
+  blues:          { name:'Blues',             intervals:[0,3,5,6,7,10,12] },
+  dorian:         { name:'Dorian',            intervals:[0,2,3,5,7,9,10,12] },
+  phrygian:       { name:'Frigio',            intervals:[0,1,3,5,7,8,10,12] },
+  lydian:         { name:'Lidio',             intervals:[0,2,4,6,7,9,11,12] },
+  mixolydian:     { name:'Mixolidio',         intervals:[0,2,4,5,7,9,10,12] },
+  chromatic:      { name:'Cromática',         intervals:[0,1,2,3,4,5,6,7,8,9,10,11,12] },
+};
+
+function noteFreq(midiNote) {
+  return 440 * Math.pow(2, (midiNote - 69) / 12);
+}
+
+function midiOfNote(noteName, octave) {
+  const idx = NOTE_NAMES.indexOf(noteName);
+  return 12 * (octave + 1) + idx;
+}
+
+function getScaleNotes(root, scaleName, octave) {
+  const rootMidi = midiOfNote(root, octave);
+  const intervals = SCALES[scaleName].intervals;
+  return intervals.map(iv => {
+    const midi = rootMidi + iv;
+    const name = NOTE_NAMES[midi % 12];
+    return { midi, freq: noteFreq(midi), name, label: NOTE_LABELS[midi % 12] };
+  });
+}
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let currentOctave = 4;
+let currentRoot = 'C';
+let currentScale = 'major';
+let currentMode = 'free';
+let arpeggioTimer = null;
+let melodyTimer = null;
+let activeKeys = new Set();
+
+const KEYBOARD_MAP = ['a','s','d','f','g','h','j','k','l',';','\'','z','x','c','v'];
+
+// ─────────────────────────────────────────────
+//  UI
+// ─────────────────────────────────────────────
+function buildKeys() {
+  const container = document.getElementById('keysContainer');
+  container.innerHTML = '';
+  const notes = getScaleNotes(currentRoot, currentScale, currentOctave);
+
+  // Split into rows for visual clarity
+  const row1 = document.createElement('div');
+  row1.className = 'keys-row';
+  const row2 = document.createElement('div');
+  row2.className = 'keys-row';
+
+  const half = Math.ceil(notes.length / 2);
+
+  notes.forEach((note, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'key' + (i === 0 || i === notes.length - 1 ? ' tonic' : '');
+    btn.dataset.index = i;
+    btn.dataset.freq = note.freq;
+
+    const keyHint = KEYBOARD_MAP[i] ? KEYBOARD_MAP[i].toUpperCase() : '';
+    btn.innerHTML = `
+      <span class="note-name">${note.label}</span>
+      <span class="note-freq">${note.freq.toFixed(0)} Hz</span>
+      ${keyHint ? `<span class="key-hint">${keyHint}</span>` : ''}
+    `;
+
+    btn.addEventListener('mousedown', e => { e.preventDefault(); triggerNote(i, btn); });
+    btn.addEventListener('touchstart', e => { e.preventDefault(); triggerNote(i, btn); }, { passive: false });
+
+    if (i < half) row1.appendChild(btn);
+    else row2.appendChild(btn);
+  });
+
+  container.appendChild(row1);
+  if (row2.children.length) container.appendChild(row2);
+
+  updateScaleInfo(notes);
+}
+
+function updateScaleInfo(notes) {
+  const info = document.getElementById('scaleInfo');
+  const scaleName = SCALES[currentScale].name;
+  const rootLabel = SPANISH_NAMES[currentRoot];
+  const noteList = notes.map(n => n.label).join('  ');
+  info.innerHTML = `<strong>${rootLabel} ${scaleName}</strong> — ${noteList}`;
+}
+
+function triggerNote(idx, btn) {
+  if (currentMode !== 'free') return;
+  pulseBreath();
+  btn.classList.add('active');
+  const freq = parseFloat(btn.dataset.freq);
+  playNote(freq, 0.55);
+  setTimeout(() => btn.classList.remove('active'), 220);
+}
+
+function pulseBreath() {
+  const ring = document.getElementById('breathRing');
+  ring.classList.remove('animate');
+  void ring.offsetWidth;
+  ring.classList.add('animate');
+}
+
+function highlightKey(idx) {
+  const btns = document.querySelectorAll('.key');
+  if (btns[idx]) {
+    btns[idx].classList.add('active');
+    setTimeout(() => btns[idx].classList.remove('active'), 200);
+  }
+}
+
+// ─────────────────────────────────────────────
+//  ARPEGGIO & MELODY MODES
+// ─────────────────────────────────────────────
+function stopAuto() {
+  clearInterval(arpeggioTimer);
+  clearTimeout(melodyTimer);
+  arpeggioTimer = null;
+  melodyTimer = null;
+}
+
+function startArpeggio() {
+  let i = 0;
+  arpeggioTimer = setInterval(() => {
+    const notes = getScaleNotes(currentRoot, currentScale, currentOctave);
+    pulseBreath();
+    playNote(notes[i].freq, 0.28);
+    highlightKey(i);
+    i = (i + 1) % notes.length;
+  }, 280);
+}
+
+function startMelody() {
+  const notes = getScaleNotes(currentRoot, currentScale, currentOctave);
+  const delays = [200, 300, 250, 350, 200, 400, 250, 300];
+  let step = 0;
+
+  function next() {
+    const idx = Math.floor(Math.random() * notes.length);
+    const dur = (delays[step % delays.length]) / 1000 + 0.15;
+    pulseBreath();
+    playNote(notes[idx].freq, dur);
+    highlightKey(idx);
+    step++;
+    melodyTimer = setTimeout(next, delays[step % delays.length]);
+  }
+  next();
+}
+
+// ─────────────────────────────────────────────
+//  VISUALIZER
+// ─────────────────────────────────────────────
+function drawViz() {
+  const canvas = document.getElementById('viz');
+  const ctx = canvas.getContext('2d');
+
+  function frame() {
+    requestAnimationFrame(frame);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!analyser) {
+      ctx.strokeStyle = '#f0a50033';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+      return;
+    }
+
+    analyser.getFloatTimeDomainData(vizBuf);
+    const w = canvas.width, h = canvas.height;
+    const sliceW = w / vizBuf.length;
+
+    const grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0,   '#f0a500');
+    grad.addColorStop(0.5, '#ff6b35');
+    grad.addColorStop(1,   '#f0a500');
+
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = grad;
+    ctx.shadowColor = '#f0a500';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+
+    let x = 0;
+    for (let i = 0; i < vizBuf.length; i++) {
+      const y = (vizBuf[i] * 0.5 + 0.5) * h;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      x += sliceW;
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+  frame();
+}
+
+// ─────────────────────────────────────────────
+//  EVENT LISTENERS
+// ─────────────────────────────────────────────
+document.getElementById('rootSelect').addEventListener('change', e => {
+  currentRoot = e.target.value;
+  buildKeys();
+});
+
+document.getElementById('scaleSelect').addEventListener('change', e => {
+  currentScale = e.target.value;
+  buildKeys();
+});
+
+document.getElementById('octDown').addEventListener('click', () => {
+  if (currentOctave > 2) { currentOctave--; buildKeys(); }
+  document.getElementById('octDisplay').textContent = currentOctave;
+});
+
+document.getElementById('octUp').addEventListener('click', () => {
+  if (currentOctave < 7) { currentOctave++; buildKeys(); }
+  document.getElementById('octDisplay').textContent = currentOctave;
+});
+
+document.getElementById('volRange').addEventListener('input', e => {
+  const v = e.target.value;
+  document.getElementById('volVal').textContent = v;
+  if (masterGain) masterGain.gain.value = v / 100;
+});
+
+document.getElementById('revRange').addEventListener('input', e => {
+  const v = e.target.value;
+  document.getElementById('revVal').textContent = v;
+  if (reverbGain) reverbGain.gain.value = v / 100;
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    stopAuto();
+    currentMode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (currentMode === 'arpeggio') {
+      initAudio();
+      startArpeggio();
+    } else if (currentMode === 'melody') {
+      initAudio();
+      startMelody();
+    }
+  });
+});
+
+// Keyboard support
+const pressedKeys = new Set();
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  const k = e.key.toLowerCase();
+
+  if (k === 'z') { document.getElementById('octDown').click(); return; }
+  if (k === 'x') { document.getElementById('octUp').click(); return; }
+  if (k === ' ') {
+    e.preventDefault();
+    // Play full scale as arpeggio on spacebar
+    const notes = getScaleNotes(currentRoot, currentScale, currentOctave);
+    notes.forEach((note, i) => {
+      setTimeout(() => {
+        initAudio();
+        pulseBreath();
+        playNote(note.freq, 0.3);
+        highlightKey(i);
+      }, i * 160);
+    });
+    return;
+  }
+
+  const idx = KEYBOARD_MAP.indexOf(k);
+  if (idx === -1 || pressedKeys.has(k)) return;
+  pressedKeys.add(k);
+
+  const notes = getScaleNotes(currentRoot, currentScale, currentOctave);
+  if (idx < notes.length) {
+    initAudio();
+    pulseBreath();
+    playNote(notes[idx].freq, 0.55);
+    highlightKey(idx);
+  }
+});
+
+document.addEventListener('keyup', e => {
+  pressedKeys.delete(e.key.toLowerCase());
+});
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+buildKeys();
+drawViz();
+</script>
+</body>
+</html>
