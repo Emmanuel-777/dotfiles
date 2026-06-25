@@ -1,6 +1,8 @@
 import Sidebar from '@/components/Sidebar'
 import { initDB } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   await initDB()
   return (
