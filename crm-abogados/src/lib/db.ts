@@ -19,8 +19,8 @@ const client = createClient(
 export const db = drizzle(client, { schema })
 
 export async function initDB() {
-  await client.executeMultiple(`
-    CREATE TABLE IF NOT EXISTS clientes (
+  const statements = [
+    `CREATE TABLE IF NOT EXISTS clientes (
       id TEXT PRIMARY KEY,
       rut TEXT NOT NULL UNIQUE,
       nombre TEXT NOT NULL,
@@ -34,9 +34,8 @@ export async function initDB() {
       notas TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS causas (
+    )`,
+    `CREATE TABLE IF NOT EXISTS causas (
       id TEXT PRIMARY KEY,
       rol TEXT NOT NULL,
       tribunal TEXT NOT NULL,
@@ -50,9 +49,8 @@ export async function initDB() {
       cliente_id TEXT NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS actuaciones (
+    )`,
+    `CREATE TABLE IF NOT EXISTS actuaciones (
       id TEXT PRIMARY KEY,
       fecha TEXT NOT NULL,
       tipo TEXT NOT NULL DEFAULT 'OTRO',
@@ -60,9 +58,8 @@ export async function initDB() {
       resultado TEXT,
       causa_id TEXT NOT NULL REFERENCES causas(id) ON DELETE CASCADE,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS plazos (
+    )`,
+    `CREATE TABLE IF NOT EXISTS plazos (
       id TEXT PRIMARY KEY,
       titulo TEXT NOT NULL,
       fecha TEXT NOT NULL,
@@ -72,9 +69,8 @@ export async function initDB() {
       causa_id TEXT NOT NULL REFERENCES causas(id) ON DELETE CASCADE,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS documentos (
+    )`,
+    `CREATE TABLE IF NOT EXISTS documentos (
       id TEXT PRIMARY KEY,
       nombre TEXT NOT NULL,
       tipo TEXT NOT NULL DEFAULT 'OTRO',
@@ -82,9 +78,8 @@ export async function initDB() {
       archivo TEXT,
       causa_id TEXT NOT NULL REFERENCES causas(id) ON DELETE CASCADE,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS honorarios (
+    )`,
+    `CREATE TABLE IF NOT EXISTS honorarios (
       id TEXT PRIMARY KEY,
       descripcion TEXT NOT NULL,
       monto REAL NOT NULL,
@@ -99,6 +94,9 @@ export async function initDB() {
       causa_id TEXT REFERENCES causas(id),
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
-  `)
+    )`,
+  ]
+  for (const sql of statements) {
+    await client.execute(sql)
+  }
 }
