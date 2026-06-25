@@ -8,7 +8,7 @@ import path from 'path'
 const client = createClient(
   process.env.TURSO_DATABASE_URL
     ? {
-        url: process.env.TURSO_DATABASE_URL,
+        url: process.env.TURSO_DATABASE_URL.replace('libsql://', 'https://'),
         authToken: process.env.TURSO_AUTH_TOKEN,
       }
     : {
