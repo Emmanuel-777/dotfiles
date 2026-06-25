@@ -78,7 +78,7 @@ export default async function ClientesPage() {
                 </td>
                 <td className="table-cell">
                   <Link href={`/clientes/${cliente.id}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                    Ver ficha
+                    Ver carpeta
                   </Link>
                 </td>
               </tr>
