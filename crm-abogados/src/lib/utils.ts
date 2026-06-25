@@ -75,6 +75,22 @@ export function esCritico(date: Date | string): boolean {
   return d <= limite && !isPast(d)
 }
 
+export type UrgenciaTarea = 'roja' | 'amarilla' | 'verde' | null
+
+export function urgenciaTarea(fecha: string | null | undefined): UrgenciaTarea {
+  if (!fecha) return null
+  const d = new Date(fecha)
+  if (isToday(d) || isPast(d)) return 'roja'
+  if (d <= addDays(new Date(), 2)) return 'amarilla'
+  return 'verde'
+}
+
+export const URGENCIA_CLASES: Record<NonNullable<UrgenciaTarea>, { border: string; bg: string; texto: string; label: string }> = {
+  roja:     { border: 'border-l-4 border-red-500',    bg: 'bg-red-50',    texto: 'text-red-700',    label: 'Vencida' },
+  amarilla: { border: 'border-l-4 border-yellow-400', bg: 'bg-yellow-50', texto: 'text-yellow-700', label: 'Vence pronto' },
+  verde:    { border: 'border-l-4 border-green-500',  bg: 'bg-green-50',  texto: 'text-green-700',  label: 'A tiempo' },
+}
+
 export const ESTADOS_CAUSA = {
   EN_TRAMITE: { label: 'En Trámite', color: 'bg-blue-100 text-blue-800' },
   TERMINADA: { label: 'Terminada', color: 'bg-green-100 text-green-800' },
