@@ -1,6 +1,8 @@
 import Sidebar from '@/components/Sidebar'
+import { initDB } from '@/lib/db'
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  await initDB()
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
