@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { UserButton, useUser } from '@clerk/nextjs'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -29,6 +30,7 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const { user } = useUser()
 
   return (
     <aside className="w-64 bg-slate-900 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden">
@@ -69,15 +71,23 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer */}
+      {/* Footer — usuario */}
       <div className="px-4 py-4 border-t border-slate-700">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
-            <span className="text-white text-xs font-bold">AB</span>
-          </div>
-          <div>
-            <p className="text-white text-sm font-medium">Abogado</p>
-            <p className="text-slate-400 text-xs">Estudio Jurídico</p>
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: 'h-8 w-8',
+              },
+            }}
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-white text-sm font-medium truncate">
+              {user?.firstName ?? user?.emailAddresses[0]?.emailAddress ?? 'Usuario'}
+            </p>
+            <p className="text-slate-400 text-xs truncate">
+              {user?.emailAddresses[0]?.emailAddress}
+            </p>
           </div>
         </div>
       </div>
