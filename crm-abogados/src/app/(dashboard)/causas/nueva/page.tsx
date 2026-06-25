@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
-import { TIPOS_CAUSA, TRIBUNALES_SANTIAGO } from '@/lib/utils'
+import { TIPOS_CAUSA, TRIBUNALES_CHILE } from '@/lib/utils'
 
 function NuevaCausaForm() {
   const router = useRouter()
@@ -93,7 +93,7 @@ function NuevaCausaForm() {
               placeholder="Buscar tribunal..."
             />
             <datalist id="tribunales-list">
-              {TRIBUNALES_SANTIAGO.map((t) => <option key={t} value={t} />)}
+              {TRIBUNALES_CHILE.map((t) => <option key={t} value={t} />)}
             </datalist>
           </div>
 
