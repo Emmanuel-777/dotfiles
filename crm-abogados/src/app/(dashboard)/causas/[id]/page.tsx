@@ -4,7 +4,8 @@ import { eq, desc, asc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound } from 'lucide-react'
-import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
+import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
+import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 
 export const dynamic = 'force-dynamic'
 
@@ -149,7 +150,6 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                 <p className="px-6 py-6 text-center text-sm text-gray-400">Sin tareas registradas</p>
               ) : (
                 tareasList.map((tarea) => {
-                  const estadoT = ESTADOS_TAREA[tarea.estado as keyof typeof ESTADOS_TAREA]
                   const prioridadT = PRIORIDADES_TAREA[tarea.prioridad as keyof typeof PRIORIDADES_TAREA]
                   const vencida = tarea.fechaVencimiento ? estaVencido(tarea.fechaVencimiento) : false
                   const critica = tarea.fechaVencimiento ? esCritico(tarea.fechaVencimiento) : false
@@ -185,7 +185,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                           )}
                         </div>
                         <div className="text-right flex-shrink-0 space-y-1">
-                          <span className={`badge ${estadoT?.color}`}>{estadoT?.label}</span>
+                          <TareaEstadoSelect tareaId={tarea.id} estadoActual={tarea.estado} />
                           {tarea.fechaVencimiento && (
                             <p className={`text-xs font-medium ${vencida && tarea.estado === 'PENDIENTE' ? 'text-red-600' : critica ? 'text-amber-600' : 'text-gray-500'}`}>
                               {vencida && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}

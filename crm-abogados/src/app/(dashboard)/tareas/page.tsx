@@ -11,6 +11,7 @@ import {
 import Link from 'next/link'
 import { eq, asc, desc } from 'drizzle-orm'
 import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
+import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 
 export const dynamic = 'force-dynamic'
 
@@ -105,11 +106,10 @@ export default async function TareasPage() {
             const creds = tarea.credencialesPortal ? JSON.parse(tarea.credencialesPortal) : null
 
             return (
-              <Link
+              <div
                 key={tarea.id}
-                href={`/causas/${tarea.causaId}`}
                 className={[
-                  'block rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow',
+                  'block rounded-lg overflow-hidden shadow-sm',
                   clases ? `${clases.border} ${clases.bg}` : 'border-l-4 border-gray-200 bg-white',
                 ].join(' ')}
               >
@@ -119,7 +119,9 @@ export default async function TareasPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className={`badge ${prioridadT?.color}`}>{prioridadT?.label}</span>
-                        <span className="text-sm font-semibold text-gray-900">{tarea.titulo}</span>
+                        <Link href={`/causas/${tarea.causaId}`} className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                          {tarea.titulo}
+                        </Link>
                         {tarea.esDerivada === 1 && (
                           <span className="badge bg-orange-100 text-orange-700 flex items-center gap-1">
                             <UserCheck className="h-3 w-3" />
@@ -134,9 +136,9 @@ export default async function TareasPage() {
 
                       <div className="flex items-center gap-3 flex-wrap text-xs text-gray-500">
                         {causa && (
-                          <span className="font-mono font-medium text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">
+                          <Link href={`/causas/${tarea.causaId}`} className="font-mono font-medium text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded hover:bg-blue-100">
                             {causa.rol}
-                          </span>
+                          </Link>
                         )}
                         {cliente && <span>{cliente.nombre}</span>}
                         {tarea.asignadoA && (
@@ -156,7 +158,7 @@ export default async function TareasPage() {
 
                     {/* Derecha */}
                     <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                      <span className={`badge ${estadoT?.color}`}>{estadoT?.label}</span>
+                      <TareaEstadoSelect tareaId={tarea.id} estadoActual={tarea.estado} />
 
                       {tarea.fechaVencimiento ? (
                         <div className={`text-right ${clases?.texto ?? 'text-gray-500'}`}>
@@ -173,7 +175,7 @@ export default async function TareasPage() {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             )
           })}
         </div>

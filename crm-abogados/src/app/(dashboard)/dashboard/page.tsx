@@ -60,7 +60,7 @@ export default async function DashboardPage() {
   const montoPendiente = Number(honorariosPendientes[0]?.total ?? 0)
   const tareasActivas = tareasActivasRows[0]?.count ?? 0
 
-  // Nulss al final en el widget
+  // Nulls al final en el widget
   const conFecha = proximasTareas.filter((r) => r.tarea.fechaVencimiento)
   const sinFecha = proximasTareas.filter((r) => !r.tarea.fechaVencimiento)
   const tareasOrdenadas = [...conFecha, ...sinFecha]
@@ -217,7 +217,6 @@ export default async function DashboardPage() {
                       clases ? `${clases.border} ${clases.bg}` : 'border-l-4 border-gray-200 bg-white',
                     ].join(' ')}
                   >
-                    {/* Punto de color */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className={`badge ${prioridadT?.color}`}>{prioridadT?.label}</span>

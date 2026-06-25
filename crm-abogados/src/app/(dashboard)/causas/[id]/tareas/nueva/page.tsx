@@ -3,61 +3,59 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Eye, EyeOff, UserCheck } from 'lucide-react'
+import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
 
 export default function NuevaTareaPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  const causaId = params.id
-
   const [loading, setLoading] = useState(false)
-  const [esDerivada, setEsDerivada] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [esDerivada, setEsDerivada] = useState(false)
   const [form, setForm] = useState({
     titulo: '',
     descripcion: '',
     prioridad: 'MEDIA',
     estado: 'PENDIENTE',
     fechaVencimiento: '',
+    notas: '',
     asignadoA: '',
     asignadoEmail: '',
     sistema: '',
     usuario: '',
     contrasena: '',
-    notas: '',
   })
 
-  const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }))
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const credencialesPortal =
-        esDerivada && (form.sistema || form.usuario || form.contrasena)
-          ? { sistema: form.sistema, usuario: form.usuario, contrasena: form.contrasena }
-          : null
+      const credencialesPortal = esDerivada && form.sistema
+        ? { sistema: form.sistema, usuario: form.usuario, contrasena: form.contrasena }
+        : undefined
 
       const res = await fetch('/api/tareas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           titulo: form.titulo,
-          descripcion: form.descripcion || null,
+          descripcion: form.descripcion || undefined,
           prioridad: form.prioridad,
           estado: form.estado,
-          fechaVencimiento: form.fechaVencimiento || null,
-          asignadoA: esDerivada ? form.asignadoA || null : null,
-          asignadoEmail: esDerivada ? form.asignadoEmail || null : null,
+          fechaVencimiento: form.fechaVencimiento ? new Date(form.fechaVencimiento).toISOString() : undefined,
+          notas: form.notas || undefined,
+          asignadoA: esDerivada ? form.asignadoA : undefined,
+          asignadoEmail: esDerivada ? form.asignadoEmail : undefined,
           esDerivada,
           credencialesPortal,
-          notas: form.notas || null,
-          causaId,
+          causaId: params.id,
         }),
       })
-      if (!res.ok) throw new Error('Error al crear tarea')
-      router.push(`/causas/${causaId}`)
-    } catch (err) {
-      console.error(err)
+      if (!res.ok) throw new Error(await res.text())
+      router.push(`/causas/${params.id}`)
+    } catch {
       alert('Error al guardar la tarea')
     } finally {
       setLoading(false)
@@ -66,153 +64,102 @@ export default function NuevaTareaPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="p-8 max-w-2xl">
-      <Link
-        href={`/causas/${causaId}`}
-        className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6"
-      >
+      <Link href={`/causas/${params.id}`} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver a la causa
       </Link>
-      <h1 className="text-xl font-bold text-gray-900 mb-6">Nueva Tarea</h1>
+
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Nueva tarea</h1>
 
       <form onSubmit={handleSubmit} className="card p-6 space-y-5">
-        <div>
-          <label className="label">Título *</label>
-          <input
-            className="input"
-            value={form.titulo}
-            onChange={(e) => set('titulo', e.target.value)}
-            required
-            placeholder="Ej: Presentar escrito de réplica"
-          />
-        </div>
-
         <div className="grid grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <label className="label">Título *</label>
+            <input name="titulo" value={form.titulo} onChange={handleChange} required className="input" placeholder="Ej: Presentar recurso de apelación" />
+          </div>
+
           <div>
             <label className="label">Prioridad</label>
-            <select className="input" value={form.prioridad} onChange={(e) => set('prioridad', e.target.value)}>
+            <select name="prioridad" value={form.prioridad} onChange={handleChange} className="input">
               <option value="BAJA">Baja</option>
               <option value="MEDIA">Media</option>
               <option value="ALTA">Alta</option>
               <option value="URGENTE">Urgente</option>
             </select>
           </div>
+
           <div>
-            <label className="label">Estado</label>
-            <select className="input" value={form.estado} onChange={(e) => set('estado', e.target.value)}>
+            <label className="label">Estado inicial</label>
+            <select name="estado" value={form.estado} onChange={handleChange} className="input">
               <option value="PENDIENTE">Pendiente</option>
               <option value="EN_PROGRESO">En Progreso</option>
-              <option value="COMPLETADA">Completada</option>
-              <option value="CANCELADA">Cancelada</option>
             </select>
+          </div>
+
+          <div>
+            <label className="label">Fecha límite</label>
+            <input name="fechaVencimiento" type="date" value={form.fechaVencimiento} onChange={handleChange} className="input" />
+          </div>
+
+          <div className="col-span-2">
+            <label className="label">Descripción</label>
+            <textarea name="descripcion" value={form.descripcion} onChange={handleChange} rows={2} className="input resize-none" placeholder="Detalles de la tarea..." />
+          </div>
+
+          <div className="col-span-2">
+            <label className="label">Notas internas</label>
+            <textarea name="notas" value={form.notas} onChange={handleChange} rows={2} className="input resize-none" />
           </div>
         </div>
 
-        <div>
-          <label className="label">Fecha de vencimiento</label>
-          <input
-            type="date"
-            className="input"
-            value={form.fechaVencimiento}
-            onChange={(e) => set('fechaVencimiento', e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label className="label">Descripción</label>
-          <textarea
-            className="input"
-            rows={3}
-            value={form.descripcion}
-            onChange={(e) => set('descripcion', e.target.value)}
-            placeholder="Detalle de la tarea..."
-          />
-        </div>
-
         {/* Derivar a tercero */}
-        <div className="border-t border-gray-100 pt-4">
-          <label className="flex items-start gap-3 cursor-pointer">
+        <div className="border border-gray-200 rounded-lg p-4">
+          <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
-              className="mt-0.5 rounded"
               checked={esDerivada}
               onChange={(e) => setEsDerivada(e.target.checked)}
+              className="h-4 w-4 text-blue-600 rounded"
             />
-            <div>
-              <p className="text-sm font-medium text-gray-900 flex items-center gap-2">
-                <UserCheck className="h-4 w-4 text-orange-500" />
-                Derivar a tercero
-              </p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Asignar esta tarea a un colaborador externo con credenciales de acceso
-              </p>
-            </div>
+            <span className="font-medium text-gray-700">Derivar a tercero</span>
           </label>
-        </div>
 
-        {esDerivada && (
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 space-y-4">
-            <p className="text-sm font-semibold text-orange-800">Datos del tercero asignado</p>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="label">Nombre *</label>
-                <input
-                  className="input"
-                  value={form.asignadoA}
-                  onChange={(e) => set('asignadoA', e.target.value)}
-                  placeholder="Nombre completo"
-                />
+          {esDerivada && (
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="label">Nombre del tercero *</label>
+                <input name="asignadoA" value={form.asignadoA} onChange={handleChange} required={esDerivada} className="input" placeholder="Nombre o empresa" />
               </div>
-              <div>
+              <div className="col-span-2">
                 <label className="label">Email</label>
-                <input
-                  type="email"
-                  className="input"
-                  value={form.asignadoEmail}
-                  onChange={(e) => set('asignadoEmail', e.target.value)}
-                  placeholder="correo@ejemplo.cl"
-                />
+                <input name="asignadoEmail" type="email" value={form.asignadoEmail} onChange={handleChange} className="input" placeholder="correo@ejemplo.com" />
               </div>
-            </div>
 
-            <div className="border-t border-orange-200 pt-3">
-              <p className="text-xs font-semibold text-orange-700 mb-3">
-                Credenciales de acceso al portal (opcional)
-              </p>
-              <div className="space-y-3">
-                <div>
-                  <label className="label">Sistema / Portal</label>
-                  <input
-                    className="input"
-                    value={form.sistema}
-                    onChange={(e) => set('sistema', e.target.value)}
-                    placeholder="Ej: Poder Judicial, OIRS, SII, etc."
-                  />
-                </div>
+              <div className="col-span-2 border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">Credenciales de portal (opcional)</p>
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2">
+                    <label className="label">Sistema / Portal</label>
+                    <input name="sistema" value={form.sistema} onChange={handleChange} className="input" placeholder="Ej: Poder Judicial, SII..." />
+                  </div>
                   <div>
                     <label className="label">Usuario</label>
-                    <input
-                      className="input"
-                      value={form.usuario}
-                      onChange={(e) => set('usuario', e.target.value)}
-                      placeholder="Usuario o RUT"
-                    />
+                    <input name="usuario" value={form.usuario} onChange={handleChange} className="input" />
                   </div>
                   <div>
                     <label className="label">Contraseña</label>
                     <div className="relative">
                       <input
+                        name="contrasena"
                         type={showPassword ? 'text' : 'password'}
-                        className="input pr-10"
                         value={form.contrasena}
-                        onChange={(e) => set('contrasena', e.target.value)}
-                        placeholder="••••••••"
+                        onChange={handleChange}
+                        className="input pr-10"
                       />
                       <button
                         type="button"
-                        className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
                         onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -221,27 +168,15 @@ export default function NuevaTareaPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-
-        <div>
-          <label className="label">Notas</label>
-          <textarea
-            className="input"
-            rows={2}
-            value={form.notas}
-            onChange={(e) => set('notas', e.target.value)}
-            placeholder="Observaciones adicionales..."
-          />
+          )}
         </div>
 
-        <div className="flex justify-end gap-3 pt-2">
-          <Link href={`/causas/${causaId}`} className="btn-secondary">
-            Cancelar
-          </Link>
+        <div className="flex gap-3 pt-2">
           <button type="submit" disabled={loading} className="btn-primary">
-            {loading ? 'Guardando...' : 'Crear tarea'}
+            <Save className="h-4 w-4" />
+            {loading ? 'Guardando...' : 'Guardar tarea'}
           </button>
+          <Link href={`/causas/${params.id}`} className="btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>
