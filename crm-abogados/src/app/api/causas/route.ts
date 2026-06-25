@@ -1,17 +1,23 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { db, initDB } from '@/lib/db'
 import { causas, clientes } from '@/lib/schema'
 import { eq, desc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   await initDB()
-  const rows = await db
+  const { searchParams } = new URL(req.url)
+  const clienteId = searchParams.get('clienteId')
+
+  let query = db
     .select({ causa: causas, cliente: clientes })
     .from(causas)
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
     .orderBy(desc(causas.createdAt))
-  return NextResponse.json(rows.map((r) => ({ ...r.causa, cliente: r.cliente })))
+
+  const rows = await query
+  const filtered = clienteId ? rows.filter((r) => r.causa.clienteId === clienteId) : rows
+  return NextResponse.json(filtered.map((r) => ({ ...r.causa, cliente: r.cliente })))
 }
 
 export async function POST(req: Request) {

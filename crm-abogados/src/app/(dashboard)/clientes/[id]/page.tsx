@@ -45,9 +45,9 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Link href={`/clientes/${cliente.id}/reporte`} className="btn-secondary flex items-center gap-1.5">
+                <Link href={`/clientes/${cliente.id}/caratula`} className="btn-secondary flex items-center gap-1.5">
                   <FileText className="h-4 w-4" />
-                  Reporte
+                  Carátula
                 </Link>
                 <Link href={`/clientes/${cliente.id}/editar`} className="btn-secondary">Editar</Link>
               </div>
