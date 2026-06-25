@@ -1,13 +1,9 @@
 import Sidebar from '@/components/Sidebar'
 import { initDB } from '@/lib/db'
-import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = await auth()
-  if (!userId) redirect('/sign-in')
 
   try {
     await initDB()
