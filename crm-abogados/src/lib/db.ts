@@ -3,9 +3,19 @@ import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from './schema'
 import path from 'path'
 
-const dbPath = path.join(process.cwd(), 'prisma', 'dev.db')
+// Production: uses Turso (TURSO_DATABASE_URL + TURSO_AUTH_TOKEN env vars)
+// Development: uses local SQLite file
+const client = createClient(
+  process.env.TURSO_DATABASE_URL
+    ? {
+        url: process.env.TURSO_DATABASE_URL,
+        authToken: process.env.TURSO_AUTH_TOKEN,
+      }
+    : {
+        url: `file:${path.join(process.cwd(), 'prisma', 'dev.db')}`,
+      }
+)
 
-const client = createClient({ url: `file:${dbPath}` })
 export const db = drizzle(client, { schema })
 
 export async function initDB() {
