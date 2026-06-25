@@ -35,6 +35,9 @@ export async function POST(req: NextRequest) {
     tipo: tipo || 'OTRO',
     descripcion,
     resultado: resultado || null,
+    compromiso: body.compromiso || null,
+    fechaRecordatorio: body.fechaRecordatorio || null,
+    recordatorioEnviado: 0,
     causaId,
     createdAt: now,
   })

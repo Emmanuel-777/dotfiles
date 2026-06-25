@@ -28,11 +28,14 @@ export default function NuevaActuacionPage() {
   const causaId = params.id as string
 
   const [loading, setLoading] = useState(false)
+  const [tieneCompromiso, setTieneCompromiso] = useState(false)
   const [form, setForm] = useState({
     fecha: new Date().toISOString().split('T')[0],
     tipo: 'Presentación de escrito',
     descripcion: '',
     resultado: '',
+    compromiso: '',
+    fechaRecordatorio: '',
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -46,7 +49,12 @@ export default function NuevaActuacionPage() {
       const res = await fetch('/api/actuaciones', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, causaId }),
+        body: JSON.stringify({
+          ...form,
+          causaId,
+          compromiso: tieneCompromiso ? form.compromiso : null,
+          fechaRecordatorio: tieneCompromiso ? form.fechaRecordatorio : null,
+        }),
       })
       if (!res.ok) throw new Error(await res.text())
       router.push(`/causas/${causaId}`)
@@ -107,8 +115,53 @@ export default function NuevaActuacionPage() {
             onChange={handleChange}
             rows={2}
             className="input resize-none"
-            placeholder="Ej: Ingresado con número de ingreso 45123, se fijó audiencia para el 15 de julio..."
+            placeholder="Ej: Ingresado con número 45123, audiencia fijada para el 15 de julio..."
           />
+        </div>
+
+        {/* Compromiso del cliente */}
+        <div className="border-t border-gray-100 pt-4">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={tieneCompromiso}
+              onChange={(e) => setTieneCompromiso(e.target.checked)}
+              className="h-4 w-4 rounded text-blue-600"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              El cliente quedó con un compromiso — enviar recordatorio
+            </span>
+          </label>
+
+          {tieneCompromiso && (
+            <div className="mt-3 space-y-3 pl-7">
+              <div>
+                <label className="label">¿Qué comprometió el cliente? *</label>
+                <textarea
+                  name="compromiso"
+                  value={form.compromiso}
+                  onChange={handleChange}
+                  required={tieneCompromiso}
+                  rows={2}
+                  className="input resize-none"
+                  placeholder="Ej: Traer contrato de arrendamiento original y liquidaciones de sueldo"
+                />
+              </div>
+              <div>
+                <label className="label">Fecha del recordatorio</label>
+                <input
+                  name="fechaRecordatorio"
+                  type="date"
+                  value={form.fechaRecordatorio}
+                  onChange={handleChange}
+                  className="input"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Aparecerá en el Dashboard cuando llegue esa fecha
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3 pt-1">

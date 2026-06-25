@@ -1,13 +1,15 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, plazos, honorarios, tareas } from '@/lib/schema'
+import { clientes, causas, plazos, honorarios, tareas, actuaciones } from '@/lib/schema'
 import {
   formatMonto, formatFechaCorta, formatFechaRelativa,
   estaVencido, esCritico, ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA,
   urgenciaTarea, URGENCIA_CLASES,
 } from '@/lib/utils'
 import Link from 'next/link'
-import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck } from 'lucide-react'
-import { eq, gte, count, sum, desc, asc, and, inArray, ne } from 'drizzle-orm'
+import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck, Bell } from 'lucide-react'
+import { eq, gte, lte, count, sum, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
+import ReminderButtons from '@/components/ReminderButtons'
+
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +17,8 @@ export default async function DashboardPage() {
   await initDB()
 
   const hoy = new Date().toISOString()
+
+  const hoyFecha = hoy.split('T')[0]
 
   const [
     totalClientesRows,
@@ -26,6 +30,7 @@ export default async function DashboardPage() {
     ultimasCausas,
     proximosPlazos,
     proximasTareas,
+    recordatoriosPendientes,
   ] = await Promise.all([
     db.select({ count: count() }).from(clientes),
     db.select({ count: count() }).from(causas),
@@ -51,6 +56,18 @@ export default async function DashboardPage() {
       .where(and(ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA')))
       .orderBy(asc(tareas.fechaVencimiento))
       .limit(8),
+    db.select({ act: actuaciones, causa: causas, cliente: clientes })
+      .from(actuaciones)
+      .leftJoin(causas, eq(actuaciones.causaId, causas.id))
+      .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+      .where(and(
+        isNotNull(actuaciones.compromiso),
+        isNotNull(actuaciones.fechaRecordatorio),
+        lte(actuaciones.fechaRecordatorio, hoyFecha),
+        eq(actuaciones.recordatorioEnviado, 0),
+      ))
+      .orderBy(asc(actuaciones.fechaRecordatorio))
+      .limit(10),
   ])
 
   const totalClientes = totalClientesRows[0]?.count ?? 0
@@ -249,6 +266,54 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Recordatorios pendientes */}
+      {recordatoriosPendientes.length > 0 && (
+        <div className="card mt-6">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-amber-100 bg-amber-50 rounded-t-xl">
+            <h2 className="font-semibold text-amber-900 flex items-center gap-2">
+              <Bell className="h-4 w-4 text-amber-600" />
+              Recordatorios pendientes de enviar
+              <span className="ml-1 bg-amber-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                {recordatoriosPendientes.length}
+              </span>
+            </h2>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {recordatoriosPendientes.map(({ act, causa, cliente }) => (
+              <div key={act.id} className="px-6 py-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-semibold text-gray-900">{cliente?.nombre}</p>
+                      {causa && (
+                        <span className="text-xs font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{causa.rol}</span>
+                      )}
+                      {act.fechaRecordatorio && (
+                        <span className="text-xs text-amber-700 font-medium">· {formatFechaCorta(act.fechaRecordatorio)}</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-amber-800 mt-1">{act.compromiso}</p>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <ReminderButtons
+                    actuacionId={act.id}
+                    compromiso={act.compromiso ?? ''}
+                    fechaRecordatorio={act.fechaRecordatorio ?? null}
+                    recordatorioEnviado={act.recordatorioEnviado}
+                    clienteNombre={cliente?.nombre ?? ''}
+                    clienteCelular={cliente?.celular ?? null}
+                    clienteEmail={cliente?.email ?? null}
+                    causaRol={causa?.rol ?? ''}
+                    abogado={causa?.abogadoResponsable ?? null}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -3,9 +3,10 @@ import { causas, clientes, actuaciones, plazos, documentos, honorarios, tareas }
 import { eq, desc, asc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound } from 'lucide-react'
+import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound, Bell } from 'lucide-react'
 import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
+import ReminderButtons from '@/components/ReminderButtons'
 
 export const dynamic = 'force-dynamic'
 
@@ -220,12 +221,35 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                   <div key={act.id} className="px-6 py-3">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="badge bg-blue-50 text-blue-700 text-[10px]">{act.tipo}</span>
                           <p className="text-sm font-medium text-gray-900">{act.descripcion}</p>
                         </div>
                         {act.resultado && (
                           <p className="text-xs text-green-700 bg-green-50 rounded px-2 py-0.5 mt-1 inline-block">{act.resultado}</p>
+                        )}
+                        {act.compromiso && (
+                          <div className="mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                            <p className="text-xs font-semibold text-amber-700 flex items-center gap-1 mb-0.5">
+                              <Bell className="h-3 w-3" />
+                              Compromiso del cliente
+                              {act.fechaRecordatorio && (
+                                <span className="ml-1 text-amber-600">· {formatFechaCorta(act.fechaRecordatorio)}</span>
+                              )}
+                            </p>
+                            <p className="text-xs text-amber-800">{act.compromiso}</p>
+                            <ReminderButtons
+                              actuacionId={act.id}
+                              compromiso={act.compromiso}
+                              fechaRecordatorio={act.fechaRecordatorio ?? null}
+                              recordatorioEnviado={act.recordatorioEnviado}
+                              clienteNombre={cliente?.nombre ?? ''}
+                              clienteCelular={cliente?.celular ?? null}
+                              clienteEmail={cliente?.email ?? null}
+                              causaRol={causa.rol}
+                              abogado={causa.abogadoResponsable ?? null}
+                            />
+                          </div>
                         )}
                       </div>
                       <p className="text-xs text-gray-400 whitespace-nowrap">{formatFechaCorta(act.fecha)}</p>

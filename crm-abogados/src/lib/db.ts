@@ -131,4 +131,14 @@ export async function initDB() {
   for (const sql of statements) {
     await client.execute(sql)
   }
+
+  // Migraciones seguras — ignorar si la columna ya existe
+  const migrations = [
+    `ALTER TABLE actuaciones ADD COLUMN compromiso TEXT`,
+    `ALTER TABLE actuaciones ADD COLUMN fecha_recordatorio TEXT`,
+    `ALTER TABLE actuaciones ADD COLUMN recordatorio_enviado INTEGER NOT NULL DEFAULT 0`,
+  ]
+  for (const m of migrations) {
+    try { await client.execute(m) } catch {}
+  }
 }
