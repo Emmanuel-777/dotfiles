@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Cliente {
+  id          String      @id @default(cuid())
+  rut         String      @unique
+  nombre      String
+  tipo        String      @default("PERSONA_NATURAL") // PERSONA_NATURAL | PERSONA_JURIDICA
+  email       String?
+  telefono    String?
+  celular     String?
+  direccion   String?
+  ciudad      String?     @default("Santiago")
+  region      String?     @default("Región Metropolitana")
+  notas       String?
+  causas      Causa[]
+  honorarios  Honorario[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Causa {
+  id           String      @id @default(cuid())
+  rol          String      // ROL o RIT de la causa
+  tribunal     String
+  tipoCausa    String      // Civil, Laboral, Familia, Penal, etc.
+  materia      String?
+  estado       String      @default("EN_TRAMITE") // EN_TRAMITE | TERMINADA | SUSPENDIDA | ARCHIVADA
+  fechaIngreso DateTime    @default(now())
+  contraparte  String?
+  abogadoResponsable String?
+  descripcion  String?
+  clienteId    String
+  cliente      Cliente     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  actuaciones  Actuacion[]
+  plazos       Plazo[]
+  documentos   Documento[]
+  honorarios   Honorario[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([clienteId])
+}
+
+model Actuacion {
+  id          String   @id @default(cuid())
+  fecha       DateTime
+  tipo        String   // ESCRITO | RESOLUCION | AUDIENCIA | NOTIFICACION | OTRO
+  descripcion String
+  resultado   String?
+  causaId     String
+  causa       Causa    @relation(fields: [causaId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@index([causaId])
+}
+
+model Plazo {
+  id          String   @id @default(cuid())
+  titulo      String
+  fecha       DateTime
+  tipo        String   // AUDIENCIA | VENCIMIENTO | NOTIFICACION | PRESENTACION | OTRO
+  estado      String   @default("PENDIENTE") // PENDIENTE | COMPLETADO | VENCIDO
+  notas       String?
+  causaId     String
+  causa       Causa    @relation(fields: [causaId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([causaId])
+  @@index([fecha])
+}
+
+model Documento {
+  id          String   @id @default(cuid())
+  nombre      String
+  tipo        String   // ESCRITO | RESOLUCION | CONTRATO | PODER | OTRO
+  descripcion String?
+  archivo     String?  // path o URL del archivo
+  causaId     String
+  causa       Causa    @relation(fields: [causaId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@index([causaId])
+}
+
+model Honorario {
+  id           String    @id @default(cuid())
+  descripcion  String
+  monto        Float
+  moneda       String    @default("CLP")
+  estado       String    @default("PENDIENTE") // PENDIENTE | PAGADO | PARCIAL | ANULADO
+  tipo         String    @default("HONORARIO")  // HONORARIO | GASTO | ANTICIPO
+  fechaEmision DateTime  @default(now())
+  fechaVence   DateTime?
+  fechaPago    DateTime?
+  notas        String?
+  clienteId    String
+  cliente      Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  causaId      String?
+  causa        Causa?    @relation(fields: [causaId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([clienteId])
+  @@index([causaId])
+}
