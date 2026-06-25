@@ -3,15 +3,10 @@ import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from './schema'
 import path from 'path'
 
-const tursoUrl = process.env.TURSO_DATABASE_URL
-if (tursoUrl) {
-  console.log('[db] Connecting to Turso:', tursoUrl.replace('libsql://', 'https://'))
-}
-
 const client = createClient(
-  tursoUrl
+  process.env.TURSO_DATABASE_URL
     ? {
-        url: tursoUrl.replace('libsql://', 'https://'),
+        url: process.env.TURSO_DATABASE_URL.replace('libsql://', 'https://'),
         authToken: process.env.TURSO_AUTH_TOKEN,
       }
     : {
