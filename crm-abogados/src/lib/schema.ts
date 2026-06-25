@@ -99,6 +99,25 @@ export const tareas = sqliteTable('tareas', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const citas = sqliteTable('citas', {
+  id: text('id').primaryKey(),
+  titulo: text('titulo').notNull(),
+  descripcion: text('descripcion'),
+  clienteId: text('cliente_id').references(() => clientes.id),
+  causaId: text('causa_id').references(() => causas.id),
+  fecha: text('fecha').notNull(),
+  horaInicio: text('hora_inicio').notNull(),
+  horaFin: text('hora_fin'),
+  tipo: text('tipo').notNull().default('PRESENCIAL'),
+  linkReunion: text('link_reunion'),
+  esGratuita: integer('es_gratuita').notNull().default(0),
+  valor: real('valor'),
+  estado: text('estado').notNull().default('PENDIENTE'),
+  notas: text('notas'),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect
@@ -109,3 +128,5 @@ export type Documento = typeof documentos.$inferSelect
 export type Actuacion = typeof actuaciones.$inferSelect
 export type Tarea = typeof tareas.$inferSelect
 export type NuevaTarea = typeof tareas.$inferInsert
+export type Cita = typeof citas.$inferSelect
+export type NuevaCita = typeof citas.$inferInsert

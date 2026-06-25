@@ -117,5 +117,24 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS citas (
+      id TEXT PRIMARY KEY,
+      titulo TEXT NOT NULL,
+      descripcion TEXT,
+      cliente_id TEXT REFERENCES clientes(id) ON DELETE SET NULL,
+      causa_id TEXT REFERENCES causas(id) ON DELETE SET NULL,
+      fecha TEXT NOT NULL,
+      hora_inicio TEXT NOT NULL,
+      hora_fin TEXT,
+      tipo TEXT NOT NULL DEFAULT 'PRESENCIAL',
+      link_reunion TEXT,
+      es_gratuita INTEGER NOT NULL DEFAULT 0,
+      valor REAL,
+      estado TEXT NOT NULL DEFAULT 'PENDIENTE',
+      notas TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
   `)
 }
