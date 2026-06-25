@@ -21,6 +21,13 @@ async function initDB() {
 async function main() {
   await initDB()
 
+  // Skip if data already exists
+  const existing = await db.select().from(clientes).limit(1)
+  if (existing.length > 0) {
+    console.log('ℹ️  Base de datos ya tiene datos, omitiendo seed.')
+    process.exit(0)
+  }
+
   const now = new Date().toISOString()
   const id1 = nanoid(), id2 = nanoid(), id3 = nanoid()
 
