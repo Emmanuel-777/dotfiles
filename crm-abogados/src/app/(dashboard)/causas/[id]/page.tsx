@@ -1,10 +1,11 @@
 import { db, initDB } from '@/lib/db'
-import { causas, clientes, actuaciones, plazos, documentos, honorarios } from '@/lib/schema'
+import { causas, clientes, actuaciones, plazos, documentos, honorarios, tareas } from '@/lib/schema'
 import { eq, desc, asc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User } from 'lucide-react'
-import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, estaVencido, esCritico } from '@/lib/utils'
+import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound } from 'lucide-react'
+import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
+import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,11 +20,12 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
   if (!row) notFound()
   const { causa, cliente } = row
 
-  const [acts, pls, docs, hons] = await Promise.all([
+  const [acts, pls, docs, hons, tareasList] = await Promise.all([
     db.select().from(actuaciones).where(eq(actuaciones.causaId, params.id)).orderBy(desc(actuaciones.fecha)),
     db.select().from(plazos).where(eq(plazos.causaId, params.id)).orderBy(asc(plazos.fecha)),
     db.select().from(documentos).where(eq(documentos.causaId, params.id)).orderBy(desc(documentos.createdAt)),
     db.select().from(honorarios).where(eq(honorarios.causaId, params.id)).orderBy(desc(honorarios.createdAt)),
+    db.select().from(tareas).where(eq(tareas.causaId, params.id)).orderBy(asc(tareas.fechaVencimiento)),
   ])
 
   const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]
@@ -121,6 +123,76 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                           {formatFechaCorta(plazo.fecha)}
                         </p>
                         <span className={`badge ${estadoPlazo?.color}`}>{estadoPlazo?.label}</span>
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Tareas */}
+          <div className="card">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+                <ListTodo className="h-4 w-4 text-violet-500" />
+                Tareas ({tareasList.length})
+              </h2>
+              <Link
+                href={`/causas/${causa.id}/tareas/nueva`}
+                className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1"
+              >
+                <Plus className="h-3 w-3" /> Agregar
+              </Link>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {tareasList.length === 0 ? (
+                <p className="px-6 py-6 text-center text-sm text-gray-400">Sin tareas registradas</p>
+              ) : (
+                tareasList.map((tarea) => {
+                  const prioridadT = PRIORIDADES_TAREA[tarea.prioridad as keyof typeof PRIORIDADES_TAREA]
+                  const vencida = tarea.fechaVencimiento ? estaVencido(tarea.fechaVencimiento) : false
+                  const critica = tarea.fechaVencimiento ? esCritico(tarea.fechaVencimiento) : false
+                  const creds = tarea.credencialesPortal ? JSON.parse(tarea.credencialesPortal) : null
+                  return (
+                    <div key={tarea.id} className="px-6 py-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`badge ${prioridadT?.color}`}>{prioridadT?.label}</span>
+                            <p className="text-sm font-medium text-gray-900">{tarea.titulo}</p>
+                            {tarea.esDerivada === 1 && (
+                              <span className="badge bg-orange-100 text-orange-700 flex items-center gap-1">
+                                <UserCheck className="h-3 w-3" />
+                                Derivada
+                              </span>
+                            )}
+                          </div>
+                          {tarea.asignadoA && (
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              Asignado a: <span className="font-medium">{tarea.asignadoA}</span>
+                              {tarea.asignadoEmail && <> · {tarea.asignadoEmail}</>}
+                            </p>
+                          )}
+                          {creds?.sistema && (
+                            <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                              <KeyRound className="h-3 w-3" />
+                              {creds.sistema}{creds.usuario ? ` · ${creds.usuario}` : ''}
+                            </p>
+                          )}
+                          {tarea.descripcion && (
+                            <p className="text-xs text-gray-400 mt-0.5 truncate">{tarea.descripcion}</p>
+                          )}
+                        </div>
+                        <div className="text-right flex-shrink-0 space-y-1">
+                          <TareaEstadoSelect tareaId={tarea.id} estadoActual={tarea.estado} />
+                          {tarea.fechaVencimiento && (
+                            <p className={`text-xs font-medium ${vencida && tarea.estado === 'PENDIENTE' ? 'text-red-600' : critica ? 'text-amber-600' : 'text-gray-500'}`}>
+                              {vencida && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}
+                              {formatFechaCorta(tarea.fechaVencimiento)}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )

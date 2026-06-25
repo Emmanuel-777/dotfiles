@@ -100,5 +100,22 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS tareas (
+      id TEXT PRIMARY KEY,
+      titulo TEXT NOT NULL,
+      descripcion TEXT,
+      estado TEXT NOT NULL DEFAULT 'PENDIENTE',
+      prioridad TEXT NOT NULL DEFAULT 'MEDIA',
+      fecha_vencimiento TEXT,
+      asignado_a TEXT,
+      asignado_email TEXT,
+      es_derivada INTEGER NOT NULL DEFAULT 0,
+      credenciales_portal TEXT,
+      notas TEXT,
+      causa_id TEXT NOT NULL REFERENCES causas(id) ON DELETE CASCADE,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
   `)
 }

@@ -3,7 +3,7 @@ import { clientes, causas, honorarios } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus } from 'lucide-react'
+import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
@@ -44,7 +44,13 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                   {cliente.tipo === 'PERSONA_JURIDICA' ? 'Persona Jurídica' : 'Persona Natural'}
                 </span>
               </div>
-              <Link href={`/clientes/${cliente.id}/editar`} className="btn-secondary">Editar</Link>
+              <div className="flex items-center gap-2">
+                <Link href={`/clientes/${cliente.id}/reporte`} className="btn-secondary flex items-center gap-1.5">
+                  <FileText className="h-4 w-4" />
+                  Reporte
+                </Link>
+                <Link href={`/clientes/${cliente.id}/editar`} className="btn-secondary">Editar</Link>
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 pt-5 border-t border-gray-100">
               {cliente.email && (
