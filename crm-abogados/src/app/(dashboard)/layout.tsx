@@ -4,7 +4,12 @@ import { initDB } from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  await initDB()
+  try {
+    await initDB()
+  } catch (e) {
+    console.error('[initDB] Error:', e)
+    throw e
+  }
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />

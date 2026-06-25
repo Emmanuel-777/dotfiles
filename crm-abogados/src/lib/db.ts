@@ -3,12 +3,15 @@ import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from './schema'
 import path from 'path'
 
-// Production: uses Turso (TURSO_DATABASE_URL + TURSO_AUTH_TOKEN env vars)
-// Development: uses local SQLite file
+const tursoUrl = process.env.TURSO_DATABASE_URL
+if (tursoUrl) {
+  console.log('[db] Connecting to Turso:', tursoUrl.replace('libsql://', 'https://'))
+}
+
 const client = createClient(
-  process.env.TURSO_DATABASE_URL
+  tursoUrl
     ? {
-        url: process.env.TURSO_DATABASE_URL.replace('libsql://', 'https://'),
+        url: tursoUrl.replace('libsql://', 'https://'),
         authToken: process.env.TURSO_AUTH_TOKEN,
       }
     : {
