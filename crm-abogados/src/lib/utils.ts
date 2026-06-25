@@ -95,6 +95,20 @@ export const ESTADOS_PLAZO = {
   VENCIDO: { label: 'Vencido', color: 'bg-red-100 text-red-800' },
 } as const
 
+export const ESTADOS_TAREA = {
+  PENDIENTE: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800' },
+  EN_PROGRESO: { label: 'En Progreso', color: 'bg-blue-100 text-blue-800' },
+  COMPLETADA: { label: 'Completada', color: 'bg-green-100 text-green-800' },
+  CANCELADA: { label: 'Cancelada', color: 'bg-gray-100 text-gray-800' },
+} as const
+
+export const PRIORIDADES_TAREA = {
+  BAJA: { label: 'Baja', color: 'bg-gray-100 text-gray-500' },
+  MEDIA: { label: 'Media', color: 'bg-blue-100 text-blue-700' },
+  ALTA: { label: 'Alta', color: 'bg-orange-100 text-orange-700' },
+  URGENTE: { label: 'Urgente', color: 'bg-red-100 text-red-700' },
+} as const
+
 export const TIPOS_CAUSA = ['Civil', 'Laboral', 'Familia', 'Penal', 'Comercial', 'Tributario', 'Administrativo', 'Constitucional', 'Otro']
 
 export const TRIBUNALES_SANTIAGO = [

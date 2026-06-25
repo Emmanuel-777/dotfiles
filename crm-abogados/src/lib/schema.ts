@@ -82,6 +82,23 @@ export const honorarios = sqliteTable('honorarios', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const tareas = sqliteTable('tareas', {
+  id: text('id').primaryKey(),
+  titulo: text('titulo').notNull(),
+  descripcion: text('descripcion'),
+  estado: text('estado').notNull().default('PENDIENTE'),
+  prioridad: text('prioridad').notNull().default('MEDIA'),
+  fechaVencimiento: text('fecha_vencimiento'),
+  asignadoA: text('asignado_a'),
+  asignadoEmail: text('asignado_email'),
+  esDerivada: integer('es_derivada').notNull().default(0),
+  credencialesPortal: text('credenciales_portal'),
+  notas: text('notas'),
+  causaId: text('causa_id').notNull().references(() => causas.id),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect
@@ -90,3 +107,5 @@ export type Plazo = typeof plazos.$inferSelect
 export type Honorario = typeof honorarios.$inferSelect
 export type Documento = typeof documentos.$inferSelect
 export type Actuacion = typeof actuaciones.$inferSelect
+export type Tarea = typeof tareas.$inferSelect
+export type NuevaTarea = typeof tareas.$inferInsert

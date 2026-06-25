@@ -1,9 +1,9 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, plazos, honorarios } from '@/lib/schema'
-import { formatMonto, formatFechaCorta, formatFechaRelativa, estaVencido, esCritico, ESTADOS_CAUSA } from '@/lib/utils'
+import { clientes, causas, plazos, honorarios, tareas } from '@/lib/schema'
+import { formatMonto, formatFechaCorta, formatFechaRelativa, estaVencido, esCritico, ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA } from '@/lib/utils'
 import Link from 'next/link'
-import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle } from 'lucide-react'
-import { eq, gte, count, sum, desc, asc, and, inArray } from 'drizzle-orm'
+import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck } from 'lucide-react'
+import { eq, gte, count, sum, desc, asc, and, inArray, ne } from 'drizzle-orm'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +20,7 @@ export default async function DashboardPage() {
     honorariosPendientes,
     ultimasCausas,
     proximosPlazos,
+    tareasDerivadas,
   ] = await Promise.all([
     db.select({ count: count() }).from(clientes),
     db.select({ count: count() }).from(causas),
@@ -37,6 +38,12 @@ export default async function DashboardPage() {
       .leftJoin(clientes, eq(causas.clienteId, clientes.id))
       .where(eq(plazos.estado, 'PENDIENTE'))
       .orderBy(asc(plazos.fecha))
+      .limit(8),
+    db.select({ tarea: tareas, causa: causas })
+      .from(tareas)
+      .leftJoin(causas, eq(tareas.causaId, causas.id))
+      .where(and(eq(tareas.esDerivada, 1), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA')))
+      .orderBy(asc(tareas.fechaVencimiento))
       .limit(8),
   ])
 
@@ -80,7 +87,7 @@ export default async function DashboardPage() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Próximos plazos */}
         <div className="card">
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
@@ -136,19 +143,78 @@ export default async function DashboardPage() {
             <Link href="/causas" className="text-blue-600 text-sm hover:text-blue-700">Ver todas</Link>
           </div>
           <div className="divide-y divide-gray-50">
-            {ultimasCausas.map(({ causa, cliente }) => {
-              const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]
-              return (
-                <Link key={causa.id} href={`/causas/${causa.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{cliente?.nombre}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 truncate">{causa.rol} · {causa.tipoCausa}</p>
-                    <p className="text-xs text-gray-400 truncate">{causa.tribunal}</p>
-                  </div>
-                  <span className={`badge ml-3 ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
-                </Link>
-              )
-            })}
+            {ultimasCausas.length === 0 ? (
+              <p className="px-6 py-8 text-center text-sm text-gray-400">Sin causas registradas</p>
+            ) : (
+              ultimasCausas.map(({ causa, cliente }) => {
+                const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]
+                return (
+                  <Link key={causa.id} href={`/causas/${causa.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">{cliente?.nombre}</p>
+                      <p className="text-xs text-gray-500 mt-0.5 truncate">{causa.rol} · {causa.tipoCausa}</p>
+                      <p className="text-xs text-gray-400 truncate">{causa.tribunal}</p>
+                    </div>
+                    <span className={`badge ml-3 ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
+                  </Link>
+                )
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Tareas derivadas */}
+        <div className="card">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-orange-500" />
+              Tareas derivadas
+            </h2>
+            <Link href="/causas" className="text-blue-600 text-sm hover:text-blue-700">Ver causas</Link>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {tareasDerivadas.length === 0 ? (
+              <div className="px-6 py-8 text-center text-gray-400 text-sm">
+                <ListTodo className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                Sin tareas derivadas pendientes
+              </div>
+            ) : (
+              tareasDerivadas.map(({ tarea, causa }) => {
+                const estadoT = ESTADOS_TAREA[tarea.estado as keyof typeof ESTADOS_TAREA]
+                const prioridadT = PRIORIDADES_TAREA[tarea.prioridad as keyof typeof PRIORIDADES_TAREA]
+                const vencida = tarea.fechaVencimiento ? estaVencido(tarea.fechaVencimiento) : false
+                const critica = tarea.fechaVencimiento ? esCritico(tarea.fechaVencimiento) : false
+                return (
+                  <Link key={tarea.id} href={`/causas/${tarea.causaId}`} className="block px-6 py-3 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`badge ${prioridadT?.color}`}>{prioridadT?.label}</span>
+                          <p className="text-sm font-medium text-gray-900 truncate">{tarea.titulo}</p>
+                        </div>
+                        {tarea.asignadoA && (
+                          <p className="text-xs text-gray-500 mt-0.5 truncate">
+                            → {tarea.asignadoA}
+                          </p>
+                        )}
+                        {causa && (
+                          <p className="text-xs text-gray-400 truncate font-mono">{causa.rol}</p>
+                        )}
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <span className={`badge ${estadoT?.color}`}>{estadoT?.label}</span>
+                        {tarea.fechaVencimiento && (
+                          <p className={`text-xs mt-1 font-medium ${vencida ? 'text-red-600' : critica ? 'text-amber-600' : 'text-gray-500'}`}>
+                            {vencida && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}
+                            {formatFechaCorta(tarea.fechaVencimiento)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })
+            )}
           </div>
         </div>
       </div>
