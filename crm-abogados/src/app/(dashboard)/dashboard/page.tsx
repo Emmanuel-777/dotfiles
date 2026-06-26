@@ -6,10 +6,20 @@ import {
   urgenciaTarea, URGENCIA_CLASES,
 } from '@/lib/utils'
 import Link from 'next/link'
-import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck, Bell } from 'lucide-react'
-import { eq, gte, lte, count, sum, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
+import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck, Bell, UserPlus, FilePlus, CalendarPlus, Receipt, ArrowRight } from 'lucide-react'
+import { eq, gte, lte, lt, count, sum, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
 import ReminderButtons from '@/components/ReminderButtons'
+import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
+
+const QUICK_ACTIONS = [
+  { label: 'Nuevo cliente', href: '/clientes/nuevo', icon: UserPlus,     color: 'text-blue-600',    bg: 'bg-blue-50 hover:bg-blue-100' },
+  { label: 'Nueva causa',   href: '/causas/nueva',   icon: Briefcase,    color: 'text-violet-600',  bg: 'bg-violet-50 hover:bg-violet-100' },
+  { label: 'Nueva cita',    href: '/citas/nueva',    icon: CalendarPlus, color: 'text-cyan-600',    bg: 'bg-cyan-50 hover:bg-cyan-100' },
+  { label: 'Nuevo plazo',   href: '/agenda/nuevo',   icon: Calendar,     color: 'text-amber-600',   bg: 'bg-amber-50 hover:bg-amber-100' },
+  { label: 'Nuevo honorario', href: '/honorarios/nuevo', icon: Receipt,  color: 'text-emerald-600', bg: 'bg-emerald-50 hover:bg-emerald-100' },
+  { label: 'Nuevo documento', href: '/documentos/nuevo', icon: FilePlus, color: 'text-rose-600',    bg: 'bg-rose-50 hover:bg-rose-100' },
+]
 
 export const dynamic = 'force-dynamic'
 
@@ -32,6 +42,8 @@ export default async function DashboardPage() {
     proximosPlazos,
     proximasTareas,
     recordatoriosPendientes,
+    plazosVencidosRows,
+    tareasVencidasRows,
   ] = await Promise.all([
     db.select({ count: count() }).from(clientes).where(eq(clientes.userId, userId)),
     db.select({ count: count() }).from(causas).where(eq(causas.userId, userId)),
@@ -71,7 +83,13 @@ export default async function DashboardPage() {
       ))
       .orderBy(asc(actuaciones.fechaRecordatorio))
       .limit(10),
+    db.select({ count: count() }).from(plazos).where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'), lt(plazos.fecha, hoy))),
+    db.select({ count: count() }).from(tareas).where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'), isNotNull(tareas.fechaVencimiento), lt(tareas.fechaVencimiento, hoy))),
   ])
+
+  const plazosVencidos = plazosVencidosRows[0]?.count ?? 0
+  const tareasVencidas = tareasVencidasRows[0]?.count ?? 0
+  const totalVencidos = plazosVencidos + tareasVencidas
 
   const totalClientes = totalClientesRows[0]?.count ?? 0
   const totalCausas = totalCausasRows[0]?.count ?? 0
@@ -95,9 +113,57 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1">Resumen de tu estudio jurídico</p>
+      </div>
+
+      {/* Banner de alertas — vencimientos */}
+      {totalVencidos > 0 && (
+        <div className="mb-6 flex items-center gap-4 rounded-xl border border-red-200 bg-red-50 px-5 py-4">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
+            <AlertTriangle className="h-5 w-5 text-red-600" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-red-900">
+              Tienes {totalVencidos} {totalVencidos === 1 ? 'asunto vencido' : 'asuntos vencidos'} que requieren atención
+            </p>
+            <p className="text-xs text-red-700 mt-0.5">
+              {plazosVencidos > 0 && `${plazosVencidos} plazo${plazosVencidos === 1 ? '' : 's'}`}
+              {plazosVencidos > 0 && tareasVencidas > 0 && ' · '}
+              {tareasVencidas > 0 && `${tareasVencidas} tarea${tareasVencidas === 1 ? '' : 's'}`}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            {plazosVencidos > 0 && (
+              <Link href="/agenda" className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-red-700 border border-red-200 hover:bg-red-100 transition-colors">
+                Ver plazos <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
+            {tareasVencidas > 0 && (
+              <Link href="/tareas" className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-red-700 border border-red-200 hover:bg-red-100 transition-colors">
+                Ver tareas <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Accesos rápidos */}
+      <div className="mb-8 flex flex-wrap gap-2">
+        {QUICK_ACTIONS.map((action) => {
+          const Icon = action.icon
+          return (
+            <Link
+              key={action.href}
+              href={action.href}
+              className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium ${action.color} ${action.bg} transition-colors`}
+            >
+              <Icon className="h-4 w-4" />
+              {action.label}
+            </Link>
+          )
+        })}
       </div>
 
       {/* Stats — 5 tarjetas */}
@@ -180,7 +246,14 @@ export default async function DashboardPage() {
           </div>
           <div className="divide-y divide-gray-50">
             {ultimasCausas.length === 0 ? (
-              <p className="px-6 py-8 text-center text-sm text-gray-400">Sin causas registradas</p>
+              <EmptyState
+                icon={Briefcase}
+                title="Sin causas registradas"
+                description="Crea tu primera causa para empezar a gestionar tu cartera."
+                actionLabel="Nueva causa"
+                actionHref="/causas/nueva"
+                compact
+              />
             ) : (
               ultimasCausas.map(({ causa, cliente }) => {
                 const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]

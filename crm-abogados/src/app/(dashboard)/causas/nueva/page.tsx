@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
 import { TIPOS_CAUSA, TRIBUNALES_CHILE } from '@/lib/utils'
+import { toast } from 'sonner'
 
 function NuevaCausaForm() {
   const router = useRouter()
@@ -42,10 +43,11 @@ function NuevaCausaForm() {
         body: JSON.stringify({ ...form, fechaIngreso: new Date(form.fechaIngreso).toISOString() }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Causa creada correctamente')
       const data = await res.json()
       router.push(`/causas/${data.id}`)
     } catch {
-      alert('Error al guardar la causa')
+      toast.error('Error al guardar la causa')
     } finally {
       setLoading(false)
     }

@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 function NuevoPlazoForm() {
   const router = useRouter()
@@ -36,9 +37,10 @@ function NuevoPlazoForm() {
         body: JSON.stringify({ ...form, fecha: new Date(form.fecha).toISOString() }),
       })
       if (!res.ok) throw new Error()
+      toast.success('Plazo agregado')
       router.push('/agenda')
     } catch {
-      alert('Error al guardar el plazo')
+      toast.error('Error al guardar el plazo')
     } finally {
       setLoading(false)
     }

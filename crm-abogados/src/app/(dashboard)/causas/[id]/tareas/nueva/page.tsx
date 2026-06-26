@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function NuevaTareaPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -54,9 +55,10 @@ export default function NuevaTareaPage({ params }: { params: { id: string } }) {
         }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Tarea creada')
       router.push(`/causas/${params.id}`)
     } catch {
-      alert('Error al guardar la tarea')
+      toast.error('Error al guardar la tarea')
     } finally {
       setLoading(false)
     }

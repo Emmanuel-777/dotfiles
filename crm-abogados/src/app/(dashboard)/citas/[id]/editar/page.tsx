@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Trash2, Video, MapPin, Phone } from 'lucide-react'
+import { toast } from 'sonner'
 
 const TIPOS = [
   { value: 'PRESENCIAL', label: 'Presencial',   icon: <MapPin className="h-4 w-4" /> },
@@ -95,9 +96,10 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
         }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Cambios guardados')
       router.push(`/citas/${params.id}`)
     } catch {
-      alert('Error al guardar los cambios')
+      toast.error('Error al guardar los cambios')
     } finally {
       setLoading(false)
     }
@@ -108,9 +110,10 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
     setDeleting(true)
     try {
       await fetch(`/api/citas/${params.id}`, { method: 'DELETE' })
+      toast.success('Cita eliminada')
       router.push('/citas')
     } catch {
-      alert('Error al eliminar la cita')
+      toast.error('Error al eliminar la cita')
       setDeleting(false)
     }
   }

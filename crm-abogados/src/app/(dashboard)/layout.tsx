@@ -1,7 +1,10 @@
 import Sidebar from '@/components/Sidebar'
-import { initDB } from '@/lib/db'
+import { db, initDB } from '@/lib/db'
+import { plazos, tareas, citas } from '@/lib/schema'
+import { eq, and, ne, gte, lte } from 'drizzle-orm'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+import { Toaster } from 'sonner'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,12 +18,47 @@ export default async function DashboardLayout({ children }: { children: React.Re
     console.error('[initDB] Error:', e)
     throw e
   }
+
+  // Semáforo de alertas para el sidebar
+  const hoy = new Date()
+  hoy.setHours(0, 0, 0, 0)
+  const hoyISO = hoy.toISOString()
+  const en3dias = new Date(hoy.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString()
+  const finDiaISO = new Date(hoy.getTime() + 24 * 60 * 60 * 1000).toISOString()
+
+  const [plazosRows, tareasRows, citasRows] = await Promise.all([
+    db.select({ fecha: plazos.fecha }).from(plazos)
+      .where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'))),
+    db.select({ fecha: tareas.fechaVencimiento }).from(tareas)
+      .where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'))),
+    db.select({ id: citas.id }).from(citas)
+      .where(and(
+        eq(citas.userId, userId),
+        eq(citas.estado, 'PROGRAMADA'),
+        gte(citas.fecha, hoyISO.split('T')[0]),
+        lte(citas.fecha, finDiaISO.split('T')[0]),
+      )),
+  ])
+
+  const plazosVencidos = plazosRows.filter((p) => p.fecha && p.fecha < hoyISO).length
+  const plazosCriticos = plazosRows.filter((p) => p.fecha && p.fecha >= hoyISO && p.fecha <= en3dias).length
+  const tareasVencidas = tareasRows.filter((t) => t.fecha && t.fecha < hoyISO).length
+  const tareasCriticas = tareasRows.filter((t) => t.fecha && t.fecha >= hoyISO && t.fecha <= en3dias).length
+  const citasHoy = citasRows.length
+
+  const alertas = {
+    agenda: { vencidos: plazosVencidos, criticos: plazosCriticos },
+    tareas: { vencidos: tareasVencidas, criticos: tareasCriticas },
+    citas: { hoy: citasHoy },
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar alertas={alertas} />
       <main className="flex-1 ml-64 min-h-screen print:ml-0">
         {children}
       </main>
+      <Toaster richColors position="top-right" closeButton />
     </div>
   )
 }

@@ -18,18 +18,59 @@ import {
 import { cn } from '@/lib/utils'
 import { UserButton, useUser, SignOutButton } from '@clerk/nextjs'
 
+export interface SidebarAlertas {
+  agenda: { vencidos: number; criticos: number }
+  tareas: { vencidos: number; criticos: number }
+  citas: { hoy: number }
+}
+
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/clientes', label: 'Clientes', icon: Users },
   { href: '/causas', label: 'Causas', icon: Briefcase },
-  { href: '/tareas', label: 'Tareas', icon: ListTodo },
-  { href: '/citas', label: 'Citas', icon: CalendarDays },
-  { href: '/agenda', label: 'Agenda y Plazos', icon: Calendar },
+  { href: '/tareas', label: 'Tareas', icon: ListTodo, alertKey: 'tareas' as const },
+  { href: '/citas', label: 'Citas', icon: CalendarDays, alertKey: 'citas' as const },
+  { href: '/agenda', label: 'Agenda y Plazos', icon: Calendar, alertKey: 'agenda' as const },
   { href: '/documentos', label: 'Documentos', icon: FileText },
   { href: '/honorarios', label: 'Honorarios', icon: DollarSign },
 ]
 
-export default function Sidebar() {
+function AlertBadge({ alertKey, alertas }: { alertKey: 'agenda' | 'tareas' | 'citas'; alertas: SidebarAlertas }) {
+  if (alertKey === 'citas') {
+    const hoy = alertas.citas.hoy
+    if (hoy <= 0) return null
+    return (
+      <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-500 px-1.5 text-[11px] font-bold text-white">
+        {hoy}
+      </span>
+    )
+  }
+
+  const { vencidos, criticos } = alertas[alertKey]
+  if (vencidos > 0) {
+    return (
+      <span
+        className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white"
+        title={`${vencidos} vencido(s)`}
+      >
+        {vencidos}
+      </span>
+    )
+  }
+  if (criticos > 0) {
+    return (
+      <span
+        className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-amber-950"
+        title={`${criticos} por vencer`}
+      >
+        {criticos}
+      </span>
+    )
+  }
+  return null
+}
+
+export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
   const pathname = usePathname()
   const { user } = useUser()
 
@@ -66,7 +107,11 @@ export default function Sidebar() {
             >
               <Icon className="h-4 w-4 flex-shrink-0" />
               <span className="flex-1">{item.label}</span>
-              {isActive && <ChevronRight className="h-3 w-3 opacity-60" />}
+              {item.alertKey ? (
+                <AlertBadge alertKey={item.alertKey} alertas={alertas} />
+              ) : (
+                isActive && <ChevronRight className="h-3 w-3 opacity-60" />
+              )}
             </Link>
           )
         })}

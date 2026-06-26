@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 function NuevoDocumentoForm() {
   const router = useRouter()
@@ -35,9 +36,10 @@ function NuevoDocumentoForm() {
         body: JSON.stringify(form),
       })
       if (!res.ok) throw new Error()
+      toast.success('Documento registrado')
       router.push('/documentos')
     } catch {
-      alert('Error al guardar')
+      toast.error('Error al guardar')
     } finally {
       setLoading(false)
     }

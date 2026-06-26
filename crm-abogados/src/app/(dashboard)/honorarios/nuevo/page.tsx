@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 function NuevoHonorarioForm() {
   const router = useRouter()
@@ -50,9 +51,10 @@ function NuevoHonorarioForm() {
         }),
       })
       if (!res.ok) throw new Error()
+      toast.success('Honorario registrado')
       router.push('/honorarios')
     } catch {
-      alert('Error al guardar')
+      toast.error('Error al guardar')
     } finally {
       setLoading(false)
     }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, ClipboardList } from 'lucide-react'
+import { toast } from 'sonner'
 
 const TIPOS = [
   'Presentación de escrito',
@@ -57,10 +58,11 @@ export default function NuevaActuacionPage() {
         }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Gestión registrada')
       router.push(`/causas/${causaId}`)
       router.refresh()
     } catch {
-      alert('Error al registrar la gestión')
+      toast.error('Error al registrar la gestión')
     } finally {
       setLoading(false)
     }

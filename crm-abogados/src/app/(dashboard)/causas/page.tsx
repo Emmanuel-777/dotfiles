@@ -4,6 +4,7 @@ import { eq, desc, and, gte } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, Briefcase, AlertTriangle } from 'lucide-react'
 import { formatFechaCorta, ESTADOS_CAUSA } from '@/lib/utils'
+import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -114,10 +115,13 @@ export default async function CausasPage() {
           </tbody>
         </table>
         {rows.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            <Briefcase className="h-10 w-10 mx-auto mb-3 opacity-40" />
-            <p className="font-medium text-gray-500">No hay causas registradas</p>
-          </div>
+          <EmptyState
+            icon={Briefcase}
+            title="No hay causas registradas"
+            description="Registra tu primera causa para hacer seguimiento de actuaciones, plazos y documentos."
+            actionLabel="Nueva causa"
+            actionHref="/causas/nueva"
+          />
         )}
       </div>
     </div>

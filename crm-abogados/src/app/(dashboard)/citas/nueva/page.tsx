@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Video, MapPin, Phone } from 'lucide-react'
+import { toast } from 'sonner'
 
 const TIPOS = [
   { value: 'PRESENCIAL', label: 'Presencial', icon: <MapPin className="h-4 w-4" /> },
@@ -86,9 +87,10 @@ function NuevaCitaForm() {
       })
       if (!res.ok) throw new Error(await res.text())
       const { id } = await res.json()
+      toast.success('Cita agendada')
       router.push(`/citas/${id}`)
     } catch {
-      alert('Error al crear la cita')
+      toast.error('Error al crear la cita')
     } finally {
       setLoading(false)
     }

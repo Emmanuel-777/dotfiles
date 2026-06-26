@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function NuevoClientePage() {
   const router = useRouter()
@@ -36,9 +37,10 @@ export default function NuevoClientePage() {
       })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
+      toast.success('Cliente creado correctamente')
       router.push(`/clientes/${data.id}`)
     } catch (err) {
-      alert('Error al guardar el cliente')
+      toast.error('Error al guardar el cliente')
       console.error(err)
     } finally {
       setLoading(false)

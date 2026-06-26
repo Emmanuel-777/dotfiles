@@ -3,6 +3,7 @@ import { clientes, causas } from '@/lib/schema'
 import { eq, asc, count } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, User, Building2, Phone, Mail, Briefcase } from 'lucide-react'
+import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -89,10 +90,13 @@ export default async function ClientesPage() {
           </tbody>
         </table>
         {rows.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            <User className="h-10 w-10 mx-auto mb-3 opacity-40" />
-            <p className="font-medium text-gray-500">No hay clientes registrados</p>
-          </div>
+          <EmptyState
+            icon={User}
+            title="No hay clientes registrados"
+            description="Agrega tu primer cliente para empezar a gestionar sus causas, plazos y honorarios."
+            actionLabel="Nuevo cliente"
+            actionHref="/clientes/nuevo"
+          />
         )}
       </div>
     </div>

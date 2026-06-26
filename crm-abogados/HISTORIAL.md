@@ -304,3 +304,30 @@ Tablas estándar con FK a causas. Ver `src/lib/schema.ts` para detalle completo.
 
 - **Email deep link:**  
   `mailto:email@ejemplo.com?subject=ASUNTO&body=CUERPO_CODIFICADO`
+
+---
+
+## Fase 1 — UX profesional (quick wins)
+
+Mejoras incrementales de experiencia de usuario sin tocar la arquitectura:
+
+### 1. Dashboard rediseñado
+- **Banner de alertas de vencimientos**: aviso rojo en la parte superior cuando hay plazos o tareas vencidos, con accesos directos a `/agenda` y `/tareas`. Conteos calculados con queries `lt(fecha, hoy)`.
+- **Barra de accesos rápidos**: botones para Nuevo cliente, Nueva causa, Nueva cita, Nuevo plazo, Nuevo honorario y Nuevo documento.
+
+### 2. Semáforo de alertas en el sidebar
+- `(dashboard)/layout.tsx` calcula contadores por sección y los pasa al `Sidebar` como prop `alertas`.
+- Badges en Tareas / Citas / Agenda:
+  - 🔴 rojo = vencidos
+  - 🟡 ámbar = por vencer (≤ 3 días)
+  - 🔵 azul = citas de hoy
+
+### 3. Estados vacíos profesionales
+- Nuevo componente reutilizable `src/components/EmptyState.tsx` (icono + título + descripción + CTA).
+- Aplicado en listados de Clientes, Causas y en el widget de causas del dashboard.
+
+### 4. Toasts de confirmación (sonner)
+- `<Toaster richColors position="top-right" closeButton />` montado en el layout del dashboard.
+- Reemplazados todos los `alert()` por `toast.error(...)` y agregado `toast.success(...)` en cada flujo de creación/edición/eliminación (clientes, causas, citas, tareas, actuaciones, plazos, honorarios, documentos).
+
+**Dependencia agregada:** `sonner ^1.5.0` (instalada con `--legacy-peer-deps`).
