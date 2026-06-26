@@ -53,6 +53,9 @@ despliega automáticamente en **Vercel**.
 - **Conversión prospecto → cliente**: botón en tarjetas "Ganado" → `/embudo/[id]/convertir`
   (formulario precargado, pide RUT) → `/api/prospectos/[id]/convertir` crea el cliente y
   vincula `prospectos.clienteId`. Si ya está convertido, muestra "Ver cliente".
+- **Recordatorios de seguimiento**: campo `proximoContacto` por prospecto. Badge semáforo
+  en el sidebar (🔴 vencido / 🟡 ≤3 días), indicador con campana en cada tarjeta y banner
+  de "seguimientos pendientes" en la página del embudo.
 
 ---
 
@@ -79,7 +82,7 @@ Luego **Redeploy**. Probar en cualquier causa → panel "Asistente IA" → "Gene
 ## 🔜 Próximos pasos
 
 1. **Dark mode** — toggle en el sidebar, persistido (localStorage / clase en `<html>`). Quick win visual.
-2. **Recordatorios / seguimiento** — fecha de próximo contacto por prospecto con alerta en el sidebar.
+2. **Reportes / métricas comerciales** — embudo por mes, valor ganado vs perdido, tiempo promedio de cierre.
 
 ---
 

@@ -2,7 +2,7 @@ import { db, initDB } from '@/lib/db'
 import { prospectos } from '@/lib/schema'
 import { eq, desc } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, TrendingUp } from 'lucide-react'
+import { Plus, TrendingUp, Bell } from 'lucide-react'
 import { requireUserId } from '@/lib/auth'
 import KanbanBoard from '@/components/KanbanBoard'
 import EmptyState from '@/components/EmptyState'
@@ -25,6 +25,12 @@ export default async function EmbudoPage() {
   const valorPipeline = activos.reduce((sum, r) => sum + (r.valorEstimado ?? 0), 0)
   const tasaConversion = rows.length > 0 ? Math.round((ganados.length / rows.length) * 100) : 0
 
+  // Seguimientos pendientes: prospectos activos con recordatorio para hoy o vencido
+  const hoyFecha = new Date().toISOString().split('T')[0]
+  const seguimientosPendientes = activos.filter(
+    r => r.proximoContacto && r.proximoContacto <= hoyFecha
+  ).length
+
   const fmtValor = (v: number) =>
     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(v)
 
@@ -40,6 +46,16 @@ export default async function EmbudoPage() {
           Nuevo prospecto
         </Link>
       </div>
+
+      {seguimientosPendientes > 0 && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <Bell className="h-5 w-5 flex-shrink-0 text-amber-600" />
+          <p className="text-sm text-amber-800">
+            Tienes <span className="font-semibold">{seguimientosPendientes}</span>{' '}
+            {seguimientosPendientes === 1 ? 'prospecto que requiere' : 'prospectos que requieren'} seguimiento hoy o antes.
+          </p>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4 mb-6">

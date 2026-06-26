@@ -35,6 +35,7 @@ export default function NuevoProspectoPage() {
     valorEstimado: '',
     notas: '',
     fechaContacto: new Date().toISOString().split('T')[0],
+    proximoContacto: '',
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -156,6 +157,17 @@ export default function NuevoProspectoPage() {
               value={form.fechaContacto}
               onChange={handleChange}
               required
+              className="input"
+            />
+          </div>
+
+          <div>
+            <label className="label">Próximo contacto (recordatorio)</label>
+            <input
+              name="proximoContacto"
+              type="date"
+              value={form.proximoContacto}
+              onChange={handleChange}
               className="input"
             />
           </div>

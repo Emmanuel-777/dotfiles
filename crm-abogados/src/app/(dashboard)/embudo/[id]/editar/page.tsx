@@ -36,6 +36,7 @@ export default function EditarProspectoPage() {
     valorEstimado: '',
     notas: '',
     fechaContacto: '',
+    proximoContacto: '',
   })
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function EditarProspectoPage() {
           valorEstimado: data.valorEstimado != null ? String(data.valorEstimado) : '',
           notas: data.notas ?? '',
           fechaContacto: data.fechaContacto ?? '',
+          proximoContacto: data.proximoContacto ?? '',
         })
       })
       .catch(() => toast.error('Error al cargar el prospecto'))
@@ -157,6 +159,11 @@ export default function EditarProspectoPage() {
           <div>
             <label className="label">Fecha de primer contacto *</label>
             <input name="fechaContacto" type="date" value={form.fechaContacto} onChange={handleChange} required className="input" />
+          </div>
+
+          <div>
+            <label className="label">Próximo contacto (recordatorio)</label>
+            <input name="proximoContacto" type="date" value={form.proximoContacto} onChange={handleChange} className="input" />
           </div>
 
           <div className="col-span-2">

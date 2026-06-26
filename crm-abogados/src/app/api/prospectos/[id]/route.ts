@@ -20,7 +20,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   const body = await req.json()
   delete body.id
   delete body.userId
+  delete body.clienteId
   if (body.valorEstimado !== undefined) body.valorEstimado = body.valorEstimado ? Number(body.valorEstimado) : null
+  if (body.proximoContacto !== undefined) body.proximoContacto = body.proximoContacto || null
   body.updatedAt = new Date().toISOString()
   await db.update(prospectos).set(body).where(and(eq(prospectos.id, params.id), eq(prospectos.userId, userId)))
   const [updated] = await db.select().from(prospectos).where(and(eq(prospectos.id, params.id), eq(prospectos.userId, userId)))

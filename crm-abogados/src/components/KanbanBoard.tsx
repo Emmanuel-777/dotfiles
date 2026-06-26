@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck, Bell } from 'lucide-react'
 import { toast } from 'sonner'
 
 type Etapa = 'CONTACTO' | 'REUNION' | 'PROPUESTA' | 'GANADO' | 'PERDIDO'
@@ -18,6 +18,7 @@ interface Prospecto {
   etapa: string
   valorEstimado: number | null
   fechaContacto: string
+  proximoContacto: string | null
   notas: string | null
   clienteId: string | null
 }
@@ -35,6 +36,17 @@ const ORDEN: Etapa[] = ['CONTACTO', 'REUNION', 'PROPUESTA', 'GANADO']
 function formatValor(v: number | null | undefined) {
   if (!v) return null
   return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(v)
+}
+
+function recordatorioInfo(fecha: string | null) {
+  if (!fecha) return null
+  const hoy = new Date().toISOString().split('T')[0]
+  const diff = Math.round((new Date(fecha + 'T00:00:00').getTime() - new Date(hoy + 'T00:00:00').getTime()) / 86400000)
+  const label = new Date(fecha + 'T00:00:00').toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })
+  if (diff < 0) return { text: `Vencido · ${label}`, className: 'bg-red-50 text-red-600 border-red-100' }
+  if (diff === 0) return { text: 'Contactar hoy', className: 'bg-amber-50 text-amber-700 border-amber-200' }
+  if (diff <= 3) return { text: `En ${diff}d · ${label}`, className: 'bg-amber-50 text-amber-700 border-amber-200' }
+  return { text: label, className: 'bg-gray-50 text-gray-500 border-gray-200' }
 }
 
 export default function KanbanBoard({ prospectos: initial }: { prospectos: Prospecto[] }) {
@@ -132,6 +144,17 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
                       )}
                     </div>
                   )}
+
+                  {key !== 'GANADO' && key !== 'PERDIDO' && (() => {
+                    const rec = recordatorioInfo(p.proximoContacto)
+                    if (!rec) return null
+                    return (
+                      <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${rec.className}`}>
+                        <Bell className="h-3 w-3" />
+                        {rec.text}
+                      </span>
+                    )
+                  })()}
 
                   {key === 'GANADO' && (
                     p.clienteId ? (

@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
-  const { nombre, empresa, email, telefono, origen, etapa, valorEstimado, notas, fechaContacto } = body
+  const { nombre, empresa, email, telefono, origen, etapa, valorEstimado, notas, fechaContacto, proximoContacto } = body
 
   if (!nombre) return NextResponse.json({ error: 'El nombre es requerido' }, { status: 400 })
   if (!fechaContacto) return NextResponse.json({ error: 'La fecha de contacto es requerida' }, { status: 400 })
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
     etapa: etapa || 'CONTACTO',
     valorEstimado: valorEstimado ? Number(valorEstimado) : null,
     notas, fechaContacto,
+    proximoContacto: proximoContacto || null,
     createdAt: now, updatedAt: now,
   })
   const [row] = await db.select().from(prospectos).where(and(eq(prospectos.id, id), eq(prospectos.userId, userId)))

@@ -23,11 +23,12 @@ export interface SidebarAlertas {
   agenda: { vencidos: number; criticos: number }
   tareas: { vencidos: number; criticos: number }
   citas: { hoy: number }
+  embudo: { vencidos: number; criticos: number }
 }
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/embudo', label: 'Embudo', icon: TrendingUp },
+  { href: '/embudo', label: 'Embudo', icon: TrendingUp, alertKey: 'embudo' as const },
   { href: '/clientes', label: 'Clientes', icon: Users },
   { href: '/causas', label: 'Causas', icon: Briefcase },
   { href: '/tareas', label: 'Tareas', icon: ListTodo, alertKey: 'tareas' as const },
@@ -37,7 +38,7 @@ const navItems = [
   { href: '/honorarios', label: 'Honorarios', icon: DollarSign },
 ]
 
-function AlertBadge({ alertKey, alertas }: { alertKey: 'agenda' | 'tareas' | 'citas'; alertas: SidebarAlertas }) {
+function AlertBadge({ alertKey, alertas }: { alertKey: 'agenda' | 'tareas' | 'citas' | 'embudo'; alertas: SidebarAlertas }) {
   if (alertKey === 'citas') {
     const hoy = alertas.citas.hoy
     if (hoy <= 0) return null
