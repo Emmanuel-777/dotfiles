@@ -13,9 +13,10 @@ import {
   DollarSign,
   Scale,
   ChevronRight,
+  LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { UserButton, useUser } from '@clerk/nextjs'
+import { UserButton, useUser, SignOutButton } from '@clerk/nextjs'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -72,7 +73,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer — usuario */}
-      <div className="px-4 py-4 border-t border-slate-700">
+      <div className="px-4 py-4 border-t border-slate-700 space-y-3">
         <div className="flex items-center gap-3">
           <UserButton
             appearance={{
@@ -90,6 +91,12 @@ export default function Sidebar() {
             </p>
           </div>
         </div>
+        <SignOutButton redirectUrl="/sign-in">
+          <button className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+            <LogOut className="h-4 w-4 flex-shrink-0" />
+            Cerrar sesión
+          </button>
+        </SignOutButton>
       </div>
     </aside>
   )
