@@ -1,4 +1,5 @@
 import Sidebar from '@/components/Sidebar'
+import GlobalSearch from '@/components/GlobalSearch'
 import { db, initDB } from '@/lib/db'
 import { plazos, tareas, citas } from '@/lib/schema'
 import { eq, and, ne, gte, lte } from 'drizzle-orm'
@@ -56,6 +57,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar alertas={alertas} />
       <main className="flex-1 ml-64 min-h-screen print:ml-0">
+        <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-gray-200 bg-white/80 px-8 py-3 backdrop-blur print:hidden">
+          <GlobalSearch />
+        </header>
         {children}
       </main>
       <Toaster richColors position="top-right" closeButton />

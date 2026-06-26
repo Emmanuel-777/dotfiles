@@ -2,9 +2,10 @@ import { db, initDB } from '@/lib/db'
 import { honorarios, clientes, causas } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, DollarSign } from 'lucide-react'
+import { Plus, DollarSign, TrendingUp } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_HONORARIO } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
+import MonthlyBarChart, { type MonthBucket } from '@/components/MonthlyBarChart'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,6 +26,38 @@ export default async function HonorariosPage() {
     total: rows.reduce((s, r) => s + r.honorario.monto, 0),
   }
 
+  // Base para tasa de cobro: todo lo emitido (excluye anulados)
+  const emitidoBase = rows.filter((r) => r.honorario.estado !== 'ANULADO').reduce((s, r) => s + r.honorario.monto, 0)
+  const tasaCobro = emitidoBase > 0 ? Math.round((totales.pagado / emitidoBase) * 100) : 0
+
+  // Buckets de los últimos 6 meses
+  const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+  const ahora = new Date()
+  const buckets: MonthBucket[] = []
+  const indexPorClave = new Map<string, number>()
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1)
+    const clave = `${d.getFullYear()}-${d.getMonth()}`
+    indexPorClave.set(clave, buckets.length)
+    buckets.push({ label: MESES[d.getMonth()], emitido: 0, cobrado: 0 })
+  }
+  for (const { honorario: h } of rows) {
+    if (h.estado === 'ANULADO') continue
+    const fe = h.fechaEmision ? new Date(h.fechaEmision) : null
+    if (fe && !isNaN(fe.getTime())) {
+      const idx = indexPorClave.get(`${fe.getFullYear()}-${fe.getMonth()}`)
+      if (idx !== undefined) buckets[idx].emitido += h.monto
+    }
+    if (h.estado === 'PAGADO') {
+      const fp = new Date(h.fechaPago ?? h.fechaEmision)
+      if (!isNaN(fp.getTime())) {
+        const idx = indexPorClave.get(`${fp.getFullYear()}-${fp.getMonth()}`)
+        if (idx !== undefined) buckets[idx].cobrado += h.monto
+      }
+    }
+  }
+  const hayDatosGrafico = buckets.some((b) => b.emitido > 0 || b.cobrado > 0)
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
@@ -38,7 +71,7 @@ export default async function HonorariosPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="card p-5 border-l-4 border-emerald-400">
           <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Total cobrado</p>
           <p className="text-2xl font-bold text-emerald-700 mt-1">{formatMonto(totales.pagado)}</p>
@@ -51,7 +84,23 @@ export default async function HonorariosPage() {
           <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Total emitido</p>
           <p className="text-2xl font-bold text-blue-700 mt-1">{formatMonto(totales.total)}</p>
         </div>
+        <div className="card p-5 border-l-4 border-violet-400">
+          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium flex items-center gap-1">
+            <TrendingUp className="h-3.5 w-3.5" /> Tasa de cobro
+          </p>
+          <p className="text-2xl font-bold text-violet-700 mt-1">{tasaCobro}%</p>
+          <div className="mt-2 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+            <div className="h-full rounded-full bg-violet-500" style={{ width: `${tasaCobro}%` }} />
+          </div>
+        </div>
       </div>
+
+      {hayDatosGrafico && (
+        <div className="card p-6 mb-6">
+          <h2 className="text-sm font-semibold text-gray-700 mb-4">Honorarios por mes — últimos 6 meses</h2>
+          <MonthlyBarChart data={buckets} />
+        </div>
+      )}
 
       <div className="card overflow-hidden">
         <table className="w-full">

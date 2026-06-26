@@ -331,3 +331,23 @@ Mejoras incrementales de experiencia de usuario sin tocar la arquitectura:
 - Reemplazados todos los `alert()` por `toast.error(...)` y agregado `toast.success(...)` en cada flujo de creación/edición/eliminación (clientes, causas, citas, tareas, actuaciones, plazos, honorarios, documentos).
 
 **Dependencia agregada:** `sonner ^1.5.0` (instalada con `--legacy-peer-deps`).
+
+---
+
+## Fase 2 — UX profesional (búsqueda, skeletons y finanzas)
+
+### 5. Búsqueda global (Cmd+K)
+- Endpoint `src/app/api/search/route.ts`: busca en clientes (nombre/RUT), causas (ROL/materia/contraparte) y citas (título), filtrado por `userId`, máx. 5 por grupo.
+- Componente `src/components/GlobalSearch.tsx` (paleta de comandos):
+  - Atajo **⌘K / Ctrl+K** para abrir, **Esc** para cerrar.
+  - Búsqueda con debounce (220 ms) y `AbortController`.
+  - Navegación con flechas ↑/↓ y Enter, resultados agrupados con iconos.
+- Montado en una barra superior sticky en `(dashboard)/layout.tsx`.
+
+### 6. Skeleton loading
+- Primitivas reutilizables en `src/components/Skeleton.tsx`: `Skeleton`, `StatsSkeleton`, `TableSkeleton`, `HeaderSkeleton`, `CardsSkeleton`.
+- Archivos `loading.tsx` (convención App Router) para: dashboard, clientes, causas, tareas, citas, agenda, documentos y honorarios.
+
+### 7. Dashboard financiero mejorado
+- Nueva KPI **Tasa de cobro** (pagado / emitido, excluye anulados) con barra de progreso.
+- Gráfico de barras **Honorarios por mes** (emitido vs cobrado, últimos 6 meses) en `src/components/MonthlyBarChart.tsx` — CSS puro, sin librerías de charting.
