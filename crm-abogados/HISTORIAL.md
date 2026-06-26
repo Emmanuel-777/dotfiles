@@ -351,3 +351,34 @@ Mejoras incrementales de experiencia de usuario sin tocar la arquitectura:
 ### 7. Dashboard financiero mejorado
 - Nueva KPI **Tasa de cobro** (pagado / emitido, excluye anulados) con barra de progreso.
 - Gráfico de barras **Honorarios por mes** (emitido vs cobrado, últimos 6 meses) en `src/components/MonthlyBarChart.tsx` — CSS puro, sin librerías de charting.
+
+---
+
+## Fase 3 (parcial) — Módulo de IA
+
+Asistente jurídico con IA, integrado en la página de detalle de cada causa.
+
+### Arquitectura (proveedor intercambiable)
+- `src/lib/ai/provider.ts` — interfaz `AIProvider` (`isConfigured()`, `complete()`), tipos y `AIError`.
+- `src/lib/ai/anthropic.ts` — implementación sobre la Messages API de Anthropic (fetch directo).
+- `src/lib/ai/index.ts` — factory `getAIProvider()`; cambiar de motor = devolver otra implementación aquí.
+- `src/lib/ai/prompts.ts` — `buildCausaContext()`, prompts de sistema/usuario y `TIPOS_ESCRITO`.
+- `src/lib/ai/causa-context.ts` — carga la causa (validando `userId`) y arma el contexto.
+
+### Funciones
+1. **Resumen de causa**: resumen ejecutivo (estado, últimas actuaciones, próximos hitos, acciones recomendadas).
+2. **Borrador de escrito**: genera borradores según tipo (téngase presente, apelación, contestación, etc.) + instrucciones libres. Usa marcadores `[CITAR NORMA]` / `[COMPLETAR]` en vez de inventar datos.
+
+### Rutas API
+- `POST /api/ai/resumen`  → `{ causaId }` → `{ texto }`
+- `POST /api/ai/borrador` → `{ causaId, tipo, instrucciones }` → `{ texto }`
+- Ambas validan sesión (`getUserId`) y pertenencia de la causa; mapean `AIError` a HTTP (401/404/429/502/503).
+
+### UI
+- `src/components/AIPanel.tsx`: panel con pestañas Resumen / Borrador, estado de carga, botón copiar y aviso de revisión humana. Integrado en la columna lateral de `causas/[id]`.
+
+### Configuración necesaria (Vercel → Environment Variables)
+- `ANTHROPIC_API_KEY` — API key de Anthropic (obligatoria para activar la IA).
+- `AI_MODEL` — opcional, default `claude-sonnet-4-6`.
+
+Sin la key, el módulo responde con un aviso claro ("La IA no está configurada…") y el resto de la app funciona normalmente.
