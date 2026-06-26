@@ -1,7 +1,7 @@
 # Estado de la sesión — LexCRM
 
 > Documento para retomar el trabajo en un próximo chat.
-> Última actualización: 2026-06-26
+> Última actualización: 2026-06-26 (tarde)
 
 ---
 
@@ -44,6 +44,13 @@ despliega automáticamente en **Vercel**.
 - Resumen de causa + borrador de escritos (`/api/ai/resumen`, `/api/ai/borrador`).
 - `AIPanel.tsx` integrado en el detalle de causa.
 
+### Fase 3 — Seguridad de acceso ✅
+- `clerkMiddleware` (API v5) reemplaza el deprecated `authMiddleware`.
+- Lista blanca de emails: variable `ALLOWED_EMAILS` en Vercel (separados por coma).
+- Email leído desde JWT session claims (requiere paso en Clerk Dashboard — ver "Pendiente AHORA").
+- Rutas API retornan `403 JSON` si el email no está permitido; páginas redirigen a `/no-autorizado`.
+- Página `/no-autorizado` con botón "Cerrar sesión" (ruta pública, fuera del layout del dashboard).
+
 ### Fase 3 — Embudo comercial ✅
 - Tabla `prospectos` (`schema.ts` + `initDB`) con etapas, valor estimado y origen.
 - CRUD completo: `/api/prospectos` (GET/POST) y `/api/prospectos/[id]` (GET/PATCH/DELETE).
@@ -61,23 +68,38 @@ despliega automáticamente en **Vercel**.
 
 ---
 
-## ⏳ Pendiente AHORA (acción del usuario)
+## ⏳ Pendiente AHORA (acciones del usuario)
 
-**Activar la IA** agregando la API key en Vercel → Settings → Environment Variables:
+### A) Activar restricción de acceso (3 pasos obligatorios)
+
+**1. Clerk Dashboard → Configure → Sessions → "Customize session token"**
+Agregar al JSON del token:
+```json
+{ "email": "{{user.primary_email_address}}" }
+```
+
+**2. Vercel → Settings → Environment Variables**
 
 | Key | Valor |
 |---|---|
-| `ANTHROPIC_API_KEY` | `sk-ant-...` (de console.anthropic.com, requiere saldo) |
+| `ALLOWED_EMAILS` | `emafernacoach@gmail.com` (coma para varios) |
+
+**3. Vercel → Deployments → Redeploy**
+
+**Opcional pero recomendado:** Clerk Dashboard → User & Authentication → Restrictions → activar **Allowlist** → agregar tu email. Esto impide que cualquiera se registre.
+
+---
+
+### B) Activar la IA
+
+| Key | Valor |
+|---|---|
+| `ANTHROPIC_API_KEY` | `sk-ant-...` (de console.anthropic.com) |
 | `AI_MODEL` *(opcional)* | `claude-sonnet-4-6` |
 
-Luego **Redeploy**. Probar en cualquier causa → panel "Asistente IA" → "Generar resumen".
+Luego Redeploy. Probar en cualquier causa → panel "Asistente IA".
 
 > Sin la key, el módulo muestra "La IA no está configurada" y el resto de la app funciona normal.
-
-### Mensajes de error del panel (diagnóstico rápido)
-- *"La IA no está configurada"* → falta la variable o el redeploy.
-- *"La API key de IA es inválida"* → key mal copiada.
-- *"Límite de uso alcanzado"* → sin saldo en Anthropic Billing.
 
 ---
 
@@ -94,6 +116,8 @@ Luego **Redeploy**. Probar en cualquier causa → panel "Asistente IA" → "Gene
 |---|---|
 | Esquema BD | `src/lib/schema.ts` |
 | Auth helpers | `src/lib/auth.ts` (`requireUserId`, `getUserId`) |
+| Middleware de acceso | `src/middleware.ts` (allowlist por email) |
+| Página no autorizado | `src/app/no-autorizado/page.tsx` |
 | Módulo IA | `src/lib/ai/` (provider, anthropic, prompts, index, causa-context) |
 | Búsqueda | `src/app/api/search/route.ts` · `src/components/GlobalSearch.tsx` |
 | Dashboard | `src/app/(dashboard)/dashboard/page.tsx` |
