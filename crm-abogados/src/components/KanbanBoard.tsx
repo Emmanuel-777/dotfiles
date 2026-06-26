@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck } from 'lucide-react'
 import { toast } from 'sonner'
 
 type Etapa = 'CONTACTO' | 'REUNION' | 'PROPUESTA' | 'GANADO' | 'PERDIDO'
@@ -19,6 +19,7 @@ interface Prospecto {
   valorEstimado: number | null
   fechaContacto: string
   notas: string | null
+  clienteId: string | null
 }
 
 const ETAPAS: { key: Etapa; label: string; headerClass: string; dotClass: string; textClass: string }[] = [
@@ -130,6 +131,26 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
                         </p>
                       )}
                     </div>
+                  )}
+
+                  {key === 'GANADO' && (
+                    p.clienteId ? (
+                      <Link
+                        href={`/clientes/${p.clienteId}`}
+                        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-2 py-1.5 text-[11px] font-semibold text-green-700 hover:bg-green-100 transition-colors"
+                      >
+                        <UserCheck className="h-3.5 w-3.5" />
+                        Ver cliente
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/embudo/${p.id}/convertir`}
+                        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-1.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+                      >
+                        <UserPlus className="h-3.5 w-3.5" />
+                        Convertir a cliente
+                      </Link>
+                    )
                   )}
 
                   <div className="flex items-center gap-0.5 mt-2 pt-2 border-t border-gray-100">

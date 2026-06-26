@@ -50,6 +50,9 @@ despliega automáticamente en **Vercel**.
 - Página `/embudo` con KPIs (pipeline activo, valor estimado, ganados, tasa de conversión).
 - Formularios `/embudo/nuevo` y `/embudo/[id]/editar`. Skeleton en `loading.tsx`.
 - Item "Embudo" agregado al sidebar.
+- **Conversión prospecto → cliente**: botón en tarjetas "Ganado" → `/embudo/[id]/convertir`
+  (formulario precargado, pide RUT) → `/api/prospectos/[id]/convertir` crea el cliente y
+  vincula `prospectos.clienteId`. Si ya está convertido, muestra "Ver cliente".
 
 ---
 
@@ -76,8 +79,7 @@ Luego **Redeploy**. Probar en cualquier causa → panel "Asistente IA" → "Gene
 ## 🔜 Próximos pasos
 
 1. **Dark mode** — toggle en el sidebar, persistido (localStorage / clase en `<html>`). Quick win visual.
-2. **Convertir prospecto → cliente** — botón en el embudo que crea el cliente desde un prospecto ganado.
-3. **Recordatorios / seguimiento** — fecha de próximo contacto por prospecto con alerta en el sidebar.
+2. **Recordatorios / seguimiento** — fecha de próximo contacto por prospecto con alerta en el sidebar.
 
 ---
 

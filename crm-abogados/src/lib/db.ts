@@ -121,6 +121,7 @@ export async function initDB() {
       valor_estimado REAL,
       notas TEXT,
       fecha_contacto TEXT NOT NULL,
+      cliente_id TEXT REFERENCES clientes(id) ON DELETE SET NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
@@ -161,6 +162,8 @@ export async function initDB() {
     `ALTER TABLE honorarios ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
     `ALTER TABLE tareas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
     `ALTER TABLE citas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    // Conversión de prospecto a cliente
+    `ALTER TABLE prospectos ADD COLUMN cliente_id TEXT REFERENCES clientes(id)`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

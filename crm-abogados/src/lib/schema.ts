@@ -141,6 +141,7 @@ export const prospectos = sqliteTable('prospectos', {
   valorEstimado: real('valor_estimado'),
   notas: text('notas'),
   fechaContacto: text('fecha_contacto').notNull(),
+  clienteId: text('cliente_id').references(() => clientes.id),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
