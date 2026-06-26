@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@clerk/localizations": "^2.8.1",
-    "@clerk/nextjs": "^6.39.5",
+    "@clerk/nextjs": "^5.7.6",
     "@libsql/client": "^0.17.4",
     "@prisma/client": "^5.10.2",
     "clsx": "^2.1.0",
