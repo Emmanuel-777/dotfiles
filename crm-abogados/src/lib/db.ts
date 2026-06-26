@@ -109,6 +109,21 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS prospectos (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL DEFAULT '',
+      nombre TEXT NOT NULL,
+      empresa TEXT,
+      email TEXT,
+      telefono TEXT,
+      origen TEXT DEFAULT 'REFERIDO',
+      etapa TEXT NOT NULL DEFAULT 'CONTACTO',
+      valor_estimado REAL,
+      notas TEXT,
+      fecha_contacto TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS citas (
       id TEXT PRIMARY KEY,
       titulo TEXT NOT NULL,

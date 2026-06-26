@@ -129,6 +129,22 @@ export const citas = sqliteTable('citas', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const prospectos = sqliteTable('prospectos', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
+  nombre: text('nombre').notNull(),
+  empresa: text('empresa'),
+  email: text('email'),
+  telefono: text('telefono'),
+  origen: text('origen').default('REFERIDO'),
+  etapa: text('etapa').notNull().default('CONTACTO'),
+  valorEstimado: real('valor_estimado'),
+  notas: text('notas'),
+  fechaContacto: text('fecha_contacto').notNull(),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect
@@ -141,3 +157,5 @@ export type Tarea = typeof tareas.$inferSelect
 export type NuevaTarea = typeof tareas.$inferInsert
 export type Cita = typeof citas.$inferSelect
 export type NuevaCita = typeof citas.$inferInsert
+export type Prospecto = typeof prospectos.$inferSelect
+export type NuevoProspecto = typeof prospectos.$inferInsert

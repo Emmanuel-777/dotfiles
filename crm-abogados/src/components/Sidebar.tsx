@@ -11,6 +11,7 @@ import {
   CalendarDays,
   FileText,
   DollarSign,
+  TrendingUp,
   Scale,
   ChevronRight,
   LogOut,
@@ -26,6 +27,7 @@ export interface SidebarAlertas {
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/embudo', label: 'Embudo', icon: TrendingUp },
   { href: '/clientes', label: 'Clientes', icon: Users },
   { href: '/causas', label: 'Causas', icon: Briefcase },
   { href: '/tareas', label: 'Tareas', icon: ListTodo, alertKey: 'tareas' as const },

@@ -42,6 +42,15 @@ despliega automáticamente en **Vercel**.
 - Resumen de causa + borrador de escritos (`/api/ai/resumen`, `/api/ai/borrador`).
 - `AIPanel.tsx` integrado en el detalle de causa.
 
+### Fase 3 — Embudo comercial ✅
+- Tabla `prospectos` (`schema.ts` + `initDB`) con etapas, valor estimado y origen.
+- CRUD completo: `/api/prospectos` (GET/POST) y `/api/prospectos/[id]` (GET/PATCH/DELETE).
+- Tablero kanban (`KanbanBoard.tsx`): 5 etapas (Contacto → Reunión → Propuesta → Ganado / Perdido),
+  mover entre etapas con flechas, marcar perdido / reactivar, editar y eliminar.
+- Página `/embudo` con KPIs (pipeline activo, valor estimado, ganados, tasa de conversión).
+- Formularios `/embudo/nuevo` y `/embudo/[id]/editar`. Skeleton en `loading.tsx`.
+- Item "Embudo" agregado al sidebar.
+
 ---
 
 ## ⏳ Pendiente AHORA (acción del usuario)
@@ -64,14 +73,11 @@ Luego **Redeploy**. Probar en cualquier causa → panel "Asistente IA" → "Gene
 
 ---
 
-## 🔜 Próximos pasos (Fase 3 restante)
+## 🔜 Próximos pasos
 
-1. **Módulo de embudo comercial** — pipeline de prospectos → clientes (estados: contacto,
-   reunión, propuesta, ganado/perdido). Tablero tipo kanban o lista por etapa.
-2. **Dark mode** — toggle en el sidebar, persistido (localStorage / clase en `<html>`).
-
-Recomendación: el **embudo comercial** aporta más valor comercial; el **dark mode** es un
-quick win visual.
+1. **Dark mode** — toggle en el sidebar, persistido (localStorage / clase en `<html>`). Quick win visual.
+2. **Convertir prospecto → cliente** — botón en el embudo que crea el cliente desde un prospecto ganado.
+3. **Recordatorios / seguimiento** — fecha de próximo contacto por prospecto con alerta en el sidebar.
 
 ---
 
