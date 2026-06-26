@@ -16,6 +16,8 @@ despliega automáticamente en **Vercel**.
 - Clerk v5.7.6 (auth + multi-tenant por `userId`)
 - Tailwind CSS · sonner (toasts) · lucide-react (iconos)
 - IA: Anthropic Messages API (proveedor intercambiable)
+- Marca: logo SVG (`LogoMark.tsx` + `public/logo.svg`), paleta `blue` de Tailwind
+  redefinida con los azules del logo (royal #2563eb → navy #14254c).
 
 ---
 

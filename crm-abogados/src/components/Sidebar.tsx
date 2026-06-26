@@ -12,11 +12,11 @@ import {
   FileText,
   DollarSign,
   TrendingUp,
-  Scale,
   ChevronRight,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import LogoMark from '@/components/LogoMark'
 import { UserButton, useUser, SignOutButton } from '@clerk/nextjs'
 
 export interface SidebarAlertas {
@@ -78,15 +78,18 @@ export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
   const { user } = useUser()
 
   return (
-    <aside className="w-64 bg-slate-900 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden">
+    <aside className="w-64 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-slate-700">
+      <div className="px-6 py-5 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="bg-blue-600 rounded-lg p-1.5">
-            <Scale className="h-5 w-5 text-white" />
+          <div className="rounded-lg bg-white/95 p-1.5 shadow-sm">
+            <LogoMark className="h-7 w-7" />
           </div>
           <div>
-            <span className="text-white font-bold text-lg tracking-tight">LexCRM</span>
+            <span className="font-bold text-lg tracking-tight">
+              <span className="text-white">Lex</span>
+              <span className="text-blue-400">CRM</span>
+            </span>
             <p className="text-slate-400 text-xs">Gestión Legal</p>
           </div>
         </div>
@@ -104,8 +107,8 @@ export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group',
                 isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:bg-white/10 hover:text-white'
               )}
             >
               <Icon className="h-4 w-4 flex-shrink-0" />
@@ -121,7 +124,7 @@ export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
       </nav>
 
       {/* Footer — usuario */}
-      <div className="px-4 py-4 border-t border-slate-700 space-y-3">
+      <div className="px-4 py-4 border-t border-white/10 space-y-3">
         <div className="flex items-center gap-3">
           <UserButton
             appearance={{
@@ -140,7 +143,7 @@ export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
           </div>
         </div>
         <SignOutButton redirectUrl="/sign-in">
-          <button className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+          <button className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all">
             <LogOut className="h-4 w-4 flex-shrink-0" />
             Cerrar sesión
           </button>
