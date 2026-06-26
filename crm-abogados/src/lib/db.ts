@@ -137,6 +137,15 @@ export async function initDB() {
     `ALTER TABLE actuaciones ADD COLUMN compromiso TEXT`,
     `ALTER TABLE actuaciones ADD COLUMN fecha_recordatorio TEXT`,
     `ALTER TABLE actuaciones ADD COLUMN recordatorio_enviado INTEGER NOT NULL DEFAULT 0`,
+    // Aislamiento de datos por usuario (multi-tenancy)
+    `ALTER TABLE clientes ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE causas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE actuaciones ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE plazos ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE documentos ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE honorarios ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE tareas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE citas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

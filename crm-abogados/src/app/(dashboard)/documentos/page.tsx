@@ -4,6 +4,7 @@ import { eq, desc } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, FileText, File, ScrollText, FileSignature, FileBadge } from 'lucide-react'
 import { formatFechaCorta } from '@/lib/utils'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,11 +19,13 @@ const tipoColors: Record<string, string> = {
 
 export default async function DocumentosPage() {
   await initDB()
+  const userId = await requireUserId()
   const rows = await db
     .select({ documento: documentos, causa: causas, cliente: clientes })
     .from(documentos)
     .leftJoin(causas, eq(documentos.causaId, causas.id))
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+    .where(eq(documentos.userId, userId))
     .orderBy(desc(documentos.createdAt))
 
   return (

@@ -3,16 +3,19 @@ import { clientes, causas } from '@/lib/schema'
 import { eq, asc, count } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, User, Building2, Phone, Mail, Briefcase } from 'lucide-react'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ClientesPage() {
   await initDB()
-  const rows = await db.select().from(clientes).orderBy(asc(clientes.nombre))
+  const userId = await requireUserId()
+  const rows = await db.select().from(clientes).where(eq(clientes.userId, userId)).orderBy(asc(clientes.nombre))
 
   const causasCounts = await db
     .select({ clienteId: causas.clienteId, total: count() })
     .from(causas)
+    .where(eq(causas.userId, userId))
     .groupBy(causas.clienteId)
 
   const countMap = Object.fromEntries(causasCounts.map((c) => [c.clienteId, c.total]))

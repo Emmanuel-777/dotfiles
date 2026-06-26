@@ -1,32 +1,34 @@
 import { db, initDB } from '@/lib/db'
 import { causas, clientes, actuaciones, plazos, documentos, honorarios, tareas } from '@/lib/schema'
-import { eq, desc, asc } from 'drizzle-orm'
+import { eq, desc, asc, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound, Bell } from 'lucide-react'
 import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import ReminderButtons from '@/components/ReminderButtons'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function CausaDetallePage({ params }: { params: { id: string } }) {
   await initDB()
+  const userId = await requireUserId()
   const [row] = await db
     .select({ causa: causas, cliente: clientes })
     .from(causas)
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
-    .where(eq(causas.id, params.id))
+    .where(and(eq(causas.id, params.id), eq(causas.userId, userId)))
 
   if (!row) notFound()
   const { causa, cliente } = row
 
   const [acts, pls, docs, hons, tareasList] = await Promise.all([
-    db.select().from(actuaciones).where(eq(actuaciones.causaId, params.id)).orderBy(desc(actuaciones.fecha)),
-    db.select().from(plazos).where(eq(plazos.causaId, params.id)).orderBy(asc(plazos.fecha)),
-    db.select().from(documentos).where(eq(documentos.causaId, params.id)).orderBy(desc(documentos.createdAt)),
-    db.select().from(honorarios).where(eq(honorarios.causaId, params.id)).orderBy(desc(honorarios.createdAt)),
-    db.select().from(tareas).where(eq(tareas.causaId, params.id)).orderBy(asc(tareas.fechaVencimiento)),
+    db.select().from(actuaciones).where(and(eq(actuaciones.causaId, params.id), eq(actuaciones.userId, userId))).orderBy(desc(actuaciones.fecha)),
+    db.select().from(plazos).where(and(eq(plazos.causaId, params.id), eq(plazos.userId, userId))).orderBy(asc(plazos.fecha)),
+    db.select().from(documentos).where(and(eq(documentos.causaId, params.id), eq(documentos.userId, userId))).orderBy(desc(documentos.createdAt)),
+    db.select().from(honorarios).where(and(eq(honorarios.causaId, params.id), eq(honorarios.userId, userId))).orderBy(desc(honorarios.createdAt)),
+    db.select().from(tareas).where(and(eq(tareas.causaId, params.id), eq(tareas.userId, userId))).orderBy(asc(tareas.fechaVencimiento)),
   ])
 
   const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]

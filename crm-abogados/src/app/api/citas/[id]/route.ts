@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db, initDB } from '@/lib/db'
 import { citas, clientes, causas } from '@/lib/schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
+import { getUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
   await initDB()
+  const userId = await getUserId()
+  if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const rows = await db
     .select({ cita: citas, cliente: clientes, causa: causas })
     .from(citas)
     .leftJoin(clientes, eq(citas.clienteId, clientes.id))
     .leftJoin(causas, eq(citas.causaId, causas.id))
-    .where(eq(citas.id, params.id))
+    .where(and(eq(citas.id, params.id), eq(citas.userId, userId)))
     .limit(1)
 
   if (!rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -21,6 +24,8 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   await initDB()
+  const userId = await getUserId()
+  if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
 
   const updates: Record<string, unknown> = {}
@@ -43,12 +48,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   updates['updatedAt'] = new Date().toISOString()
 
-  await db.update(citas).set(updates).where(eq(citas.id, params.id))
+  await db.update(citas).set(updates).where(and(eq(citas.id, params.id), eq(citas.userId, userId)))
   return NextResponse.json({ ok: true })
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
   await initDB()
-  await db.delete(citas).where(eq(citas.id, params.id))
+  const userId = await getUserId()
+  if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  await db.delete(citas).where(and(eq(citas.id, params.id), eq(citas.userId, userId)))
   return NextResponse.json({ ok: true })
 }

@@ -1,19 +1,22 @@
 import { db, initDB } from '@/lib/db'
 import { honorarios, clientes, causas } from '@/lib/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, DollarSign } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_HONORARIO } from '@/lib/utils'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function HonorariosPage() {
   await initDB()
+  const userId = await requireUserId()
   const rows = await db
     .select({ honorario: honorarios, cliente: clientes, causa: causas })
     .from(honorarios)
     .leftJoin(clientes, eq(honorarios.clienteId, clientes.id))
     .leftJoin(causas, eq(honorarios.causaId, causas.id))
+    .where(eq(honorarios.userId, userId))
     .orderBy(desc(honorarios.createdAt))
 
   const totales = {

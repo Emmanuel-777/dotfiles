@@ -1,7 +1,8 @@
 import { db, initDB } from '@/lib/db'
 import { citas, clientes, causas } from '@/lib/schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
+import { requireUserId } from '@/lib/auth'
 import Link from 'next/link'
 import {
   ArrowLeft, Pencil, CalendarPlus, Video, MapPin, Phone,
@@ -51,12 +52,13 @@ function buildGoogleCalendarUrl(cita: {
 
 export default async function CitaDetailPage({ params }: { params: { id: string } }) {
   await initDB()
+  const userId = await requireUserId()
   const rows = await db
     .select({ cita: citas, cliente: clientes, causa: causas })
     .from(citas)
     .leftJoin(clientes, eq(citas.clienteId, clientes.id))
     .leftJoin(causas, eq(citas.causaId, causas.id))
-    .where(eq(citas.id, params.id))
+    .where(and(eq(citas.id, params.id), eq(citas.userId, userId)))
     .limit(1)
 
   if (!rows.length) notFound()

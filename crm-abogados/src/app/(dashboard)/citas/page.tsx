@@ -1,7 +1,8 @@
 import { db, initDB } from '@/lib/db'
 import { citas, clientes, causas } from '@/lib/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
+import { requireUserId } from '@/lib/auth'
 import {
   Plus, CalendarDays, Video, Phone, MapPin, Clock,
   DollarSign, CheckCircle, XCircle, AlertCircle, User,
@@ -47,11 +48,13 @@ function esPasada(fecha: string, hora: string) {
 
 export default async function CitasPage() {
   await initDB()
+  const userId = await requireUserId()
   const rows = await db
     .select({ cita: citas, cliente: clientes, causa: causas })
     .from(citas)
     .leftJoin(clientes, eq(citas.clienteId, clientes.id))
     .leftJoin(causas, eq(citas.causaId, causas.id))
+    .where(eq(citas.userId, userId))
     .orderBy(desc(citas.fecha))
 
   const proximas  = rows.filter((r) => r.cita.estado !== 'CANCELADA' && r.cita.estado !== 'COMPLETADA' && !esPasada(r.cita.fecha, r.cita.horaInicio))

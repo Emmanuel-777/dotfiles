@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server'
 import { db, initDB } from '@/lib/db'
 import { causas, clientes, actuaciones, plazos, documentos, honorarios } from '@/lib/schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
+import { getUserId } from '@/lib/auth'
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   await initDB()
+  const userId = await getUserId()
+  if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const [causa] = await db
     .select({ causa: causas, cliente: clientes })
     .from(causas)
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
-    .where(eq(causas.id, params.id))
+    .where(and(eq(causas.id, params.id), eq(causas.userId, userId)))
 
   if (!causa) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 
@@ -32,16 +35,21 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   await initDB()
+  const userId = await getUserId()
+  if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
   delete body.id
+  delete body.userId
   body.updatedAt = new Date().toISOString()
-  await db.update(causas).set(body).where(eq(causas.id, params.id))
-  const [updated] = await db.select().from(causas).where(eq(causas.id, params.id))
+  await db.update(causas).set(body).where(and(eq(causas.id, params.id), eq(causas.userId, userId)))
+  const [updated] = await db.select().from(causas).where(and(eq(causas.id, params.id), eq(causas.userId, userId)))
   return NextResponse.json(updated)
 }
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   await initDB()
-  await db.delete(causas).where(eq(causas.id, params.id))
+  const userId = await getUserId()
+  if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  await db.delete(causas).where(and(eq(causas.id, params.id), eq(causas.userId, userId)))
   return NextResponse.json({ ok: true })
 }

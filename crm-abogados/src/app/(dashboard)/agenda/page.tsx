@@ -4,6 +4,7 @@ import { eq, asc } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, Calendar, Clock, AlertTriangle, CheckCircle } from 'lucide-react'
 import { formatFechaCorta, estaVencido, esCritico } from '@/lib/utils'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,11 +22,13 @@ const tipoLabels: Record<string, string> = {
 
 export default async function AgendaPage() {
   await initDB()
+  const userId = await requireUserId()
   const rows = await db
     .select({ plazo: plazos, causa: causas, cliente: clientes })
     .from(plazos)
     .leftJoin(causas, eq(plazos.causaId, causas.id))
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+    .where(eq(plazos.userId, userId))
     .orderBy(asc(plazos.fecha))
 
   const hoy = new Date()

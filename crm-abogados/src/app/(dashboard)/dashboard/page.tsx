@@ -9,12 +9,13 @@ import Link from 'next/link'
 import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck, Bell } from 'lucide-react'
 import { eq, gte, lte, count, sum, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
 import ReminderButtons from '@/components/ReminderButtons'
-
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
   await initDB()
+  const userId = await requireUserId()
 
   const hoy = new Date().toISOString()
 
@@ -32,28 +33,29 @@ export default async function DashboardPage() {
     proximasTareas,
     recordatoriosPendientes,
   ] = await Promise.all([
-    db.select({ count: count() }).from(clientes),
-    db.select({ count: count() }).from(causas),
-    db.select({ count: count() }).from(causas).where(eq(causas.estado, 'EN_TRAMITE')),
-    db.select({ count: count() }).from(plazos).where(and(eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy))),
-    db.select({ total: sum(honorarios.monto) }).from(honorarios).where(inArray(honorarios.estado, ['PENDIENTE', 'PARCIAL'])),
-    db.select({ count: count() }).from(tareas).where(and(ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'))),
+    db.select({ count: count() }).from(clientes).where(eq(clientes.userId, userId)),
+    db.select({ count: count() }).from(causas).where(eq(causas.userId, userId)),
+    db.select({ count: count() }).from(causas).where(and(eq(causas.userId, userId), eq(causas.estado, 'EN_TRAMITE'))),
+    db.select({ count: count() }).from(plazos).where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy))),
+    db.select({ total: sum(honorarios.monto) }).from(honorarios).where(and(eq(honorarios.userId, userId), inArray(honorarios.estado, ['PENDIENTE', 'PARCIAL']))),
+    db.select({ count: count() }).from(tareas).where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'))),
     db.select({ causa: causas, cliente: clientes })
       .from(causas)
       .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+      .where(eq(causas.userId, userId))
       .orderBy(desc(causas.createdAt))
       .limit(5),
     db.select({ plazo: plazos, causa: causas, cliente: clientes })
       .from(plazos)
       .leftJoin(causas, eq(plazos.causaId, causas.id))
       .leftJoin(clientes, eq(causas.clienteId, clientes.id))
-      .where(eq(plazos.estado, 'PENDIENTE'))
+      .where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE')))
       .orderBy(asc(plazos.fecha))
       .limit(8),
     db.select({ tarea: tareas, causa: causas })
       .from(tareas)
       .leftJoin(causas, eq(tareas.causaId, causas.id))
-      .where(and(ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA')))
+      .where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA')))
       .orderBy(asc(tareas.fechaVencimiento))
       .limit(8),
     db.select({ act: actuaciones, causa: causas, cliente: clientes })
@@ -61,6 +63,7 @@ export default async function DashboardPage() {
       .leftJoin(causas, eq(actuaciones.causaId, causas.id))
       .leftJoin(clientes, eq(causas.clienteId, clientes.id))
       .where(and(
+        eq(actuaciones.userId, userId),
         isNotNull(actuaciones.compromiso),
         isNotNull(actuaciones.fechaRecordatorio),
         lte(actuaciones.fechaRecordatorio, hoyFecha),

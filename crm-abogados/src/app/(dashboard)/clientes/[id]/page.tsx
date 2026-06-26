@@ -1,21 +1,23 @@
 import { db, initDB } from '@/lib/db'
 import { clientes, causas, honorarios } from '@/lib/schema'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO } from '@/lib/utils'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ClienteDetallePage({ params }: { params: { id: string } }) {
   await initDB()
-  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, params.id))
+  const userId = await requireUserId()
+  const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
   if (!cliente) notFound()
 
   const [clienteCausas, clienteHonorarios] = await Promise.all([
-    db.select().from(causas).where(eq(causas.clienteId, params.id)),
-    db.select().from(honorarios).where(eq(honorarios.clienteId, params.id)),
+    db.select().from(causas).where(and(eq(causas.clienteId, params.id), eq(causas.userId, userId))),
+    db.select().from(honorarios).where(and(eq(honorarios.clienteId, params.id), eq(honorarios.userId, userId))),
   ])
 
   const totalPagado = clienteHonorarios.filter((h) => h.estado === 'PAGADO').reduce((s, h) => s + h.monto, 0)

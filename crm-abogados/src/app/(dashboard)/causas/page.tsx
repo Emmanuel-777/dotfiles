@@ -4,23 +4,26 @@ import { eq, desc, and, gte } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, Briefcase, AlertTriangle } from 'lucide-react'
 import { formatFechaCorta, ESTADOS_CAUSA } from '@/lib/utils'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function CausasPage() {
   await initDB()
+  const userId = await requireUserId()
   const hoy = new Date().toISOString()
 
   const rows = await db
     .select({ causa: causas, cliente: clientes })
     .from(causas)
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+    .where(eq(causas.userId, userId))
     .orderBy(desc(causas.createdAt))
 
   const proximosPlazos = await db
     .select()
     .from(plazos)
-    .where(and(eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy)))
+    .where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy)))
     .orderBy(plazos.fecha)
 
   const plazosPorCausa: Record<string, typeof proximosPlazos[0]> = {}

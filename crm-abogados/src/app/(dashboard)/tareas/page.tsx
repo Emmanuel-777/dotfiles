@@ -12,17 +12,20 @@ import Link from 'next/link'
 import { eq, asc, desc } from 'drizzle-orm'
 import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export default async function TareasPage() {
   await initDB()
+  const userId = await requireUserId()
 
   const rows = await db
     .select({ tarea: tareas, causa: causas, cliente: clientes })
     .from(tareas)
     .leftJoin(causas, eq(tareas.causaId, causas.id))
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+    .where(eq(tareas.userId, userId))
     .orderBy(asc(tareas.fechaVencimiento), desc(tareas.createdAt))
 
   // Nulls al final (SQLite pone NULLs primero en ASC)

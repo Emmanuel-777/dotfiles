@@ -3,6 +3,7 @@ import { text, integer, real, sqliteTable } from 'drizzle-orm/sqlite-core'
 
 export const clientes = sqliteTable('clientes', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   rut: text('rut').notNull().unique(),
   nombre: text('nombre').notNull(),
   tipo: text('tipo').notNull().default('PERSONA_NATURAL'),
@@ -19,6 +20,7 @@ export const clientes = sqliteTable('clientes', {
 
 export const causas = sqliteTable('causas', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   rol: text('rol').notNull(),
   tribunal: text('tribunal').notNull(),
   tipoCausa: text('tipo_causa').notNull().default('Civil'),
@@ -35,6 +37,7 @@ export const causas = sqliteTable('causas', {
 
 export const actuaciones = sqliteTable('actuaciones', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   fecha: text('fecha').notNull(),
   tipo: text('tipo').notNull().default('OTRO'),
   descripcion: text('descripcion').notNull(),
@@ -48,6 +51,7 @@ export const actuaciones = sqliteTable('actuaciones', {
 
 export const plazos = sqliteTable('plazos', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   titulo: text('titulo').notNull(),
   fecha: text('fecha').notNull(),
   tipo: text('tipo').notNull().default('OTRO'),
@@ -60,6 +64,7 @@ export const plazos = sqliteTable('plazos', {
 
 export const documentos = sqliteTable('documentos', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   nombre: text('nombre').notNull(),
   tipo: text('tipo').notNull().default('OTRO'),
   descripcion: text('descripcion'),
@@ -70,6 +75,7 @@ export const documentos = sqliteTable('documentos', {
 
 export const honorarios = sqliteTable('honorarios', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   descripcion: text('descripcion').notNull(),
   monto: real('monto').notNull(),
   moneda: text('moneda').notNull().default('CLP'),
@@ -87,6 +93,7 @@ export const honorarios = sqliteTable('honorarios', {
 
 export const tareas = sqliteTable('tareas', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   titulo: text('titulo').notNull(),
   descripcion: text('descripcion'),
   estado: text('estado').notNull().default('PENDIENTE'),
@@ -104,6 +111,7 @@ export const tareas = sqliteTable('tareas', {
 
 export const citas = sqliteTable('citas', {
   id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
   titulo: text('titulo').notNull(),
   descripcion: text('descripcion'),
   clienteId: text('cliente_id').references(() => clientes.id),

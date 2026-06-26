@@ -1,6 +1,6 @@
 import { db, initDB } from '@/lib/db'
 import { clientes, causas, tareas, plazos, honorarios, actuaciones } from '@/lib/schema'
-import { eq, inArray, asc, desc } from 'drizzle-orm'
+import { eq, and, inArray, asc, desc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Scale } from 'lucide-react'
@@ -9,6 +9,7 @@ import {
   ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA, ESTADOS_HONORARIO,
 } from '@/lib/utils'
 import PrintButton from '@/components/PrintButton'
+import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,22 +30,23 @@ const TIPO_COLORS: Record<string, string> = {
 
 export default async function ReporteClientePage({ params }: { params: { id: string } }) {
   await initDB()
+  const userId = await requireUserId()
 
-  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, params.id))
+  const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
   if (!cliente) notFound()
 
   const clienteCausas = await db.select().from(causas)
-    .where(eq(causas.clienteId, params.id))
+    .where(and(eq(causas.clienteId, params.id), eq(causas.userId, userId)))
     .orderBy(asc(causas.fechaIngreso))
 
   const causaIds = clienteCausas.map((c) => c.id)
 
   const [todasActuaciones, todasTareas, todosPlazos, todosHonorarios] = causaIds.length > 0
     ? await Promise.all([
-        db.select().from(actuaciones).where(inArray(actuaciones.causaId, causaIds)).orderBy(desc(actuaciones.fecha)),
-        db.select().from(tareas).where(inArray(tareas.causaId, causaIds)).orderBy(asc(tareas.fechaVencimiento)),
-        db.select().from(plazos).where(inArray(plazos.causaId, causaIds)).orderBy(asc(plazos.fecha)),
-        db.select().from(honorarios).where(inArray(honorarios.causaId, causaIds)).orderBy(asc(honorarios.fechaEmision)),
+        db.select().from(actuaciones).where(and(eq(actuaciones.userId, userId), inArray(actuaciones.causaId, causaIds))).orderBy(desc(actuaciones.fecha)),
+        db.select().from(tareas).where(and(eq(tareas.userId, userId), inArray(tareas.causaId, causaIds))).orderBy(asc(tareas.fechaVencimiento)),
+        db.select().from(plazos).where(and(eq(plazos.userId, userId), inArray(plazos.causaId, causaIds))).orderBy(asc(plazos.fecha)),
+        db.select().from(honorarios).where(and(eq(honorarios.userId, userId), inArray(honorarios.causaId, causaIds))).orderBy(asc(honorarios.fechaEmision)),
       ])
     : [[], [], [], []]
 
