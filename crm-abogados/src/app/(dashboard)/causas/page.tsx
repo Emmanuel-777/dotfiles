@@ -2,7 +2,7 @@ import { db, initDB } from '@/lib/db'
 import { causas, clientes, plazos } from '@/lib/schema'
 import { eq, desc, and, gte } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, Briefcase, AlertTriangle } from 'lucide-react'
+import { Plus, Briefcase, AlertTriangle, Download } from 'lucide-react'
 import { formatFechaCorta, ESTADOS_CAUSA } from '@/lib/utils'
 import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
@@ -46,10 +46,20 @@ export default async function CausasPage() {
           <h1 className="text-2xl font-bold text-gray-900">Causas</h1>
           <p className="text-gray-500 text-sm mt-1">{rows.length} causas en total</p>
         </div>
-        <Link href="/causas/nueva" className="btn-primary">
-          <Plus className="h-4 w-4" />
-          Nueva causa
-        </Link>
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/causas/exportar"
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            title="Descargar listado de causas en Excel"
+          >
+            <Download className="h-4 w-4" />
+            Exportar Excel
+          </a>
+          <Link href="/causas/nueva" className="btn-primary">
+            <Plus className="h-4 w-4" />
+            Nueva causa
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
