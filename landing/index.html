@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexCRM — Gestión Legal para Abogados en Chile</title>
+  <meta name="description" content="El sistema de gestión legal en la nube diseñado para abogados chilenos. Clientes, causas, honorarios, agenda y más — todo en un solo lugar.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy-900: #0f1c36;
+      --navy-800: #14254c;
+      --navy-700: #1a3060;
+      --blue-400: #60a5fa;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --slate-50:  #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --green-400: #4ade80;
+      --amber-400: #fbbf24;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, sans-serif; color: var(--slate-800); background: var(--white); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(15,28,54,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-logo { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.03em; text-decoration: none; }
+    .nav-logo .w { color: var(--white); }
+    .nav-logo .b { color: var(--blue-400); }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--blue-600); color: var(--white);
+      text-decoration: none; font-size: .85rem; font-weight: 700;
+      padding: .5rem 1.25rem; border-radius: .5rem; transition: background .2s;
+    }
+    .nav-btn:hover { background: var(--blue-500); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(155deg, var(--navy-900) 0%, var(--navy-800) 55%, #1c3268 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 9rem 1.5rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -15%; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(37,99,235,.18) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.25);
+      color: var(--blue-400); font-size: .72rem; font-weight: 700;
+      padding: .3rem .9rem; border-radius: 99px; margin-bottom: 1.5rem;
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(2.25rem, 6vw, 4rem); font-weight: 900; color: var(--white);
+      line-height: 1.08; letter-spacing: -0.035em; margin-bottom: 1.25rem; max-width: 760px;
+    }
+    .hero h1 .accent { color: var(--blue-400); }
+    .hero p { font-size: clamp(.95rem, 2.5vw, 1.15rem); color: rgba(255,255,255,.6); max-width: 520px; margin-bottom: 2.5rem; line-height: 1.75; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--blue-600); color: var(--white);
+      text-decoration: none; font-size: 1rem; font-weight: 700;
+      padding: .875rem 2rem; border-radius: .625rem; transition: all .2s;
+      box-shadow: 0 4px 20px rgba(37,99,235,.4);
+    }
+    .btn-primary:hover { background: var(--blue-500); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(37,99,235,.5); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(255,255,255,.07); color: var(--white);
+      text-decoration: none; font-size: 1rem; font-weight: 600;
+      padding: .875rem 2rem; border-radius: .625rem;
+      border: 1px solid rgba(255,255,255,.15); transition: all .2s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.13); }
+
+    .hero-semaforo {
+      display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center;
+      margin-top: 3rem; opacity: .65;
+    }
+    .s-pill {
+      display: flex; align-items: center; gap: .4rem;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 99px; padding: .28rem .75rem;
+      font-size: .7rem; color: rgba(255,255,255,.55); font-weight: 500;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dr { background: #ef4444; } .dy { background: #fbbf24; } .db { background: #60a5fa; }
+
+    /* ─── COMMON ─── */
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .s-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--blue-600); margin-bottom: .6rem; }
+    .s-title { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 800; color: var(--slate-800); line-height: 1.15; letter-spacing: -.025em; margin-bottom: .9rem; }
+    .s-sub { font-size: 1rem; color: var(--slate-500); max-width: 540px; line-height: 1.7; }
+
+    /* ─── FEATURES ─── */
+    .features { background: var(--slate-50); }
+    .features-header { margin-bottom: 2.75rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.15rem; }
+    .f-card {
+      background: var(--white); border: 1px solid var(--slate-200); border-radius: 1rem;
+      padding: 1.4rem 1.5rem; transition: box-shadow .2s, transform .2s;
+    }
+    .f-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.07); transform: translateY(-2px); }
+    .f-icon {
+      width: 42px; height: 42px; border-radius: .575rem;
+      display: flex; align-items: center; justify-content: center; margin-bottom: .9rem;
+    }
+    .f-icon svg { width: 20px; height: 20px; }
+    .ic-b  { background: #dbeafe; color: #1d4ed8; }
+    .ic-n  { background: #e8edf6; color: var(--navy-800); }
+    .ic-g  { background: #dcfce7; color: #16a34a; }
+    .ic-a  { background: #fef3c7; color: #b45309; }
+    .ic-p  { background: #ede9fe; color: #6d28d9; }
+    .ic-r  { background: #ffe4e6; color: #be123c; }
+    .ic-t  { background: #ccfbf1; color: #0f766e; }
+    .ic-i  { background: #e0e7ff; color: #3730a3; }
+    .f-card h3 { font-size: .92rem; font-weight: 700; color: var(--slate-800); margin-bottom: .3rem; }
+    .f-card p  { font-size: .82rem; color: var(--slate-500); line-height: 1.6; }
+
+    /* ─── PLANS ─── */
+    .plans { background: linear-gradient(155deg, var(--navy-900) 0%, var(--navy-800) 100%); }
+    .plans .s-label { color: var(--blue-400); }
+    .plans .s-title { color: var(--white); }
+    .plans .s-sub   { color: rgba(255,255,255,.5); }
+    .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .p-card {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 1.25rem; padding: 2rem 1.75rem;
+      position: relative; transition: transform .2s;
+    }
+    .p-card:hover { transform: translateY(-3px); }
+    .p-card.star { background: var(--blue-600); border-color: transparent; box-shadow: 0 8px 40px rgba(37,99,235,.4); }
+    .p-badge {
+      position: absolute; top: -0.75rem; left: 50%; transform: translateX(-50%);
+      background: var(--amber-400); color: #78350f;
+      font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em;
+      padding: .2rem .8rem; border-radius: 99px; white-space: nowrap;
+    }
+    .p-name { font-size: .85rem; font-weight: 700; color: rgba(255,255,255,.6); margin-bottom: .5rem; text-transform: uppercase; letter-spacing: .06em; }
+    .p-card.star .p-name { color: rgba(255,255,255,.85); }
+    .p-price { font-size: 2.25rem; font-weight: 900; color: var(--white); line-height: 1; letter-spacing: -.03em; margin-bottom: .2rem; }
+    .p-period { font-size: .78rem; color: rgba(255,255,255,.4); margin-bottom: 1.5rem; }
+    .p-list { list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: .55rem; }
+    .p-list li { display: flex; align-items: flex-start; gap: .55rem; font-size: .85rem; color: rgba(255,255,255,.78); line-height: 1.5; }
+    .p-list li svg { flex-shrink: 0; margin-top: 1px; }
+    .p-card.star .p-list li { color: rgba(255,255,255,.92); }
+    .p-cta {
+      display: block; text-align: center; padding: .75rem;
+      border-radius: .625rem; font-size: .88rem; font-weight: 700;
+      text-decoration: none; transition: all .2s;
+    }
+    .p-card:not(.star) .p-cta { background: rgba(255,255,255,.1); color: var(--white); border: 1px solid rgba(255,255,255,.15); }
+    .p-card:not(.star) .p-cta:hover { background: rgba(255,255,255,.18); }
+    .p-card.star .p-cta { background: var(--white); color: var(--blue-600); }
+    .p-card.star .p-cta:hover { background: #f0f5ff; }
+
+    /* ─── JOURNEY ─── */
+    .journey { background: var(--white); }
+    .journey-header { margin-bottom: 3.5rem; }
+    .journey-steps { display: flex; flex-direction: column; max-width: 620px; }
+    .j-step { display: flex; gap: 1.5rem; position: relative; padding-bottom: 2.25rem; }
+    .j-step:last-child { padding-bottom: 0; }
+    .j-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .j-num {
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 800; flex-shrink: 0; z-index: 1;
+    }
+    .j-line { width: 2px; flex: 1; margin-top: .5rem; min-height: 1.5rem; }
+    .j-step:last-child .j-line { display: none; }
+
+    .j-step:nth-child(1) .j-num  { background: #dbeafe; color: #1d4ed8; }
+    .j-step:nth-child(1) .j-line { background: linear-gradient(to bottom, #bfdbfe, #c7d2fe); }
+    .j-step:nth-child(2) .j-num  { background: #ede9fe; color: #6d28d9; }
+    .j-step:nth-child(2) .j-line { background: linear-gradient(to bottom, #ddd6fe, #d1fae5); }
+    .j-step:nth-child(3) .j-num  { background: #d1fae5; color: #059669; }
+    .j-step:nth-child(3) .j-line { background: linear-gradient(to bottom, #a7f3d0, #fef3c7); }
+    .j-step:nth-child(4) .j-num  { background: #fef3c7; color: #b45309; }
+    .j-step:nth-child(4) .j-line { background: linear-gradient(to bottom, #fde68a, #dcfce7); }
+    .j-step:nth-child(5) .j-num  { background: #dcfce7; color: #15803d; }
+
+    .j-body { padding-top: .5rem; flex: 1; }
+    .j-tag {
+      display: inline-block; font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .07em;
+      color: var(--slate-400); margin-bottom: .25rem;
+    }
+    .j-body h3 { font-size: 1rem; font-weight: 700; color: var(--slate-800); margin-bottom: .3rem; }
+    .j-body p { font-size: .875rem; color: var(--slate-500); line-height: 1.65; }
+    .j-chip {
+      display: inline-flex; align-items: center; gap: .3rem;
+      margin-top: .65rem; background: var(--slate-100);
+      border-radius: .375rem; padding: .275rem .625rem;
+      font-size: .75rem; color: var(--slate-600); font-weight: 600;
+    }
+    .j-chip svg { width: 12px; height: 12px; }
+
+    /* ─── CTA FINAL ─── */
+    .cta-final {
+      background: linear-gradient(135deg, var(--navy-800) 0%, #1a3060 100%);
+      text-align: center; padding: 5.5rem 1.5rem;
+    }
+    .cta-final h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; color: var(--white); margin-bottom: 1rem; letter-spacing: -.025em; }
+    .cta-final > p { font-size: 1rem; color: rgba(255,255,255,.55); margin-bottom: 2rem; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem; }
+    .c-item { display: flex; align-items: center; gap: .5rem; color: rgba(255,255,255,.5); font-size: .875rem; }
+    .c-item svg { width: 15px; height: 15px; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--navy-900); padding: 1.75rem 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,.06); }
+    footer p { font-size: .775rem; color: rgba(255,255,255,.28); }
+
+    @media (min-width: 768px) {
+      nav { padding: 1rem 3rem; }
+      section { padding: 6.5rem 3rem; }
+      .cta-final { padding: 7rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="#" class="nav-logo"><span class="w">Lex</span><span class="b">CRM</span></a>
+  <a href="mailto:emaferna.contacto@gmail.com?subject=Quiero%20saber%20más%20sobre%20LexCRM" class="nav-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Solicitar información
+  </a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    Exclusivo para abogados en Chile
+  </div>
+
+  <h1>
+    Tu estudio legal,<br>
+    <span class="accent">ordenado desde el primer día</span>
+  </h1>
+
+  <p>
+    LexCRM es el sistema de gestión en la nube que te permite controlar clientes, causas, honorarios, agenda y más — desde cualquier dispositivo, sin instalar nada.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#planes" class="btn-primary">
+      Ver planes y precios
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#camino" class="btn-outline">
+      ¿Cómo funciona?
+    </a>
+  </div>
+
+  <div class="hero-semaforo">
+    <div class="s-pill"><span class="dot dr"></span> Causas vencidas — alerta inmediata</div>
+    <div class="s-pill"><span class="dot dy"></span> Vence en ≤ 3 días — aviso preventivo</div>
+    <div class="s-pill"><span class="dot db"></span> Citas de hoy — al instante</div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <p class="s-label">Módulos del sistema</p>
+      <h2 class="s-title">Todo lo que necesitas en un solo lugar</h2>
+      <p class="s-sub">Cada módulo está diseñado para el flujo real de trabajo de un abogado en Chile.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="f-card">
+        <div class="f-icon ic-b">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3>Dashboard</h3>
+        <p>Semáforo de alertas, KPIs financieros y vencimientos próximos al abrir el sistema.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-n">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>Clientes</h3>
+        <p>Fichas completas con RUT, tipo de persona, contacto y todas las causas asociadas.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-p">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <h3>Causas</h3>
+        <p>Expedientes con número de rol, tribunal, tipo, estado y fecha de vencimiento con semáforo.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-g">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3>Honorarios</h3>
+        <p>Registro de cobros en pesos chilenos. Gráfico de emitido vs cobrado en el dashboard.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-a">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3>Agenda y Plazos</h3>
+        <p>Control de plazos procesales con alertas automáticas de vencimiento.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-r">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <h3>Tareas</h3>
+        <p>Pendientes con fecha límite y prioridad. Badge en el menú cuando hay urgentes.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <h3>Embudo de Prospectos</h3>
+        <p>Tablero Kanban para gestionar clientes potenciales y convertirlos en clientes reales.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon ic-i">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Asistente IA</h3>
+        <p>Genera resúmenes ejecutivos y borradores de escritos a partir de los datos de cada causa.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── PLANS ─── -->
+<section class="plans" id="planes">
+  <div class="container">
+    <p class="s-label">Planes</p>
+    <h2 class="s-title">Elige el plan para tu estudio</h2>
+    <p class="s-sub">Sin contratos de largo plazo. Puedes cambiar de plan cuando lo necesites.</p>
+
+    <div class="plans-grid">
+
+      <!-- Básico -->
+      <div class="p-card">
+        <div class="p-name">Básico</div>
+        <div class="p-price">$19.900</div>
+        <div class="p-period">pesos / mes · 1 usuario</div>
+        <ul class="p-list">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Dashboard con semáforo de alertas
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Clientes, causas y honorarios
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Agenda, tareas y citas
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Embudo de prospectos
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span style="opacity:.4">Asistente IA</span>
+          </li>
+        </ul>
+        <a href="mailto:emaferna.contacto@gmail.com?subject=Plan%20Básico%20LexCRM" class="p-cta">Contratar plan</a>
+      </div>
+
+      <!-- Pro (destacado) -->
+      <div class="p-card star">
+        <div class="p-badge">⭐ Más popular</div>
+        <div class="p-name">Pro</div>
+        <div class="p-price">$39.900</div>
+        <div class="p-period">pesos / mes · 1 usuario</div>
+        <ul class="p-list">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Todo lo del plan Básico
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Asistente IA en cada causa
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Generación de resúmenes ejecutivos
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Borradores de escritos automáticos
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Soporte prioritario
+          </li>
+        </ul>
+        <a href="mailto:emaferna.contacto@gmail.com?subject=Plan%20Pro%20LexCRM" class="p-cta">Contratar plan</a>
+      </div>
+
+      <!-- Firma -->
+      <div class="p-card">
+        <div class="p-name">Firma</div>
+        <div class="p-price">$79.900</div>
+        <div class="p-period">pesos / mes · hasta 3 usuarios</div>
+        <ul class="p-list">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Todo lo del plan Pro
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Hasta 3 usuarios (ej. socio + secretaria)
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Dominio personalizado incluido
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Incorporación asistida (reunión de onboarding)
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Soporte prioritario
+          </li>
+        </ul>
+        <a href="mailto:emaferna.contacto@gmail.com?subject=Plan%20Firma%20LexCRM" class="p-cta">Contratar plan</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── JOURNEY ─── -->
+<section class="journey" id="camino">
+  <div class="container">
+    <div class="journey-header">
+      <p class="s-label">Proceso de incorporación</p>
+      <h2 class="s-title">Del pago al primer cliente<br>en menos de 24 horas</h2>
+      <p class="s-sub">Un proceso sencillo y guiado. No necesitas conocimientos técnicos.</p>
+    </div>
+
+    <div class="journey-steps">
+
+      <div class="j-step">
+        <div class="j-left">
+          <div class="j-num">1</div>
+          <div class="j-line"></div>
+        </div>
+        <div class="j-body">
+          <span class="j-tag">Tú</span>
+          <h3>Eliges tu plan y realizas la transferencia</h3>
+          <p>Seleccionas el plan que mejor se adapta a tu estudio y nos escribes por email. Te enviamos los datos de cuenta para realizar la transferencia bancaria.</p>
+          <div class="j-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Transferencia bancaria
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-left">
+          <div class="j-num">2</div>
+          <div class="j-line"></div>
+        </div>
+        <div class="j-body">
+          <span class="j-tag">Nosotros</span>
+          <h3>Confirmamos el pago</h3>
+          <p>Verificamos la transferencia y te enviamos un correo de confirmación con los próximos pasos.</p>
+          <div class="j-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Dentro de las 24 horas hábiles
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-left">
+          <div class="j-num">3</div>
+          <div class="j-line"></div>
+        </div>
+        <div class="j-body">
+          <span class="j-tag">Nosotros</span>
+          <h3>Preparamos tu sistema exclusivo</h3>
+          <p>Creamos tu base de datos privada, configuramos tu cuenta de acceso y desplegamos tu aplicación en la nube. Tu LexCRM es una instancia propia — tus datos no se mezclan con otros usuarios.</p>
+          <div class="j-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            1 a 2 horas de configuración
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-left">
+          <div class="j-num">4</div>
+          <div class="j-line"></div>
+        </div>
+        <div class="j-body">
+          <span class="j-tag">Tú</span>
+          <h3>Creas tu cuenta con tu email</h3>
+          <p>Recibes el enlace de tu LexCRM por correo. Entras, haces clic en "Registrarse" con tu email autorizado y nosotros aprobamos tu acceso en minutos.</p>
+          <div class="j-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Solo necesitas tu correo electrónico
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-left">
+          <div class="j-num">5</div>
+          <div class="j-line"></div>
+        </div>
+        <div class="j-body">
+          <span class="j-tag">Entrega</span>
+          <h3>Recibes el Manual de Usuario y comienzas a operar</h3>
+          <p>Te enviamos el Manual de Usuario en PDF con instrucciones paso a paso para cada módulo del sistema. Desde ese momento puedes empezar a registrar tus clientes y causas.</p>
+          <div class="j-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Manual PDF incluido en todos los planes
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ─── -->
+<section class="cta-final">
+  <div class="container">
+    <h2>¿Listo para ordenar tu estudio?</h2>
+    <p>Escríbenos y te respondemos en el día. Sin compromiso.</p>
+    <a href="mailto:emaferna.contacto@gmail.com?subject=Quiero%20saber%20más%20sobre%20LexCRM" class="btn-primary" style="display:inline-flex; margin: 0 auto;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Escribir ahora
+    </a>
+    <div class="contact-row">
+      <div class="c-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        emaferna.contacto@gmail.com
+      </div>
+      <div class="c-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Respuesta en menos de 24 horas
+      </div>
+      <div class="c-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Operando desde Chile
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <p>© 2025 LexCRM · Sistema de gestión legal para abogados en Chile</p>
+</footer>
+
+</body>
+</html>
