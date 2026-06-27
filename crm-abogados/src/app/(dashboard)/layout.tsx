@@ -1,12 +1,10 @@
-import Sidebar from '@/components/Sidebar'
-import GlobalSearch from '@/components/GlobalSearch'
+import DashboardShell from '@/components/DashboardShell'
 import AsistenteVirtual from '@/components/AsistenteVirtual'
 import { db, initDB } from '@/lib/db'
 import { plazos, tareas, citas, prospectos } from '@/lib/schema'
 import { eq, and, ne, gte, lte, isNull } from 'drizzle-orm'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { Toaster } from 'sonner'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,16 +67,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar alertas={alertas} />
-      <main className="flex-1 ml-64 min-h-screen print:ml-0">
-        <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-gray-200 bg-white/80 px-8 py-3 backdrop-blur print:hidden">
-          <GlobalSearch />
-        </header>
-        {children}
-      </main>
-      <Toaster richColors position="top-right" closeButton />
+    <DashboardShell alertas={alertas}>
+      {children}
       <AsistenteVirtual />
-    </div>
+    </DashboardShell>
   )
 }

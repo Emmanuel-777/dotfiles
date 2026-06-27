@@ -15,6 +15,7 @@ import {
   ChevronRight,
   LogOut,
   LifeBuoy,
+  X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import LogoMark from '@/components/LogoMark'
@@ -74,25 +75,49 @@ function AlertBadge({ alertKey, alertas }: { alertKey: 'agenda' | 'tareas' | 'ci
   return null
 }
 
-export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
+export default function Sidebar({
+  alertas,
+  isOpen = false,
+  onClose,
+}: {
+  alertas: SidebarAlertas
+  isOpen?: boolean
+  onClose?: () => void
+}) {
   const pathname = usePathname()
   const { user } = useUser()
 
   return (
-    <aside className="w-64 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900">
+    <aside
+      className={cn(
+        'w-64 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900',
+        'transition-transform duration-300 ease-in-out',
+        isOpen ? 'translate-x-0' : '-translate-x-full',
+        'lg:translate-x-0'
+      )}
+    >
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-white/10">
+      <div className="px-4 py-4 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-white/95 p-1.5 shadow-sm">
+          <div className="rounded-lg bg-white/95 p-1.5 shadow-sm flex-shrink-0">
             <LogoMark className="h-7 w-7" />
           </div>
-          <div>
+          <div className="flex-1 min-w-0">
             <span className="font-bold text-lg tracking-tight">
               <span className="text-white">Lex</span>
               <span className="text-blue-400">CRM</span>
             </span>
             <p className="text-slate-400 text-xs">Gestión Legal</p>
           </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="lg:hidden p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors flex-shrink-0"
+              aria-label="Cerrar menú"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -105,6 +130,7 @@ export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group',
                 isActive
