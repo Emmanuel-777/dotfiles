@@ -1,5 +1,6 @@
 import Sidebar from '@/components/Sidebar'
 import GlobalSearch from '@/components/GlobalSearch'
+import AsistenteVirtual from '@/components/AsistenteVirtual'
 import { db, initDB } from '@/lib/db'
 import { plazos, tareas, citas, prospectos } from '@/lib/schema'
 import { eq, and, ne, gte, lte, isNull } from 'drizzle-orm'
@@ -77,6 +78,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         {children}
       </main>
       <Toaster richColors position="top-right" closeButton />
+      <AsistenteVirtual />
     </div>
   )
 }

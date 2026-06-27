@@ -14,6 +14,7 @@ import {
   TrendingUp,
   ChevronRight,
   LogOut,
+  LifeBuoy,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import LogoMark from '@/components/LogoMark'
@@ -122,6 +123,17 @@ export default function Sidebar({ alertas }: { alertas: SidebarAlertas }) {
           )
         })}
       </nav>
+
+      {/* Ayuda técnica */}
+      <div className="px-3 pb-2">
+        <a
+          href="mailto:emaferna.contacto@gmail.com?subject=Ayuda%20LexCRM"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+        >
+          <LifeBuoy className="h-4 w-4 flex-shrink-0" />
+          <span>Ayuda técnica</span>
+        </a>
+      </div>
 
       {/* Footer — usuario */}
       <div className="px-4 py-4 border-t border-white/10 space-y-3">
