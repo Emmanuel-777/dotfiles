@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
-  const { nombre, tipo, descripcion, causaId } = body
+  const { nombre, tipo, descripcion, causaId, archivo } = body
 
   if (!nombre || !causaId) {
     return NextResponse.json({ error: 'Nombre y causa son requeridos' }, { status: 400 })
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
   const id = nanoid()
   const now = new Date().toISOString()
-  await db.insert(documentos).values({ id, userId, nombre, tipo: tipo || 'OTRO', descripcion, causaId, createdAt: now })
+  await db.insert(documentos).values({ id, userId, nombre, tipo: tipo || 'OTRO', descripcion, causaId, archivo: archivo || null, createdAt: now })
   const [doc] = await db.select().from(documentos).where(and(eq(documentos.id, id), eq(documentos.userId, userId)))
   return NextResponse.json(doc, { status: 201 })
 }

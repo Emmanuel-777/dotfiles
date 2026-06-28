@@ -2,7 +2,7 @@ import { db, initDB } from '@/lib/db'
 import { documentos, causas, clientes } from '@/lib/schema'
 import { eq, desc } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, FileText, File, ScrollText, FileSignature, FileBadge } from 'lucide-react'
+import { Plus, FileText, File, ScrollText, FileSignature, FileBadge, Download } from 'lucide-react'
 import { formatFechaCorta } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
@@ -62,10 +62,21 @@ export default async function DocumentosPage() {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-gray-100">
+              <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <Link href={`/causas/${doc.causaId}`} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
                   Ver causa →
                 </Link>
+                {doc.archivo && (
+                  <a
+                    href={doc.archivo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Descargar
+                  </a>
+                )}
               </div>
             </div>
           )
