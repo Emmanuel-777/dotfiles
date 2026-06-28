@@ -2,8 +2,9 @@ import { db, initDB } from '@/lib/db'
 import { causas, clientes, plazos } from '@/lib/schema'
 import { eq, desc, and, gte } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, Briefcase, AlertTriangle } from 'lucide-react'
+import { Plus, Briefcase, AlertTriangle, Download } from 'lucide-react'
 import { formatFechaCorta, ESTADOS_CAUSA } from '@/lib/utils'
+import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -39,19 +40,29 @@ export default async function CausasPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Causas</h1>
           <p className="text-gray-500 text-sm mt-1">{rows.length} causas en total</p>
         </div>
-        <Link href="/causas/nueva" className="btn-primary">
-          <Plus className="h-4 w-4" />
-          Nueva causa
-        </Link>
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/causas/exportar"
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            title="Descargar listado de causas en Excel"
+          >
+            <Download className="h-4 w-4" />
+            Exportar Excel
+          </a>
+          <Link href="/causas/nueva" className="btn-primary">
+            <Plus className="h-4 w-4" />
+            Nueva causa
+          </Link>
+        </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {Object.entries(porEstado).map(([estado, count]) => {
           const info = ESTADOS_CAUSA[estado as keyof typeof ESTADOS_CAUSA]
           return (
@@ -63,7 +74,7 @@ export default async function CausasPage() {
         })}
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
@@ -114,10 +125,13 @@ export default async function CausasPage() {
           </tbody>
         </table>
         {rows.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            <Briefcase className="h-10 w-10 mx-auto mb-3 opacity-40" />
-            <p className="font-medium text-gray-500">No hay causas registradas</p>
-          </div>
+          <EmptyState
+            icon={Briefcase}
+            title="No hay causas registradas"
+            description="Registra tu primera causa para hacer seguimiento de actuaciones, plazos y documentos."
+            actionLabel="Nueva causa"
+            actionHref="/causas/nueva"
+          />
         )}
       </div>
     </div>

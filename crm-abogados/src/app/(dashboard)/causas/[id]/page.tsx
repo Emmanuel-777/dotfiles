@@ -7,6 +7,8 @@ import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCir
 import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import ReminderButtons from '@/components/ReminderButtons'
+import AIPanel from '@/components/AIPanel'
+import { TIPOS_ESCRITO } from '@/lib/ai/prompts'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -34,7 +36,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
   const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <Link href="/causas" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver a causas
@@ -265,6 +267,8 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
 
         {/* Lateral */}
         <div className="space-y-6">
+          <AIPanel causaId={causa.id} tiposEscrito={TIPOS_ESCRITO} />
+
           <div className="card">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-900 flex items-center gap-2 text-sm">

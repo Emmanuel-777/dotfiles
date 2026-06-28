@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 function NuevoHonorarioForm() {
   const router = useRouter()
@@ -50,16 +51,17 @@ function NuevoHonorarioForm() {
         }),
       })
       if (!res.ok) throw new Error()
+      toast.success('Honorario registrado')
       router.push('/honorarios')
     } catch {
-      alert('Error al guardar')
+      toast.error('Error al guardar')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="p-8 max-w-lg">
+    <div className="p-4 lg:p-8 max-w-lg">
       <Link href="/honorarios" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver

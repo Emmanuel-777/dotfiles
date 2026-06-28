@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function EditarClientePage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -53,9 +54,10 @@ export default function EditarClientePage({ params }: { params: { id: string } }
         body: JSON.stringify(form),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Cambios guardados')
       router.push(`/clientes/${params.id}`)
     } catch {
-      alert('Error al guardar los cambios')
+      toast.error('Error al guardar los cambios')
     } finally {
       setLoading(false)
     }
@@ -66,15 +68,16 @@ export default function EditarClientePage({ params }: { params: { id: string } }
     setDeleting(true)
     try {
       await fetch(`/api/clientes/${params.id}`, { method: 'DELETE' })
+      toast.success('Cliente eliminado')
       router.push('/clientes')
     } catch {
-      alert('Error al eliminar el cliente')
+      toast.error('Error al eliminar el cliente')
       setDeleting(false)
     }
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 lg:p-8 max-w-2xl">
       <Link href={`/clientes/${params.id}`} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver al cliente

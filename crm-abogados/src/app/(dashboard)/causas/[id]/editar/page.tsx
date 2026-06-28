@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import { TIPOS_CAUSA, TRIBUNALES_CHILE } from '@/lib/utils'
+import { toast } from 'sonner'
 
 export default function EditarCausaPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -59,9 +60,10 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
         body: JSON.stringify({ ...form, fechaIngreso: new Date(form.fechaIngreso).toISOString() }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Cambios guardados')
       router.push(`/causas/${params.id}`)
     } catch {
-      alert('Error al guardar los cambios')
+      toast.error('Error al guardar los cambios')
     } finally {
       setLoading(false)
     }
@@ -72,15 +74,16 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
     setDeleting(true)
     try {
       await fetch(`/api/causas/${params.id}`, { method: 'DELETE' })
+      toast.success('Causa eliminada')
       router.push('/causas')
     } catch {
-      alert('Error al eliminar la causa')
+      toast.error('Error al eliminar la causa')
       setDeleting(false)
     }
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 lg:p-8 max-w-2xl">
       <Link href={`/causas/${params.id}`} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver a la causa

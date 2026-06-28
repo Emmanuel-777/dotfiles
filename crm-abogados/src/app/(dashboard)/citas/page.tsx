@@ -67,7 +67,7 @@ export default async function CitasPage() {
     .reduce((s, r) => s + (r.cita.valor ?? 0), 0)
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Citas y Consultas</h1>
@@ -80,7 +80,7 @@ export default async function CitasPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="card p-4 text-center border-l-4 border-blue-400">
           <p className="text-3xl font-bold text-blue-600">{proximas.length}</p>
           <p className="text-sm text-gray-500 mt-1">Próximas</p>

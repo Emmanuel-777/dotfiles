@@ -19,3 +19,4 @@ prisma/dev.db-journal
 # OS
 .DS_Store
 Thumbs.db
+tsconfig.tsbuildinfo

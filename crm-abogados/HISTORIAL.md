@@ -304,3 +304,81 @@ Tablas estándar con FK a causas. Ver `src/lib/schema.ts` para detalle completo.
 
 - **Email deep link:**  
   `mailto:email@ejemplo.com?subject=ASUNTO&body=CUERPO_CODIFICADO`
+
+---
+
+## Fase 1 — UX profesional (quick wins)
+
+Mejoras incrementales de experiencia de usuario sin tocar la arquitectura:
+
+### 1. Dashboard rediseñado
+- **Banner de alertas de vencimientos**: aviso rojo en la parte superior cuando hay plazos o tareas vencidos, con accesos directos a `/agenda` y `/tareas`. Conteos calculados con queries `lt(fecha, hoy)`.
+- **Barra de accesos rápidos**: botones para Nuevo cliente, Nueva causa, Nueva cita, Nuevo plazo, Nuevo honorario y Nuevo documento.
+
+### 2. Semáforo de alertas en el sidebar
+- `(dashboard)/layout.tsx` calcula contadores por sección y los pasa al `Sidebar` como prop `alertas`.
+- Badges en Tareas / Citas / Agenda:
+  - 🔴 rojo = vencidos
+  - 🟡 ámbar = por vencer (≤ 3 días)
+  - 🔵 azul = citas de hoy
+
+### 3. Estados vacíos profesionales
+- Nuevo componente reutilizable `src/components/EmptyState.tsx` (icono + título + descripción + CTA).
+- Aplicado en listados de Clientes, Causas y en el widget de causas del dashboard.
+
+### 4. Toasts de confirmación (sonner)
+- `<Toaster richColors position="top-right" closeButton />` montado en el layout del dashboard.
+- Reemplazados todos los `alert()` por `toast.error(...)` y agregado `toast.success(...)` en cada flujo de creación/edición/eliminación (clientes, causas, citas, tareas, actuaciones, plazos, honorarios, documentos).
+
+**Dependencia agregada:** `sonner ^1.5.0` (instalada con `--legacy-peer-deps`).
+
+---
+
+## Fase 2 — UX profesional (búsqueda, skeletons y finanzas)
+
+### 5. Búsqueda global (Cmd+K)
+- Endpoint `src/app/api/search/route.ts`: busca en clientes (nombre/RUT), causas (ROL/materia/contraparte) y citas (título), filtrado por `userId`, máx. 5 por grupo.
+- Componente `src/components/GlobalSearch.tsx` (paleta de comandos):
+  - Atajo **⌘K / Ctrl+K** para abrir, **Esc** para cerrar.
+  - Búsqueda con debounce (220 ms) y `AbortController`.
+  - Navegación con flechas ↑/↓ y Enter, resultados agrupados con iconos.
+- Montado en una barra superior sticky en `(dashboard)/layout.tsx`.
+
+### 6. Skeleton loading
+- Primitivas reutilizables en `src/components/Skeleton.tsx`: `Skeleton`, `StatsSkeleton`, `TableSkeleton`, `HeaderSkeleton`, `CardsSkeleton`.
+- Archivos `loading.tsx` (convención App Router) para: dashboard, clientes, causas, tareas, citas, agenda, documentos y honorarios.
+
+### 7. Dashboard financiero mejorado
+- Nueva KPI **Tasa de cobro** (pagado / emitido, excluye anulados) con barra de progreso.
+- Gráfico de barras **Honorarios por mes** (emitido vs cobrado, últimos 6 meses) en `src/components/MonthlyBarChart.tsx` — CSS puro, sin librerías de charting.
+
+---
+
+## Fase 3 (parcial) — Módulo de IA
+
+Asistente jurídico con IA, integrado en la página de detalle de cada causa.
+
+### Arquitectura (proveedor intercambiable)
+- `src/lib/ai/provider.ts` — interfaz `AIProvider` (`isConfigured()`, `complete()`), tipos y `AIError`.
+- `src/lib/ai/anthropic.ts` — implementación sobre la Messages API de Anthropic (fetch directo).
+- `src/lib/ai/index.ts` — factory `getAIProvider()`; cambiar de motor = devolver otra implementación aquí.
+- `src/lib/ai/prompts.ts` — `buildCausaContext()`, prompts de sistema/usuario y `TIPOS_ESCRITO`.
+- `src/lib/ai/causa-context.ts` — carga la causa (validando `userId`) y arma el contexto.
+
+### Funciones
+1. **Resumen de causa**: resumen ejecutivo (estado, últimas actuaciones, próximos hitos, acciones recomendadas).
+2. **Borrador de escrito**: genera borradores según tipo (téngase presente, apelación, contestación, etc.) + instrucciones libres. Usa marcadores `[CITAR NORMA]` / `[COMPLETAR]` en vez de inventar datos.
+
+### Rutas API
+- `POST /api/ai/resumen`  → `{ causaId }` → `{ texto }`
+- `POST /api/ai/borrador` → `{ causaId, tipo, instrucciones }` → `{ texto }`
+- Ambas validan sesión (`getUserId`) y pertenencia de la causa; mapean `AIError` a HTTP (401/404/429/502/503).
+
+### UI
+- `src/components/AIPanel.tsx`: panel con pestañas Resumen / Borrador, estado de carga, botón copiar y aviso de revisión humana. Integrado en la columna lateral de `causas/[id]`.
+
+### Configuración necesaria (Vercel → Environment Variables)
+- `ANTHROPIC_API_KEY` — API key de Anthropic (obligatoria para activar la IA).
+- `AI_MODEL` — opcional, default `claude-sonnet-4-6`.
+
+Sin la key, el módulo responde con un aviso claro ("La IA no está configurada…") y el resto de la app funciona normalmente.

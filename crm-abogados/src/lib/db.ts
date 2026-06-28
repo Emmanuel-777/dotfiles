@@ -109,6 +109,23 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS prospectos (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL DEFAULT '',
+      nombre TEXT NOT NULL,
+      empresa TEXT,
+      email TEXT,
+      telefono TEXT,
+      origen TEXT DEFAULT 'REFERIDO',
+      etapa TEXT NOT NULL DEFAULT 'CONTACTO',
+      valor_estimado REAL,
+      notas TEXT,
+      fecha_contacto TEXT NOT NULL,
+      proximo_contacto TEXT,
+      cliente_id TEXT REFERENCES clientes(id) ON DELETE SET NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS citas (
       id TEXT PRIMARY KEY,
       titulo TEXT NOT NULL,
@@ -146,6 +163,10 @@ export async function initDB() {
     `ALTER TABLE honorarios ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
     `ALTER TABLE tareas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
     `ALTER TABLE citas ADD COLUMN user_id TEXT NOT NULL DEFAULT ''`,
+    // Conversión de prospecto a cliente
+    `ALTER TABLE prospectos ADD COLUMN cliente_id TEXT REFERENCES clientes(id)`,
+    // Recordatorio de seguimiento del prospecto
+    `ALTER TABLE prospectos ADD COLUMN proximo_contacto TEXT`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

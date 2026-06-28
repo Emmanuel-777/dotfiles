@@ -82,7 +82,7 @@ export default function CaratulaPage() {
     return `${d} de ${meses[m - 1]} de ${y}`
   })()
 
-  if (!cliente) return <div className="p-8 text-gray-400">Cargando...</div>
+  if (!cliente) return <div className="p-4 lg:p-8 text-gray-400">Cargando...</div>
 
   return (
     <>
