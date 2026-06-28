@@ -15,6 +15,8 @@ import {
   ChevronRight,
   LogOut,
   LifeBuoy,
+  MessageCircle,
+  Mail,
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -147,13 +149,25 @@ export default function Sidebar({
       </nav>
 
       {/* Ayuda técnica */}
-      <div className="px-3 pb-2">
+      <div className="px-3 pb-2 border-t border-white/10 pt-3">
+        <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Soporte</p>
+        <a
+          href="https://wa.me/56979710838?text=Hola%2C%20necesito%20ayuda%20con%20LexCRM"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+        >
+          <MessageCircle className="h-4 w-4 flex-shrink-0 text-green-400" />
+          <span>WhatsApp</span>
+        </a>
         <a
           href="mailto:emaferna.contacto@gmail.com?subject=Ayuda%20LexCRM"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+          onClick={onClose}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/10 hover:text-white transition-all"
         >
-          <LifeBuoy className="h-4 w-4 flex-shrink-0" />
-          <span>Ayuda técnica</span>
+          <Mail className="h-4 w-4 flex-shrink-0" />
+          <span>Correo electrónico</span>
         </a>
       </div>
 
