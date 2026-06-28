@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, Users, Briefcase, CalendarDays, Loader2, CornerDownLeft } from 'lucide-react'
+import { Search, Users, Briefcase, CalendarDays, Loader2, CornerDownLeft, X } from 'lucide-react'
 
 interface SearchResults {
   clientes: { id: string; nombre: string; rut: string }[]
@@ -130,10 +130,10 @@ export default function GlobalSearch() {
   let renderedGroup = ''
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-900/40 px-4 pt-[12vh]" onMouseDown={() => setOpen(false)}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-slate-900/40 px-4 pt-[12vh]" onClick={() => setOpen(false)}>
       <div
         className="w-full max-w-xl overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black/5"
-        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Input */}
         <div className="flex items-center gap-3 border-b border-gray-100 px-4">
@@ -146,7 +146,13 @@ export default function GlobalSearch() {
             placeholder="Buscar clientes, causas, citas…"
             className="w-full py-4 text-sm text-gray-900 placeholder-gray-400 outline-none"
           />
-          <kbd className="rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-medium text-gray-400">ESC</kbd>
+          <button
+            onClick={() => setOpen(false)}
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
+            aria-label="Cerrar búsqueda"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         {/* Resultados */}

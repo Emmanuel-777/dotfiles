@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide Vercel toolbar in all environments */
+vercel-toolbar,
+vercel-live-feedback,
+#vercel-toolbar,
+[data-vercel-toolbar] {
+  display: none !important;
+}
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
