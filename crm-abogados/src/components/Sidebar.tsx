@@ -89,12 +89,8 @@ export default function Sidebar({
 
   return (
     <aside
-      className={cn(
-        'w-64 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900',
-        'transition-transform duration-300 ease-in-out',
-        isOpen ? 'translate-x-0' : '-translate-x-full',
-        'lg:translate-x-0'
-      )}
+      className="w-64 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
+      style={isOpen ? { transform: 'translateX(0)' } : undefined}
     >
       {/* Logo */}
       <div className="px-4 py-4 border-b border-white/10">
