@@ -79,7 +79,7 @@ export default function ConvertirProspectoPage() {
 
   if (cargando) {
     return (
-      <div className="p-8 max-w-2xl">
+      <div className="p-4 lg:p-8 max-w-2xl">
         <div className="h-4 w-32 bg-gray-100 rounded animate-pulse mb-6" />
         <div className="h-8 w-64 bg-gray-100 rounded animate-pulse mb-6" />
         <div className="card p-6 space-y-4">
@@ -92,7 +92,7 @@ export default function ConvertirProspectoPage() {
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 lg:p-8 max-w-2xl">
       <Link href="/embudo" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver al embudo

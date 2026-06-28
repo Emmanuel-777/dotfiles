@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/Skeleton'
 
 export default function LoadingEmbudo() {
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div className="space-y-2">
           <Skeleton className="h-8 w-52" />
@@ -11,7 +11,7 @@ export default function LoadingEmbudo() {
         <Skeleton className="h-9 w-40" />
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="card p-4 space-y-2">
             <Skeleton className="h-8 w-16" />

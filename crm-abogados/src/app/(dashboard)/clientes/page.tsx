@@ -22,7 +22,7 @@ export default async function ClientesPage() {
   const countMap = Object.fromEntries(causasCounts.map((c) => [c.clienteId, c.total]))
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Clientes</h1>
@@ -34,7 +34,7 @@ export default async function ClientesPage() {
         </Link>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>

@@ -24,7 +24,7 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
   const totalPendiente = clienteHonorarios.filter((h) => h.estado === 'PENDIENTE' || h.estado === 'PARCIAL').reduce((s, h) => s + h.monto, 0)
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <Link href="/clientes" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver a clientes
@@ -69,7 +69,7 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="card p-4 text-center">
           <p className="text-2xl font-bold text-blue-600">{clienteCausas.length}</p>
           <p className="text-sm text-gray-500 mt-1">Causas</p>

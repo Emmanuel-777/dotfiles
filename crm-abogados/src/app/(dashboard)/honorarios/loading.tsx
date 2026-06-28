@@ -2,7 +2,7 @@ import { HeaderSkeleton, StatsSkeleton, TableSkeleton } from '@/components/Skele
 
 export default function Loading() {
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <HeaderSkeleton />
       <div className="mb-6">
         <StatsSkeleton count={3} />

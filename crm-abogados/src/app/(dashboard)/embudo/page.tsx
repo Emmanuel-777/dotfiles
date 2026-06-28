@@ -35,7 +35,7 @@ export default async function EmbudoPage() {
     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(v)
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Embudo comercial</h1>
@@ -58,7 +58,7 @@ export default async function EmbudoPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="card p-4">
           <p className="text-2xl font-bold text-gray-900">{activos.length}</p>
           <p className="text-xs text-gray-500 mt-1">En pipeline activo</p>

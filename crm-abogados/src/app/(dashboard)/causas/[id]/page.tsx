@@ -36,7 +36,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
   const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <Link href="/causas" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver a causas

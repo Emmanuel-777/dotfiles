@@ -44,7 +44,7 @@ export default async function AgendaPage() {
   })
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Agenda y Plazos</h1>
@@ -56,7 +56,7 @@ export default async function AgendaPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="card p-4 text-center border-l-4 border-amber-400">
           <p className="text-3xl font-bold text-amber-600">{hoy7.length}</p>
           <p className="text-sm text-gray-500 mt-1">Esta semana</p>

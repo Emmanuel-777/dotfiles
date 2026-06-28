@@ -2,7 +2,7 @@ import { StatsSkeleton, TableSkeleton, Skeleton } from '@/components/Skeleton'
 
 export default function Loading() {
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="mb-6 space-y-2">
         <Skeleton className="h-6 w-40" />
         <Skeleton className="h-3 w-56" />

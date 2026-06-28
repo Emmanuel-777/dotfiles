@@ -59,7 +59,7 @@ export default async function HonorariosPage() {
   const hayDatosGrafico = buckets.some((b) => b.emitido > 0 || b.cobrado > 0)
 
   return (
-    <div className="p-8">
+    <div className="p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Honorarios</h1>
@@ -102,7 +102,7 @@ export default async function HonorariosPage() {
         </div>
       )}
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
