@@ -10,7 +10,7 @@ import {
 } from '@/lib/utils'
 import Link from 'next/link'
 import { eq, asc, desc } from 'drizzle-orm'
-import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
+import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock, Plus } from 'lucide-react'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import { requireUserId } from '@/lib/auth'
 
@@ -50,6 +50,10 @@ export default async function TareasPage() {
           </h1>
           <p className="text-gray-500 text-sm mt-1">Consolidado de todas las causas</p>
         </div>
+        <Link href="/tareas/nueva" className="btn-primary">
+          <Plus className="h-4 w-4" />
+          Nueva tarea
+        </Link>
       </div>
 
       {/* Stats */}
