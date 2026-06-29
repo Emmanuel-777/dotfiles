@@ -25,33 +25,37 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     return NextResponse.json({ error: 'RUT y nombre son requeridos' }, { status: 400 })
   }
 
-  // RUT único: evitar choque con un cliente existente
+  // RUT único global (constraint en DB no está acotado por userId)
   const [existente] = await db
     .select({ id: clientes.id })
     .from(clientes)
-    .where(and(eq(clientes.rut, rut), eq(clientes.userId, userId)))
+    .where(eq(clientes.rut, rut))
   if (existente) {
     return NextResponse.json({ error: 'Ya existe un cliente con ese RUT' }, { status: 409 })
   }
 
   const clienteId = nanoid()
   const now = new Date().toISOString()
-  await db.insert(clientes).values({
-    id: clienteId,
-    userId,
-    rut,
-    nombre,
-    tipo: tipo || 'PERSONA_NATURAL',
-    email: email || null,
-    telefono: telefono || null,
-    celular: celular || null,
-    direccion: direccion || null,
-    ciudad: ciudad || 'Santiago',
-    region: region || 'Región Metropolitana',
-    notas: notas || null,
-    createdAt: now,
-    updatedAt: now,
-  })
+  try {
+    await db.insert(clientes).values({
+      id: clienteId,
+      userId,
+      rut,
+      nombre,
+      tipo: tipo || 'PERSONA_NATURAL',
+      email: email || null,
+      telefono: telefono || null,
+      celular: celular || null,
+      direccion: direccion || null,
+      ciudad: ciudad || 'Santiago',
+      region: region || 'Región Metropolitana',
+      notas: notas || null,
+      createdAt: now,
+      updatedAt: now,
+    })
+  } catch {
+    return NextResponse.json({ error: 'No se pudo crear el cliente. Verifica que el RUT no esté duplicado.' }, { status: 409 })
+  }
 
   // Vincular prospecto y asegurar etapa GANADO
   await db

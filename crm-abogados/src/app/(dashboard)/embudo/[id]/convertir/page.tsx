@@ -66,7 +66,7 @@ export default function ConvertirProspectoPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'Error al convertir')
       toast.success('Prospecto convertido en cliente')
       router.push(`/clientes/${data.clienteId}`)
