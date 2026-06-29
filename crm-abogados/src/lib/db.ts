@@ -171,4 +171,47 @@ export async function initDB() {
   for (const m of migrations) {
     try { await client.execute(m) } catch {}
   }
+
+  // Migración estructural: agregar cliente_id a tareas y hacer causa_id opcional
+  try {
+    const info = await client.execute('PRAGMA table_info(tareas)')
+    const cols = info.rows.map((r) => r[1] as string)
+    if (!cols.includes('cliente_id')) {
+      await client.execute(`
+        CREATE TABLE tareas_new (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL DEFAULT '',
+          titulo TEXT NOT NULL,
+          descripcion TEXT,
+          estado TEXT NOT NULL DEFAULT 'PENDIENTE',
+          prioridad TEXT NOT NULL DEFAULT 'MEDIA',
+          fecha_vencimiento TEXT,
+          asignado_a TEXT,
+          asignado_email TEXT,
+          es_derivada INTEGER NOT NULL DEFAULT 0,
+          credenciales_portal TEXT,
+          notas TEXT,
+          cliente_id TEXT REFERENCES clientes(id) ON DELETE CASCADE,
+          causa_id TEXT REFERENCES causas(id) ON DELETE SET NULL,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+      `)
+      await client.execute(`
+        INSERT INTO tareas_new
+          SELECT t.id, t.user_id, t.titulo, t.descripcion, t.estado, t.prioridad,
+                 t.fecha_vencimiento, t.asignado_a, t.asignado_email, t.es_derivada,
+                 t.credenciales_portal, t.notas,
+                 c.cliente_id,
+                 t.causa_id,
+                 t.created_at, t.updated_at
+          FROM tareas t
+          LEFT JOIN causas c ON t.causa_id = c.id
+      `)
+      await client.execute(`DROP TABLE tareas`)
+      await client.execute(`ALTER TABLE tareas_new RENAME TO tareas`)
+    }
+  } catch (e) {
+    console.error('Migración tareas:', e)
+  }
 }

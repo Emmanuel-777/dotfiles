@@ -104,7 +104,8 @@ export const tareas = sqliteTable('tareas', {
   esDerivada: integer('es_derivada').notNull().default(0),
   credencialesPortal: text('credenciales_portal'),
   notas: text('notas'),
-  causaId: text('causa_id').notNull().references(() => causas.id),
+  clienteId: text('cliente_id').references(() => clientes.id),
+  causaId: text('causa_id').references(() => causas.id),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })

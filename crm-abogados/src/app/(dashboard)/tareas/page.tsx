@@ -24,7 +24,7 @@ export default async function TareasPage() {
     .select({ tarea: tareas, causa: causas, cliente: clientes })
     .from(tareas)
     .leftJoin(causas, eq(tareas.causaId, causas.id))
-    .leftJoin(clientes, eq(causas.clienteId, clientes.id))
+    .leftJoin(clientes, eq(tareas.clienteId, clientes.id))
     .where(eq(tareas.userId, userId))
     .orderBy(asc(tareas.fechaVencimiento), desc(tareas.createdAt))
 
@@ -122,9 +122,9 @@ export default async function TareasPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className={`badge ${prioridadT?.color}`}>{prioridadT?.label}</span>
-                        <Link href={`/causas/${tarea.causaId}`} className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                        <span className="text-sm font-semibold text-gray-900">
                           {tarea.titulo}
-                        </Link>
+                        </span>
                         {tarea.esDerivada === 1 && (
                           <span className="badge bg-orange-100 text-orange-700 flex items-center gap-1">
                             <UserCheck className="h-3 w-3" />

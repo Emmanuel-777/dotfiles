@@ -1,10 +1,10 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, honorarios } from '@/lib/schema'
-import { eq, and } from 'drizzle-orm'
+import { clientes, causas, honorarios, tareas } from '@/lib/schema'
+import { eq, and, asc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText } from 'lucide-react'
-import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO } from '@/lib/utils'
+import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock } from 'lucide-react'
+import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -15,9 +15,10 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
   const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
   if (!cliente) notFound()
 
-  const [clienteCausas, clienteHonorarios] = await Promise.all([
+  const [clienteCausas, clienteHonorarios, clienteTareas] = await Promise.all([
     db.select().from(causas).where(and(eq(causas.clienteId, params.id), eq(causas.userId, userId))),
     db.select().from(honorarios).where(and(eq(honorarios.clienteId, params.id), eq(honorarios.userId, userId))),
+    db.select().from(tareas).where(and(eq(tareas.clienteId, params.id), eq(tareas.userId, userId))).orderBy(asc(tareas.fechaVencimiento)),
   ])
 
   const totalPagado = clienteHonorarios.filter((h) => h.estado === 'PAGADO').reduce((s, h) => s + h.monto, 0)
@@ -146,6 +147,55 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
               })
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Tareas */}
+      <div className="card mt-6">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <ListTodo className="h-4 w-4 text-violet-500" />
+            Tareas ({clienteTareas.length})
+          </h2>
+          <Link href={`/clientes/${cliente.id}/tareas/nueva`} className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1">
+            <Plus className="h-3 w-3" /> Nueva tarea
+          </Link>
+        </div>
+        <div className="divide-y divide-gray-50">
+          {clienteTareas.length === 0 ? (
+            <p className="px-6 py-6 text-center text-sm text-gray-400">Sin tareas</p>
+          ) : (
+            clienteTareas.map((t) => {
+              const urgencia = urgenciaTarea(t.fechaVencimiento)
+              const clases = urgencia ? URGENCIA_CLASES[urgencia] : null
+              const estadoT = ESTADOS_TAREA[t.estado as keyof typeof ESTADOS_TAREA]
+              const prioridadT = PRIORIDADES_TAREA[t.prioridad as keyof typeof PRIORIDADES_TAREA]
+              const causa = clienteCausas.find((c) => c.id === t.causaId)
+              return (
+                <div key={t.id} className={`flex items-center justify-between px-6 py-3 ${clases ? `${clases.bg}` : ''}`}>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`badge ${prioridadT?.color}`}>{prioridadT?.label}</span>
+                      <span className="text-sm font-medium text-gray-900 truncate">{t.titulo}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-500">
+                      {causa && (
+                        <Link href={`/causas/${causa.id}`} className="font-mono text-blue-600 hover:text-blue-700">{causa.rol}</Link>
+                      )}
+                      {t.fechaVencimiento && (
+                        <span className={`flex items-center gap-1 ${clases?.texto ?? ''}`}>
+                          {urgencia === 'roja' && <AlertTriangle className="h-3 w-3" />}
+                          {urgencia === 'amarilla' && <Clock className="h-3 w-3" />}
+                          {formatFechaCorta(t.fechaVencimiento)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span className={`badge flex-shrink-0 ml-3 ${estadoT?.color}`}>{estadoT?.label}</span>
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
 
