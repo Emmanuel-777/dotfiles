@@ -182,8 +182,8 @@ function NuevaCausaForm() {
           </div>
 
           <div>
-            <label className="label">Contraparte</label>
-            <input name="contraparte" value={form.contraparte} onChange={handleChange} className="input" placeholder="Nombre o razón social" />
+            <label className="label">Carátula</label>
+            <input name="contraparte" value={form.contraparte} onChange={handleChange} className="input" placeholder="Ej: Pérez con García" />
           </div>
 
           <div>

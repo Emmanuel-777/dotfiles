@@ -153,8 +153,8 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
           </div>
 
           <div>
-            <label className="label">Contraparte</label>
-            <input name="contraparte" value={form.contraparte} onChange={handleChange} className="input" />
+            <label className="label">Carátula</label>
+            <input name="contraparte" value={form.contraparte} onChange={handleChange} className="input" placeholder="Ej: Pérez con García" />
           </div>
 
           <div>
