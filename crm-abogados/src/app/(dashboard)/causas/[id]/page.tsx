@@ -8,6 +8,7 @@ import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HO
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import ReminderButtons from '@/components/ReminderButtons'
 import AIPanel from '@/components/AIPanel'
+import CausaDocUpload from '@/components/CausaDocUpload'
 import { TIPOS_ESCRITO } from '@/lib/ai/prompts'
 import { requireUserId } from '@/lib/auth'
 
@@ -276,7 +277,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                 Documentos
               </h2>
               <Link href={`/documentos/nuevo?causaId=${causa.id}`} className="text-blue-600 text-xs hover:text-blue-700 flex items-center gap-1">
-                <Plus className="h-3 w-3" /> Subir
+                <Plus className="h-3 w-3" /> Ver todos
               </Link>
             </div>
             <div className="divide-y divide-gray-50">
@@ -300,6 +301,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                 ))
               )}
             </div>
+            <CausaDocUpload causaId={causa.id} />
           </div>
 
           <div className="card">
