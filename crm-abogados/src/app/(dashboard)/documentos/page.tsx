@@ -68,9 +68,7 @@ export default async function DocumentosPage() {
                 </Link>
                 {doc.archivo && (
                   <a
-                    href={doc.archivo}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`/api/documentos/download?url=${encodeURIComponent(doc.archivo)}`}
                     className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
                   >
                     <Download className="h-3.5 w-3.5" />

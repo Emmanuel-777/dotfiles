@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/\.[^.]+$/, '') + ext
     const pathname = `documentos/${userId}/${Date.now()}_${safeName}`
 
-    const blob = await put(pathname, file, { access: 'public' })
+    const blob = await put(pathname, file, { access: 'private' })
     return NextResponse.json({ url: blob.url })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Error desconocido'

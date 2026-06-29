@@ -291,7 +291,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                       <p className="text-xs text-gray-400">{doc.tipo} · {formatFechaCorta(doc.createdAt!)}</p>
                     </div>
                     {doc.archivo && (
-                      <a href={doc.archivo} target="_blank" rel="noopener noreferrer"
+                      <a href={`/api/documentos/download?url=${encodeURIComponent(doc.archivo)}`}
                         className="flex-shrink-0 flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium">
                         <Download className="h-3.5 w-3.5" />
                         Descargar
