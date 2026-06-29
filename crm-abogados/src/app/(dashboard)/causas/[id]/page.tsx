@@ -3,7 +3,7 @@ import { causas, clientes, actuaciones, plazos, documentos, honorarios, tareas }
 import { eq, desc, asc, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound, Bell } from 'lucide-react'
+import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound, Bell, Download } from 'lucide-react'
 import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import ReminderButtons from '@/components/ReminderButtons'
@@ -284,9 +284,18 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                 <p className="px-5 py-4 text-center text-xs text-gray-400">Sin documentos</p>
               ) : (
                 docs.map((doc) => (
-                  <div key={doc.id} className="px-5 py-3">
-                    <p className="text-xs font-medium text-gray-800 truncate">{doc.nombre}</p>
-                    <p className="text-xs text-gray-400">{doc.tipo} · {formatFechaCorta(doc.createdAt!)}</p>
+                  <div key={doc.id} className="px-5 py-3 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-gray-800 truncate">{doc.nombre}</p>
+                      <p className="text-xs text-gray-400">{doc.tipo} · {formatFechaCorta(doc.createdAt!)}</p>
+                    </div>
+                    {doc.archivo && (
+                      <a href={doc.archivo} target="_blank" rel="noopener noreferrer"
+                        className="flex-shrink-0 flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                        <Download className="h-3.5 w-3.5" />
+                        Descargar
+                      </a>
+                    )}
                   </div>
                 ))
               )}

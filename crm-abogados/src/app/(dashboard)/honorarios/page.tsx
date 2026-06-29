@@ -2,7 +2,7 @@ import { db, initDB } from '@/lib/db'
 import { honorarios, clientes, causas } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, DollarSign, TrendingUp } from 'lucide-react'
+import { Plus, DollarSign, TrendingUp, Pencil } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_HONORARIO } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 import MonthlyBarChart, { type MonthBucket } from '@/components/MonthlyBarChart'
@@ -113,6 +113,7 @@ export default async function HonorariosPage() {
               <th className="table-header">Fecha</th>
               <th className="table-header text-right">Monto</th>
               <th className="table-header text-center">Estado</th>
+              <th className="table-header" />
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -123,6 +124,7 @@ export default async function HonorariosPage() {
                   <td className="table-cell">
                     <p className="font-medium text-gray-900">{h.descripcion}</p>
                     {h.fechaVence && <p className="text-xs text-amber-600">Vence: {formatFechaCorta(h.fechaVence)}</p>}
+                    {h.fechaPago && <p className="text-xs text-green-600">Pagado: {formatFechaCorta(h.fechaPago)}</p>}
                   </td>
                   <td className="table-cell text-gray-600 text-sm">{cliente?.nombre}</td>
                   <td className="table-cell font-mono text-xs text-gray-500">{causa?.rol || '—'}</td>
@@ -131,6 +133,12 @@ export default async function HonorariosPage() {
                   <td className="table-cell text-right font-semibold text-gray-900">{formatMonto(h.monto)}</td>
                   <td className="table-cell text-center">
                     <span className={`badge ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
+                  </td>
+                  <td className="table-cell text-center">
+                    <Link href={`/honorarios/${h.id}/editar`} className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium">
+                      <Pencil className="h-3.5 w-3.5" />
+                      Editar
+                    </Link>
                   </td>
                 </tr>
               )
