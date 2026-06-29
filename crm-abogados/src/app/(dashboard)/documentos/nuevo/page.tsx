@@ -74,7 +74,7 @@ function NuevoDocumentoForm() {
         body: JSON.stringify({ ...form, archivo: archivoUrl }),
       })
       if (!res.ok) throw new Error()
-      toast.success('Documento registrado')
+      toast.success('Documento subido')
       router.push('/documentos')
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Error al guardar')
@@ -89,7 +89,7 @@ function NuevoDocumentoForm() {
         <ArrowLeft className="h-4 w-4" />
         Volver
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Registrar documento</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Subir documento</h1>
       <form onSubmit={handleSubmit} className="card p-6 space-y-4">
 
         {/* File upload */}
@@ -144,7 +144,7 @@ function NuevoDocumentoForm() {
         <div className="flex gap-3 pt-2">
           <button type="submit" disabled={loading} className="btn-primary">
             <Save className="h-4 w-4" />
-            {loading ? (file ? 'Subiendo...' : 'Guardando...') : 'Registrar'}
+            {loading ? (file ? 'Subiendo...' : 'Guardando...') : 'Subir documento'}
           </button>
           <Link href="/documentos" className="btn-secondary">Cancelar</Link>
         </div>

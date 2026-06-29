@@ -276,8 +276,8 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                 <FileText className="h-4 w-4 text-gray-500" />
                 Documentos
               </h2>
-              <Link href={`/documentos/nuevo?causaId=${causa.id}`} className="text-blue-600 text-xs hover:text-blue-700 flex items-center gap-1">
-                <Plus className="h-3 w-3" /> Ver todos
+              <Link href={`/documentos/nuevo?causaId=${causa.id}`} className="text-blue-600 text-xs hover:text-blue-700 flex items-center gap-1 font-medium">
+                <Plus className="h-3 w-3" /> Subir documento
               </Link>
             </div>
             <div className="divide-y divide-gray-50">

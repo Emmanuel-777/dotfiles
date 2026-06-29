@@ -37,7 +37,7 @@ export default async function DocumentosPage() {
         </div>
         <Link href="/documentos/nuevo" className="btn-primary">
           <Plus className="h-4 w-4" />
-          Registrar documento
+          Subir documento
         </Link>
       </div>
 
