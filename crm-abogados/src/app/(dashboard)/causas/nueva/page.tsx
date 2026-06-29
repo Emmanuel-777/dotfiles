@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
-import { TIPOS_CAUSA, TRIBUNALES_CHILE } from '@/lib/utils'
+import { TIPOS_CAUSA, TRIBUNALES_CHILE, tribunalesPorTipo } from '@/lib/utils'
 import { toast } from 'sonner'
 
 function NuevaCausaForm() {
@@ -30,8 +30,15 @@ function NuevaCausaForm() {
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const { name, value } = e.target
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'tipoCausa' ? { tribunal: '' } : {}),
+    }))
   }
+
+  const tribunalesFiltrados = tribunalesPorTipo(form.tipoCausa, TRIBUNALES_CHILE)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,11 +99,14 @@ function NuevaCausaForm() {
               required
               list="tribunales-list"
               className="input"
-              placeholder="Buscar tribunal..."
+              placeholder={`Buscar tribunal ${form.tipoCausa !== 'Otro' ? `(${tribunalesFiltrados.length} disponibles)` : ''}...`}
             />
             <datalist id="tribunales-list">
-              {TRIBUNALES_CHILE.map((t) => <option key={t} value={t} />)}
+              {tribunalesFiltrados.map((t) => <option key={t} value={t} />)}
             </datalist>
+            {tribunalesFiltrados.length === 0 && form.tribunal === '' && (
+              <p className="text-xs text-amber-600 mt-1">No hay tribunales predefinidos para este tipo — escribe el nombre completo.</p>
+            )}
           </div>
 
           <div className="col-span-2">

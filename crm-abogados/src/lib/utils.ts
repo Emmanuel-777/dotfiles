@@ -97,6 +97,24 @@ export const ESTADOS_PLAZO = {
 
 export const TIPOS_CAUSA = ['Civil', 'Laboral', 'Familia', 'Penal', 'Comercial', 'Tributario', 'Administrativo', 'Constitucional', 'Otro']
 
+const KEYWORDS_POR_TIPO: Record<string, string[]> = {
+  Civil:          ['Civil', 'Letras'],
+  Laboral:        ['Trabajo', 'Laboral', 'Previsional', 'Cobranza'],
+  Familia:        ['Familia'],
+  Penal:          ['Garantía', 'Penal', 'Crimen'],
+  Comercial:      ['Civil', 'Letras', 'Comercio'],
+  Tributario:     ['Tributario', 'Aduanero', 'SII'],
+  Administrativo: ['Administrativo', 'Contencioso', 'Contraloría'],
+  Constitucional: ['Constitucional', 'Electoral'],
+  Otro:           [],
+}
+
+export function tribunalesPorTipo(tipo: string, todos: string[]): string[] {
+  const keywords = KEYWORDS_POR_TIPO[tipo]
+  if (!keywords || keywords.length === 0) return todos
+  return todos.filter((t) => keywords.some((k) => t.toLowerCase().includes(k.toLowerCase())))
+}
+
 export const ESTADOS_TAREA = {
   PENDIENTE: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800' },
   EN_PROGRESO: { label: 'En Progreso', color: 'bg-blue-100 text-blue-800' },
