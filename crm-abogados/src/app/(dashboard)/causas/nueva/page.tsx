@@ -1,17 +1,29 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Upload, X, FileText } from 'lucide-react'
 import { TIPOS_CAUSA, TRIBUNALES_CHILE, tribunalesPorTipo } from '@/lib/utils'
 import { toast } from 'sonner'
+
+const TIPOS_DOC = ['PODER', 'ESCRITO', 'RESOLUCION', 'CONTRATO', 'OTRO']
+const TIPO_DOC_LABELS: Record<string, string> = {
+  PODER: 'Poder notarial / Patrocinio', ESCRITO: 'Escrito', RESOLUCION: 'Resolución',
+  CONTRATO: 'Contrato', OTRO: 'Otro',
+}
+const ACCEPTED = '.pdf,.doc,.docx,.jpg,.jpeg,.png'
+const MAX_MB = 10
 
 function NuevaCausaForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const fileRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
   const [clientes, setClientes] = useState<{ id: string; nombre: string; rut: string }[]>([])
+  const [file, setFile] = useState<File | null>(null)
+  const [docNombre, setDocNombre] = useState('')
+  const [docTipo, setDocTipo] = useState('PODER')
   const [form, setForm] = useState({
     rol: '',
     tribunal: '',
@@ -38,21 +50,68 @@ function NuevaCausaForm() {
     }))
   }
 
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null
+    if (!f) return
+    if (f.size > MAX_MB * 1024 * 1024) {
+      toast.error(`El archivo supera ${MAX_MB} MB`)
+      e.target.value = ''
+      return
+    }
+    setFile(f)
+    const baseName = f.name.replace(/\.[^.]+$/, '')
+    setDocNombre(baseName)
+    const lower = f.name.toLowerCase()
+    if (lower.includes('poder') || lower.includes('patrocinio')) setDocTipo('PODER')
+    else if (lower.includes('contrato')) setDocTipo('CONTRATO')
+    else if (lower.includes('resolucion') || lower.includes('resolución')) setDocTipo('RESOLUCION')
+    else setDocTipo('PODER')
+  }
+
+  const removeFile = () => {
+    setFile(null)
+    setDocNombre('')
+    setDocTipo('PODER')
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
   const tribunalesFiltrados = tribunalesPorTipo(form.tipoCausa, TRIBUNALES_CHILE)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
+      // 1. Crear la causa
       const res = await fetch('/api/causas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, fechaIngreso: new Date(form.fechaIngreso).toISOString() }),
       })
       if (!res.ok) throw new Error(await res.text())
-      toast.success('Causa creada correctamente')
-      const data = await res.json()
-      router.push(`/causas/${data.id}`)
+      const causa = await res.json()
+
+      // 2. Si hay archivo, subirlo y registrar el documento
+      if (file) {
+        try {
+          const fd = new FormData()
+          fd.append('file', file)
+          const uploadRes = await fetch('/api/documentos/upload', { method: 'POST', body: fd })
+          if (!uploadRes.ok) throw new Error('Error al subir el archivo')
+          const { url } = await uploadRes.json()
+          await fetch('/api/documentos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: docNombre || file.name, tipo: docTipo, causaId: causa.id, archivo: url }),
+          })
+        } catch {
+          toast.warning('Causa creada, pero el archivo no se pudo subir. Puedes subirlo desde la causa.')
+          router.push(`/causas/${causa.id}`)
+          return
+        }
+      }
+
+      toast.success(file ? 'Causa creada con documento adjunto' : 'Causa creada correctamente')
+      router.push(`/causas/${causa.id}`)
     } catch {
       toast.error('Error al guardar la causa')
     } finally {
@@ -73,14 +132,7 @@ function NuevaCausaForm() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">ROL / RIT *</label>
-            <input
-              name="rol"
-              value={form.rol}
-              onChange={handleChange}
-              required
-              className="input font-mono"
-              placeholder="C-1234-2024"
-            />
+            <input name="rol" value={form.rol} onChange={handleChange} required className="input font-mono" placeholder="C-1234-2024" />
           </div>
 
           <div>
@@ -121,47 +173,22 @@ function NuevaCausaForm() {
 
           <div>
             <label className="label">Materia</label>
-            <input
-              name="materia"
-              value={form.materia}
-              onChange={handleChange}
-              className="input"
-              placeholder="Ej: Cobro de pesos"
-            />
+            <input name="materia" value={form.materia} onChange={handleChange} className="input" placeholder="Ej: Cobro de pesos" />
           </div>
 
           <div>
             <label className="label">Fecha de ingreso *</label>
-            <input
-              name="fechaIngreso"
-              type="date"
-              value={form.fechaIngreso}
-              onChange={handleChange}
-              required
-              className="input"
-            />
+            <input name="fechaIngreso" type="date" value={form.fechaIngreso} onChange={handleChange} required className="input" />
           </div>
 
           <div>
             <label className="label">Contraparte</label>
-            <input
-              name="contraparte"
-              value={form.contraparte}
-              onChange={handleChange}
-              className="input"
-              placeholder="Nombre o razón social"
-            />
+            <input name="contraparte" value={form.contraparte} onChange={handleChange} className="input" placeholder="Nombre o razón social" />
           </div>
 
           <div>
             <label className="label">Abogado responsable</label>
-            <input
-              name="abogadoResponsable"
-              value={form.abogadoResponsable}
-              onChange={handleChange}
-              className="input"
-              placeholder="Abg. Juan Pérez"
-            />
+            <input name="abogadoResponsable" value={form.abogadoResponsable} onChange={handleChange} className="input" placeholder="Abg. Juan Pérez" />
           </div>
 
           <div>
@@ -176,21 +203,52 @@ function NuevaCausaForm() {
 
           <div className="col-span-2">
             <label className="label">Descripción / Notas</label>
-            <textarea
-              name="descripcion"
-              value={form.descripcion}
-              onChange={handleChange}
-              rows={3}
-              className="input resize-none"
-              placeholder="Resumen del caso, antecedentes relevantes..."
-            />
+            <textarea name="descripcion" value={form.descripcion} onChange={handleChange} rows={3} className="input resize-none" placeholder="Resumen del caso, antecedentes relevantes..." />
+          </div>
+
+          {/* Documento adjunto */}
+          <div className="col-span-2 pt-2 border-t border-gray-100">
+            <label className="label">Documento adjunto (opcional)</label>
+            {!file ? (
+              <label className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                <Upload className="h-5 w-5 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-500">Subir patrocinio, poder u otro documento</p>
+                  <p className="text-xs text-gray-400">PDF, DOC, DOCX, JPG, PNG — máx. {MAX_MB} MB</p>
+                </div>
+                <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFile} className="sr-only" />
+              </label>
+            ) : (
+              <div className="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                  <span className="text-sm text-blue-800 truncate flex-1">{file.name}</span>
+                  <span className="text-xs text-blue-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+                  <button type="button" onClick={removeFile} className="text-blue-300 hover:text-blue-600">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label text-xs">Nombre del documento</label>
+                    <input value={docNombre} onChange={(e) => setDocNombre(e.target.value)} className="input text-sm" placeholder="Patrocinio y poder..." />
+                  </div>
+                  <div>
+                    <label className="label text-xs">Tipo</label>
+                    <select value={docTipo} onChange={(e) => setDocTipo(e.target.value)} className="input text-sm">
+                      {TIPOS_DOC.map((t) => <option key={t} value={t}>{TIPO_DOC_LABELS[t]}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="flex gap-3 pt-2">
           <button type="submit" disabled={loading} className="btn-primary">
             <Save className="h-4 w-4" />
-            {loading ? 'Guardando...' : 'Guardar causa'}
+            {loading ? (file ? 'Guardando y subiendo...' : 'Guardando...') : 'Guardar causa'}
           </button>
           <Link href="/causas" className="btn-secondary">Cancelar</Link>
         </div>
