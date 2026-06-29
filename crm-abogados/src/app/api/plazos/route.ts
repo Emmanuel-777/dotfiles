@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db, initDB } from '@/lib/db'
 import { plazos, causas, clientes } from '@/lib/schema'
-import { eq, and, asc } from 'drizzle-orm'
+import { eq, and, asc, lt } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
 
@@ -9,6 +9,13 @@ export async function GET() {
   await initDB()
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  // Auto-vencer plazos cuya fecha ya pasó
+  const hoy = new Date().toISOString().split('T')[0]
+  await db.update(plazos)
+    .set({ estado: 'VENCIDO', updatedAt: new Date().toISOString() })
+    .where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'), lt(plazos.fecha, hoy)))
+
   const rows = await db
     .select({ plazo: plazos, causa: causas, cliente: clientes })
     .from(plazos)

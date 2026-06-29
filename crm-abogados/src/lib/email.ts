@@ -21,18 +21,27 @@ interface TareaItem {
   fecha: string
 }
 
+interface HonorarioItem {
+  descripcion: string
+  monto: string
+  cliente?: string | null
+  fechaVence: string
+}
+
 export function buildNotificationEmail({
   userName,
   citasHoy,
   citasMañana,
   plazosProximos,
   tareasProximas,
+  honorariosVencidos = [],
 }: {
   userName: string
   citasHoy: CitaItem[]
   citasMañana: CitaItem[]
   plazosProximos: PlazoItem[]
   tareasProximas: TareaItem[]
+  honorariosVencidos?: HonorarioItem[]
 }): string {
   const section = (titulo: string, color: string, items: string[]) =>
     items.length === 0 ? '' : `
@@ -47,8 +56,9 @@ export function buildNotificationEmail({
   const citasMañanaHtml = citasMañana.map(c => `🕐 <strong>${c.horaInicio}</strong> — ${c.titulo}${c.cliente ? ` <span style="color:#64748b;">(${c.cliente})</span>` : ''}`)
   const plazosHtml = plazosProximos.map(p => `📅 <strong>${p.fecha}</strong> — ${p.titulo}${p.rol ? ` <span style="color:#64748b;">[${p.rol}]</span>` : ''}`)
   const tareasHtml = tareasProximas.map(t => `✅ <strong>${t.fecha}</strong> — ${t.titulo}`)
+  const honorariosHtml = honorariosVencidos.map(h => `💸 <strong>${h.monto}</strong> — ${h.descripcion}${h.cliente ? ` <span style="color:#64748b;">(${h.cliente})</span>` : ''} · vencido el ${h.fechaVence}`)
 
-  const totalItems = citasHoy.length + citasMañana.length + plazosProximos.length + tareasProximas.length
+  const totalItems = citasHoy.length + citasMañana.length + plazosProximos.length + tareasProximas.length + honorariosVencidos.length
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -74,6 +84,7 @@ export function buildNotificationEmail({
       ${section('Citas de mañana', '#7c3aed', citasMañanaHtml)}
       ${section('Plazos próximos', '#dc2626', plazosHtml)}
       ${section('Tareas próximas', '#d97706', tareasHtml)}
+      ${section('Honorarios vencidos sin pagar', '#b91c1c', honorariosHtml)}
 
       <div style="margin-top:24px;text-align:center;">
         <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://dotfiles-iota.vercel.app'}/dashboard"

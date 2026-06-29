@@ -1,6 +1,6 @@
 import { db, initDB } from '@/lib/db'
-import { plazos, tareas, citas, clientes, causas } from '@/lib/schema'
-import { eq, and, gte, lte, ne } from 'drizzle-orm'
+import { plazos, tareas, citas, clientes, causas, honorarios } from '@/lib/schema'
+import { eq, and, gte, lte, lt, ne, or } from 'drizzle-orm'
 import { getResend, buildNotificationEmail } from '@/lib/email'
 import { clerkClient } from '@clerk/nextjs/server'
 
@@ -13,10 +13,10 @@ function addDays(dateStr: string, days: number): string {
 }
 
 function chileToday(): string {
-  // Chile winter UTC-4, summer UTC-3. Using UTC-4 to be safe.
-  const now = new Date()
-  const chile = new Date(now.getTime() - 4 * 60 * 60 * 1000)
-  return chile.toISOString().split('T')[0]
+  // Usa la zona America/Santiago — maneja DST automáticamente (UTC-3 verano, UTC-4 invierno)
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Santiago',
+  }).format(new Date())
 }
 
 export async function GET(request: Request) {
@@ -31,19 +31,21 @@ export async function GET(request: Request) {
   const mañana = addDays(hoy, 1)
   const en3dias = addDays(hoy, 3)
 
-  // Obtener todos los userIds con citas o plazos próximos
-  const [plazosRows, tareasRows, citasRows] = await Promise.all([
+  // Obtener todos los userIds con ítems pendientes
+  const [plazosRows, tareasRows, citasRows, honorariosRows] = await Promise.all([
     db.select({ userId: plazos.userId }).from(plazos)
       .where(and(eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy), lte(plazos.fecha, en3dias))),
     db.select({ userId: tareas.userId }).from(tareas)
       .where(and(ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'), gte(tareas.fechaVencimiento, hoy), lte(tareas.fechaVencimiento, en3dias))),
     db.select({ userId: citas.userId }).from(citas)
       .where(and(eq(citas.estado, 'PROGRAMADA'), gte(citas.fecha, hoy), lte(citas.fecha, mañana))),
+    db.select({ userId: honorarios.userId }).from(honorarios)
+      .where(and(or(eq(honorarios.estado, 'PENDIENTE'), eq(honorarios.estado, 'PARCIAL')), lt(honorarios.fechaVence, hoy))),
   ])
 
   const seen = new Set<string>()
   const userIds: string[] = []
-  for (const r of [...plazosRows, ...tareasRows, ...citasRows]) {
+  for (const r of [...plazosRows, ...tareasRows, ...citasRows, ...honorariosRows]) {
     if (r.userId && !seen.has(r.userId)) { seen.add(r.userId); userIds.push(r.userId) }
   }
 
@@ -95,7 +97,19 @@ export async function GET(request: Request) {
       .where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'), gte(tareas.fechaVencimiento, hoy), lte(tareas.fechaVencimiento, en3dias)))
       .orderBy(tareas.fechaVencimiento)
 
-    const totalItems = citasHoyRows.length + citasMañanaRows.length + plazosProximosRows.length + tareasProximasRows.length
+    // Honorarios vencidos sin pagar
+    const honorariosVencidosRows = await db
+      .select({ descripcion: honorarios.descripcion, monto: honorarios.monto, moneda: honorarios.moneda, fechaVence: honorarios.fechaVence, clienteNombre: clientes.nombre })
+      .from(honorarios)
+      .leftJoin(clientes, eq(honorarios.clienteId, clientes.id))
+      .where(and(
+        eq(honorarios.userId, userId),
+        or(eq(honorarios.estado, 'PENDIENTE'), eq(honorarios.estado, 'PARCIAL')),
+        lt(honorarios.fechaVence, hoy),
+      ))
+      .orderBy(honorarios.fechaVence)
+
+    const totalItems = citasHoyRows.length + citasMañanaRows.length + plazosProximosRows.length + tareasProximasRows.length + honorariosVencidosRows.length
     if (totalItems === 0) continue
 
     const html = buildNotificationEmail({
@@ -104,6 +118,12 @@ export async function GET(request: Request) {
       citasMañana: citasMañanaRows.map(c => ({ titulo: c.titulo, horaInicio: c.horaInicio, cliente: c.clienteNombre })),
       plazosProximos: plazosProximosRows.map(p => ({ titulo: p.titulo, fecha: p.fecha.split('T')[0], rol: p.rol })),
       tareasProximas: tareasProximasRows.filter(t => t.fecha).map(t => ({ titulo: t.titulo, fecha: t.fecha!.split('T')[0] })),
+      honorariosVencidos: honorariosVencidosRows.map(h => ({
+        descripcion: h.descripcion,
+        monto: new Intl.NumberFormat('es-CL', { style: 'currency', currency: h.moneda ?? 'CLP', minimumFractionDigits: 0 }).format(h.monto),
+        cliente: h.clienteNombre,
+        fechaVence: h.fechaVence!.split('T')[0],
+      })),
     })
 
     await resend.emails.send({

@@ -83,7 +83,7 @@ export default function CausaDocUpload({ causaId }: Props) {
     return (
       <label className="flex items-center gap-2 px-5 py-3 cursor-pointer hover:bg-blue-50 transition-colors group border-t border-gray-100">
         <Upload className="h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 flex-shrink-0" />
-        <span className="text-xs text-gray-400 group-hover:text-blue-600">Subir archivo (PDF, DOC, JPG…)</span>
+        <span className="text-xs text-gray-400 group-hover:text-blue-600">Subir archivo (PDF, DOC, JPG… máx. {MAX_MB} MB)</span>
         <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFile} className="sr-only" />
       </label>
     )

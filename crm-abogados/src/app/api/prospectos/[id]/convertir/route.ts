@@ -4,6 +4,7 @@ import { prospectos, clientes } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
+import { validateRut } from '@/lib/utils'
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   await initDB()
@@ -23,6 +24,9 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   const { rut, nombre, tipo, email, telefono, celular, direccion, ciudad, region, notas } = body
   if (!rut || !nombre) {
     return NextResponse.json({ error: 'RUT y nombre son requeridos' }, { status: 400 })
+  }
+  if (!validateRut(rut)) {
+    return NextResponse.json({ error: 'El RUT ingresado no es válido. Verifica el dígito verificador.' }, { status: 400 })
   }
 
   // RUT único global (constraint en DB no está acotado por userId)
