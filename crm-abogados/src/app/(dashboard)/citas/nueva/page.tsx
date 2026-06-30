@@ -26,6 +26,7 @@ function NuevaCitaForm() {
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [clientes, setClientes] = useState<{ id: string; nombre: string; rut: string }[]>([])
+  const [prospectos, setProspectos] = useState<{ id: string; nombre: string; empresa: string | null }[]>([])
   const [causas, setCausas] = useState<{ id: string; rol: string; clienteId: string }[]>([])
   const [causasFiltradas, setCausasFiltradas] = useState<typeof causas>([])
 
@@ -33,6 +34,7 @@ function NuevaCitaForm() {
     titulo: '',
     descripcion: '',
     clienteId: searchParams.get('clienteId') ?? '',
+    prospectoId: searchParams.get('prospectoId') ?? '',
     causaId: searchParams.get('causaId') ?? '',
     fecha: new Date().toISOString().split('T')[0],
     horaInicio: '09:00',
@@ -48,9 +50,11 @@ function NuevaCitaForm() {
   useEffect(() => {
     Promise.all([
       fetch('/api/clientes').then((r) => r.json()),
+      fetch('/api/prospectos').then((r) => r.json()),
       fetch('/api/causas').then((r) => r.json()),
-    ]).then(([c, ca]) => {
+    ]).then(([c, p, ca]) => {
       setClientes(c)
+      setProspectos(p)
       setCausas(ca)
     })
   }, [])
@@ -70,6 +74,18 @@ function NuevaCitaForm() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
       ...(name === 'clienteId' ? { causaId: '' } : {}),
+    }))
+  }
+
+  const contactoValue = form.clienteId ? `cliente:${form.clienteId}` : form.prospectoId ? `prospecto:${form.prospectoId}` : ''
+
+  const handleContactoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const [tipo, id] = e.target.value.split(':')
+    setForm((prev) => ({
+      ...prev,
+      clienteId: tipo === 'cliente' ? id : '',
+      prospectoId: tipo === 'prospecto' ? id : '',
+      causaId: '',
     }))
   }
 
@@ -180,20 +196,32 @@ function NuevaCitaForm() {
           </div>
         </div>
 
-        {/* Cliente y causa */}
+        {/* Cliente/Prospecto y causa */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">Cliente</label>
-            <select name="clienteId" value={form.clienteId} onChange={handleChange} className="input">
-              <option value="">Sin cliente asignado</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>{c.nombre}</option>
-              ))}
+            <label className="label">Cliente o Prospecto *</label>
+            <select value={contactoValue} onChange={handleContactoChange} required className="input">
+              <option value="" disabled>Selecciona un cliente o prospecto</option>
+              {clientes.length > 0 && (
+                <optgroup label="Clientes">
+                  {clientes.map((c) => (
+                    <option key={c.id} value={`cliente:${c.id}`}>{c.nombre}</option>
+                  ))}
+                </optgroup>
+              )}
+              {prospectos.length > 0 && (
+                <optgroup label="Prospectos">
+                  {prospectos.map((p) => (
+                    <option key={p.id} value={`prospecto:${p.id}`}>{p.nombre}{p.empresa ? ` (${p.empresa})` : ''}</option>
+                  ))}
+                </optgroup>
+              )}
             </select>
+            <p className="text-xs text-gray-400 mt-1">Toda cita debe agendarse con un cliente o prospecto ya registrado</p>
           </div>
           <div>
             <label className="label">Causa (ROL)</label>
-            <select name="causaId" value={form.causaId} onChange={handleChange} className="input">
+            <select name="causaId" value={form.causaId} onChange={handleChange} className="input" disabled={!form.clienteId}>
               <option value="">Sin causa asociada</option>
               {causasFiltradas.map((c) => (
                 <option key={c.id} value={c.id}>{c.rol}</option>

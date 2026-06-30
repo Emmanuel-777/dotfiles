@@ -116,6 +116,7 @@ export const citas = sqliteTable('citas', {
   titulo: text('titulo').notNull(),
   descripcion: text('descripcion'),
   clienteId: text('cliente_id').references(() => clientes.id),
+  prospectoId: text('prospecto_id').references(() => prospectos.id),
   causaId: text('causa_id').references(() => causas.id),
   fecha: text('fecha').notNull(),
   horaInicio: text('hora_inicio').notNull(),

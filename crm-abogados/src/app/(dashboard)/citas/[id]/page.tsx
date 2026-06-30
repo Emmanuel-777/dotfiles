@@ -1,5 +1,5 @@
 import { db, initDB } from '@/lib/db'
-import { citas, clientes, causas } from '@/lib/schema'
+import { citas, clientes, prospectos, causas } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { requireUserId } from '@/lib/auth'
@@ -7,7 +7,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Pencil, CalendarPlus, Video, MapPin, Phone,
   User, Briefcase, Clock, DollarSign, FileText, CheckCircle,
-  ExternalLink,
+  ExternalLink, MessageCircle,
 } from 'lucide-react'
 import { formatMonto } from '@/lib/utils'
 import CitaEstadoSelect from '@/components/CitaEstadoSelect'
@@ -50,25 +50,41 @@ function buildGoogleCalendarUrl(cita: {
   return `https://calendar.google.com/calendar/render?${params.toString()}`
 }
 
+function buildWhatsAppUrl(telefono: string, mensaje: string) {
+  const digits = telefono.replace(/\D/g, '')
+  const conCodigo = digits.startsWith('56') ? digits : `56${digits.replace(/^0+/, '')}`
+  return `https://wa.me/${conCodigo}?text=${encodeURIComponent(mensaje)}`
+}
+
 export default async function CitaDetailPage({ params }: { params: { id: string } }) {
   await initDB()
   const userId = await requireUserId()
   const rows = await db
-    .select({ cita: citas, cliente: clientes, causa: causas })
+    .select({ cita: citas, cliente: clientes, prospecto: prospectos, causa: causas })
     .from(citas)
     .leftJoin(clientes, eq(citas.clienteId, clientes.id))
+    .leftJoin(prospectos, eq(citas.prospectoId, prospectos.id))
     .leftJoin(causas, eq(citas.causaId, causas.id))
     .where(and(eq(citas.id, params.id), eq(citas.userId, userId)))
     .limit(1)
 
   if (!rows.length) notFound()
-  const { cita, cliente, causa } = rows[0]
+  const { cita, cliente, prospecto, causa } = rows[0]
 
   const googleCalUrl = buildGoogleCalendarUrl(cita)
 
   const fechaFormateada = new Date(cita.fecha + 'T00:00:00').toLocaleDateString('es-CL', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
+
+  const contactoNombre = cliente?.nombre ?? prospecto?.nombre
+  const contactoTelefono = cliente?.celular || cliente?.telefono || prospecto?.telefono
+  const whatsappUrl = contactoTelefono
+    ? buildWhatsAppUrl(
+        contactoTelefono,
+        `Hola ${contactoNombre}, te confirmo tu cita "${cita.titulo}" el ${fechaFormateada} a las ${cita.horaInicio}hrs.${cita.linkReunion ? ` Enlace: ${cita.linkReunion}` : ''}`,
+      )
+    : null
 
   return (
     <div className="p-4 lg:p-8 max-w-3xl">
@@ -89,6 +105,18 @@ export default async function CitaDetailPage({ params }: { params: { id: string 
           <h1 className="text-2xl font-bold text-gray-900">{cita.titulo}</h1>
         </div>
         <div className="flex items-center gap-2">
+          {whatsappUrl && (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary flex items-center gap-1.5 text-sm"
+              title={`Enviar WhatsApp a ${contactoNombre}`}
+            >
+              <MessageCircle className="h-4 w-4 text-green-600" />
+              WhatsApp
+            </a>
+          )}
           <a
             href={googleCalUrl}
             target="_blank"
@@ -206,6 +234,19 @@ export default async function CitaDetailPage({ params }: { params: { id: string 
                 {cliente.nombre}
               </Link>
               <p className="text-xs text-gray-400 mt-0.5">{cliente.rut}</p>
+            </div>
+          )}
+
+          {/* Prospecto */}
+          {prospecto && (
+            <div className="card p-4">
+              <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <User className="h-3.5 w-3.5" /> Prospecto
+              </h2>
+              <Link href={`/embudo/${prospecto.id}/editar`} className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                {prospecto.nombre}
+              </Link>
+              {prospecto.empresa && <p className="text-xs text-gray-400 mt-0.5">{prospecto.empresa}</p>}
             </div>
           )}
 

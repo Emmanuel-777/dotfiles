@@ -1,5 +1,5 @@
 import { db, initDB } from '@/lib/db'
-import { citas, clientes, causas } from '@/lib/schema'
+import { citas, clientes, prospectos, causas } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
 import { requireUserId } from '@/lib/auth'
@@ -50,9 +50,10 @@ export default async function CitasPage() {
   await initDB()
   const userId = await requireUserId()
   const rows = await db
-    .select({ cita: citas, cliente: clientes, causa: causas })
+    .select({ cita: citas, cliente: clientes, prospecto: prospectos, causa: causas })
     .from(citas)
     .leftJoin(clientes, eq(citas.clienteId, clientes.id))
+    .leftJoin(prospectos, eq(citas.prospectoId, prospectos.id))
     .leftJoin(causas, eq(citas.causaId, causas.id))
     .where(eq(citas.userId, userId))
     .orderBy(desc(citas.fecha))
@@ -106,8 +107,8 @@ export default async function CitasPage() {
             <Clock className="h-4 w-4 text-blue-500" /> Próximas citas
           </h2>
           <div className="space-y-3">
-            {proximas.map(({ cita, cliente, causa }) => (
-              <CitaCard key={cita.id} cita={cita} cliente={cliente} causa={causa} />
+            {proximas.map(({ cita, cliente, prospecto, causa }) => (
+              <CitaCard key={cita.id} cita={cita} cliente={cliente} prospecto={prospecto} causa={causa} />
             ))}
           </div>
         </section>
@@ -120,8 +121,8 @@ export default async function CitasPage() {
             <CheckCircle className="h-4 w-4" /> Historial ({pasadas.length})
           </h2>
           <div className="space-y-2 opacity-75">
-            {pasadas.map(({ cita, cliente, causa }) => (
-              <CitaCard key={cita.id} cita={cita} cliente={cliente} causa={causa} muted />
+            {pasadas.map(({ cita, cliente, prospecto, causa }) => (
+              <CitaCard key={cita.id} cita={cita} cliente={cliente} prospecto={prospecto} causa={causa} muted />
             ))}
           </div>
         </section>
@@ -133,8 +134,8 @@ export default async function CitasPage() {
             <XCircle className="h-4 w-4" /> Canceladas ({canceladas.length})
           </h2>
           <div className="space-y-2 opacity-60">
-            {canceladas.map(({ cita, cliente, causa }) => (
-              <CitaCard key={cita.id} cita={cita} cliente={cliente} causa={causa} muted />
+            {canceladas.map(({ cita, cliente, prospecto, causa }) => (
+              <CitaCard key={cita.id} cita={cita} cliente={cliente} prospecto={prospecto} causa={causa} muted />
             ))}
           </div>
         </section>
@@ -151,8 +152,8 @@ export default async function CitasPage() {
   )
 }
 
-function CitaCard({ cita, cliente, causa, muted = false }: {
-  cita: any; cliente: any; causa: any; muted?: boolean
+function CitaCard({ cita, cliente, prospecto, causa, muted = false }: {
+  cita: any; cliente: any; prospecto: any; causa: any; muted?: boolean
 }) {
   const tipoColor = TIPO_COLORS[cita.tipo] ?? 'bg-gray-100 text-gray-700'
   const estadoColor = ESTADO_COLORS[cita.estado] ?? 'bg-gray-100 text-gray-600'
@@ -186,10 +187,10 @@ function CitaCard({ cita, cliente, causa, muted = false }: {
             <Clock className="h-3 w-3" />
             {cita.horaInicio}{cita.horaFin ? ` – ${cita.horaFin}` : ''}
           </span>
-          {cliente && (
+          {(cliente || prospecto) && (
             <span className="text-xs text-gray-500 flex items-center gap-1">
               <User className="h-3 w-3" />
-              {cliente.nombre}
+              {cliente ? cliente.nombre : `${prospecto.nombre} (prospecto)`}
             </span>
           )}
           {causa && (

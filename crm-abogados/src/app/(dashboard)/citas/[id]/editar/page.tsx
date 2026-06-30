@@ -18,6 +18,7 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [clientes, setClientes] = useState<{ id: string; nombre: string; rut: string }[]>([])
+  const [prospectos, setProspectos] = useState<{ id: string; nombre: string; empresa: string | null }[]>([])
   const [causas, setCausas] = useState<{ id: string; rol: string; clienteId: string }[]>([])
   const [causasFiltradas, setCausasFiltradas] = useState<typeof causas>([])
 
@@ -25,6 +26,7 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
     titulo: '',
     descripcion: '',
     clienteId: '',
+    prospectoId: '',
     causaId: '',
     fecha: '',
     horaInicio: '',
@@ -41,15 +43,18 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
     Promise.all([
       fetch(`/api/citas/${params.id}`).then((r) => r.json()),
       fetch('/api/clientes').then((r) => r.json()),
+      fetch('/api/prospectos').then((r) => r.json()),
       fetch('/api/causas').then((r) => r.json()),
-    ]).then(([data, c, ca]) => {
+    ]).then(([data, c, p, ca]) => {
       setClientes(c)
+      setProspectos(p)
       setCausas(ca)
       const { cita } = data
       setForm({
         titulo: cita.titulo ?? '',
         descripcion: cita.descripcion ?? '',
         clienteId: cita.clienteId ?? '',
+        prospectoId: cita.prospectoId ?? '',
         causaId: cita.causaId ?? '',
         fecha: cita.fecha ?? '',
         horaInicio: cita.horaInicio ?? '',
@@ -79,6 +84,18 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
       ...(name === 'clienteId' ? { causaId: '' } : {}),
+    }))
+  }
+
+  const contactoValue = form.clienteId ? `cliente:${form.clienteId}` : form.prospectoId ? `prospecto:${form.prospectoId}` : ''
+
+  const handleContactoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const [tipo, id] = e.target.value.split(':')
+    setForm((prev) => ({
+      ...prev,
+      clienteId: tipo === 'cliente' ? id : '',
+      prospectoId: tipo === 'prospecto' ? id : '',
+      causaId: '',
     }))
   }
 
@@ -209,17 +226,28 @@ export default function EditarCitaPage({ params }: { params: { id: string } }) {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">Cliente</label>
-            <select name="clienteId" value={form.clienteId} onChange={handleChange} className="input">
-              <option value="">Sin cliente</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>{c.nombre}</option>
-              ))}
+            <label className="label">Cliente o Prospecto *</label>
+            <select value={contactoValue} onChange={handleContactoChange} required className="input">
+              <option value="" disabled>Selecciona un cliente o prospecto</option>
+              {clientes.length > 0 && (
+                <optgroup label="Clientes">
+                  {clientes.map((c) => (
+                    <option key={c.id} value={`cliente:${c.id}`}>{c.nombre}</option>
+                  ))}
+                </optgroup>
+              )}
+              {prospectos.length > 0 && (
+                <optgroup label="Prospectos">
+                  {prospectos.map((p) => (
+                    <option key={p.id} value={`prospecto:${p.id}`}>{p.nombre}{p.empresa ? ` (${p.empresa})` : ''}</option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </div>
           <div>
             <label className="label">Causa</label>
-            <select name="causaId" value={form.causaId} onChange={handleChange} className="input">
+            <select name="causaId" value={form.causaId} onChange={handleChange} className="input" disabled={!form.clienteId}>
               <option value="">Sin causa</option>
               {causasFiltradas.map((c) => (
                 <option key={c.id} value={c.id}>{c.rol}</option>

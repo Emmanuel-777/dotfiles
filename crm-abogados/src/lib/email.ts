@@ -28,6 +28,82 @@ interface HonorarioItem {
   fechaVence: string
 }
 
+export function buildCitaConfirmationEmail({
+  contactoNombre,
+  abogadoNombre,
+  titulo,
+  fecha,
+  horaInicio,
+  horaFin,
+  tipoLabel,
+  linkReunion,
+}: {
+  contactoNombre: string
+  abogadoNombre: string
+  titulo: string
+  fecha: string
+  horaInicio: string
+  horaFin?: string | null
+  tipoLabel: string
+  linkReunion?: string | null
+}): string {
+  const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-CL', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  })
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#14254c,#1a3060);padding:28px 32px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
+      </div>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Confirmación de cita</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;">
+        Hola ${contactoNombre}, tu cita con ${abogadoNombre} ha sido agendada:
+      </p>
+
+      <div style="background:#f8fafc;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;text-transform:capitalize;">📅 ${fechaFormateada}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
+      </div>
+
+      ${linkReunion ? `
+      <div style="margin-bottom:20px;text-align:center;">
+        <a href="${linkReunion}"
+           style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
+          Unirse a la reunión
+        </a>
+        <p style="margin:10px 0 0;font-size:12px;color:#94a3b8;word-break:break-all;">${linkReunion}</p>
+      </div>` : ''}
+
+      <p style="margin:0;font-size:13px;color:#64748b;">
+        Si necesitas reagendar o cancelar, por favor contáctanos respondiendo este correo.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+      <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+        LexCRM · Gestión Legal ·
+        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+}
+
 export function buildNotificationEmail({
   userName,
   citasHoy,

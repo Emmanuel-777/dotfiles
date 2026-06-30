@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db, initDB } from '@/lib/db'
-import { citas, clientes, causas } from '@/lib/schema'
+import { citas, clientes, causas, prospectos } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
 
@@ -11,9 +11,10 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const rows = await db
-    .select({ cita: citas, cliente: clientes, causa: causas })
+    .select({ cita: citas, cliente: clientes, prospecto: prospectos, causa: causas })
     .from(citas)
     .leftJoin(clientes, eq(citas.clienteId, clientes.id))
+    .leftJoin(prospectos, eq(citas.prospectoId, prospectos.id))
     .leftJoin(causas, eq(citas.causaId, causas.id))
     .where(and(eq(citas.id, params.id), eq(citas.userId, userId)))
     .limit(1)
@@ -29,7 +30,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const body = await req.json()
 
   const updates: Record<string, unknown> = {}
-  const allowed = ['titulo', 'descripcion', 'clienteId', 'causaId', 'fecha', 'horaInicio', 'horaFin', 'tipo', 'linkReunion', 'esGratuita', 'valor', 'estado', 'notas']
+  const allowed = ['titulo', 'descripcion', 'clienteId', 'prospectoId', 'causaId', 'fecha', 'horaInicio', 'horaFin', 'tipo', 'linkReunion', 'esGratuita', 'valor', 'estado', 'notas']
 
   for (const key of allowed) {
     if (key in body) {
@@ -38,7 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         if (body[key]) updates['valor'] = null
       } else if (key === 'valor') {
         updates[key] = body.esGratuita ? null : (body[key] ? Number(body[key]) : null)
-      } else if (key === 'clienteId' || key === 'causaId') {
+      } else if (key === 'clienteId' || key === 'prospectoId' || key === 'causaId') {
         updates[key] = body[key] || null
       } else {
         updates[key] = body[key] ?? null
