@@ -34,6 +34,20 @@
 | | | | | |
 | | | | | |
 
+## 🍽️ Registro de comidas
+
+> Anotar acá lo que se come durante el día. Las calorías son una
+> **estimación aproximada** (no un dato exacto de laboratorio), sirve como
+> referencia para compararlo con el objetivo diario de
+> **2344-2594 kcal** (ver `PLAN_NUTRICION.md`).
+
+| Fecha | Comida | Detalle | Kcal aprox. |
+|---|---|---|---|
+| 30/06/2026 | — | Hamburguesa de jurel y atún (300 g) + papas cocidas (2 medianas) + guacamole + 500 cc agua saborizada sin azúcar | ~930 kcal |
+| | | | |
+| | | | |
+| | | | |
+
 ## ✅ Checkpoint fin de Fase 1 (semana 12)
 
 Completar al terminar la Fase 1 para decidir cómo ajustar la Fase 2:
