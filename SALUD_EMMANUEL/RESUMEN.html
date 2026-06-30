@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Plan de Salud — Emmanuel</title>
+<style>
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f4f6f8;
+    color: #1f2933;
+    margin: 0;
+    padding: 24px;
+  }
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  header {
+    background: linear-gradient(135deg, #1e6f5c, #28a08c);
+    color: white;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+  }
+  header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 14px;
+  }
+  .goal-track {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .goal-track .arrow {
+    opacity: 0.8;
+    font-size: 18px;
+  }
+  .progress-bar {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 8px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-bar .fill {
+    background: white;
+    height: 100%;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 12px;
+    margin-top: 6px;
+    opacity: 0.85;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .card h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #5b6b76;
+    margin: 0 0 10px;
+  }
+  .card .big {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e6f5c;
+  }
+  .card ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: #3e4c56;
+  }
+  .section {
+    background: white;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+    color: #1e6f5c;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e5e9ec;
+  }
+  th {
+    color: #5b6b76;
+    font-weight: 600;
+  }
+  .kcal-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed #d8dee2;
+  }
+  .kcal-summary .label {
+    font-size: 13px;
+    color: #5b6b76;
+  }
+  .kcal-summary .value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e6f5c;
+  }
+  .badge {
+    display: inline-block;
+    background: #eafaf3;
+    color: #1e6f5c;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #8a9aa5;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🏋️ Plan de Salud — Emmanuel</h1>
+    <p>Inicio: 30/06/2026 · Objetivo general: bajar de 110 kg a 85 kg, recuperando forma física para volver a jugar al fútbol</p>
+    <div class="goal-track">
+      <span>110 kg</span>
+      <span class="arrow">→</span>
+      <span>98-100 kg</span>
+      <span class="arrow">→</span>
+      <span>85 kg</span>
+    </div>
+    <div class="progress-bar"><div class="fill"></div></div>
+    <div class="progress-label">Semana 0 de 12 (Fase 1) · Peso actual: 110 kg</div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Fase 1 — 12 semanas</h2>
+      <div class="big">110 kg → ~98-100 kg</div>
+      <ul>
+        <li>Ritmo: ~0.9 kg/semana (máximo seguro)</li>
+        <li>Fuerza full-body + running progresivo</li>
+        <li>Checkpoint en semana 12 para ajustar Fase 2</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Fase 2 — estimada</h2>
+      <div class="big">~98-100 kg → 85 kg</div>
+      <ul>
+        <li>Ritmo: ~0.5-0.7 kg/semana (sostenible)</li>
+        <li>Duración estimada: ~5-6 meses</li>
+        <li>Se reajusta según resultados reales de Fase 1</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🥗 Objetivo nutricional diario</h2>
+    <table>
+      <tr><th>TMB estimada</th><td>≈1996 kcal/día</td></tr>
+      <tr><th>Gasto calórico total (actividad moderada)</th><td>≈3094 kcal/día</td></tr>
+      <tr><th>Rango objetivo (déficit 500-750 kcal)</th><td><strong>2344 - 2594 kcal/día</strong></td></tr>
+      <tr><th>Macros de referencia</th><td>Proteína ~220 g · Carbohidratos ~245 g · Grasas ~82 g</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>📝 Entrenamiento de hoy <span class="badge">30/06/2026 · Martes</span></h2>
+    <table>
+      <tr><th>Sesión</th><td>Fuerza (circuito)</td></tr>
+      <tr><th>Detalle</th><td>4 ejercicios x 3 bloques de 45 seg: sentadillas con kettlebell, caminata con sentadillas con ambas mancuernas, estocadas con mancuernas, piques cortos de ida y vuelta</td></tr>
+      <tr><th>Notas</th><td>Variante propia tipo circuito, distinta a la rutina base de series tradicionales</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>🍽️ Comidas registradas hoy <span class="badge">30/06/2026</span></h2>
+    <table>
+      <tr><th>Comida</th><th>Detalle</th><th>Kcal aprox.</th></tr>
+      <tr><td>Desayuno</td><td>4 huevos fritos</td><td>~320 kcal</td></tr>
+      <tr><td>Almuerzo</td><td>Hamburguesa de jurel y atún (300 g) + papas cocidas (2 medianas) + guacamole + 500 cc agua saborizada sin azúcar</td><td>~930 kcal</td></tr>
+    </table>
+    <div class="kcal-summary">
+      <span class="label">Total consumido hoy</span>
+      <span class="value">~1250 kcal</span>
+    </div>
+    <div class="kcal-summary">
+      <span class="label">Margen restante hasta el objetivo diario</span>
+      <span class="value">~1100 - 1350 kcal</span>
+    </div>
+  </div>
+
+  <footer>
+    Datos cargados manualmente en SEGUIMIENTO.md tras cada sesión/comida real ·
+    Generado a partir de SALUD_EMMANUEL/README.md, PLAN_NUTRICION.md y SEGUIMIENTO.md
+  </footer>
+
+</div>
+</body>
+</html>
