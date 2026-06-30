@@ -43,8 +43,8 @@
 
 | Fecha | Comida | Detalle | Kcal aprox. |
 |---|---|---|---|
+| 30/06/2026 | Desayuno | 4 huevos fritos | ~320 kcal |
 | 30/06/2026 | — | Hamburguesa de jurel y atún (300 g) + papas cocidas (2 medianas) + guacamole + 500 cc agua saborizada sin azúcar | ~930 kcal |
-| | | | |
 | | | | |
 | | | | |
 
