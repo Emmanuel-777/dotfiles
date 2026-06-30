@@ -142,15 +142,25 @@ function NuevaCitaForm() {
             <label className="label">
               Enlace de {form.tipo === 'MEET' ? 'Google Meet' : 'Zoom'} *
             </label>
-            <input
-              name="linkReunion"
-              value={form.linkReunion}
-              onChange={handleChange}
-              required={necesitaLink}
-              className="input font-mono text-sm"
-              placeholder={form.tipo === 'MEET' ? 'https://meet.google.com/...' : 'https://zoom.us/j/...'}
-            />
-            <p className="text-xs text-gray-400 mt-1">Crea primero la reunión en {form.tipo === 'MEET' ? 'Google Meet' : 'Zoom'} y pega el enlace aquí</p>
+            <div className="flex gap-2">
+              <input
+                name="linkReunion"
+                value={form.linkReunion}
+                onChange={handleChange}
+                required={necesitaLink}
+                className="input font-mono text-sm flex-1"
+                placeholder={form.tipo === 'MEET' ? 'https://meet.google.com/...' : 'https://zoom.us/j/...'}
+              />
+              <a
+                href={form.tipo === 'MEET' ? 'https://meet.google.com/new' : 'https://zoom.us/start/videomeeting'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center px-3 py-2 rounded-lg border-2 border-gray-200 text-xs font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 transition-all whitespace-nowrap"
+              >
+                Crear sala
+              </a>
+            </div>
+            <p className="text-xs text-gray-400 mt-1">Crea la reunión en {form.tipo === 'MEET' ? 'Google Meet' : 'Zoom'} con el botón y pega aquí el enlace generado</p>
           </div>
         )}
 
