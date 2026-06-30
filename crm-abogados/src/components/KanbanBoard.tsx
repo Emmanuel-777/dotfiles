@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck, Bell } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck, Bell, CalendarPlus } from 'lucide-react'
 import { toast } from 'sonner'
 
 type Etapa = 'CONTACTO' | 'REUNION' | 'PROPUESTA' | 'GANADO' | 'PERDIDO'
@@ -220,6 +220,13 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
 
                     <div className="flex-1" />
 
+                    <Link
+                      href={`/citas/nueva?prospectoId=${p.id}`}
+                      title="Agendar cita"
+                      className="p-1 rounded text-gray-300 hover:text-cyan-600 hover:bg-cyan-50 transition-colors"
+                    >
+                      <CalendarPlus className="h-3.5 w-3.5" />
+                    </Link>
                     <Link
                       href={`/embudo/${p.id}/editar`}
                       title="Editar"

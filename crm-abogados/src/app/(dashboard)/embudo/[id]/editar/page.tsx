@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Trash2, CalendarPlus } from 'lucide-react'
 import { toast } from 'sonner'
 
 const ORIGENES = [
@@ -104,7 +104,13 @@ export default function EditarProspectoPage() {
         Volver al embudo
       </Link>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Editar prospecto</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Editar prospecto</h1>
+        <Link href={`/citas/nueva?prospectoId=${id}`} className="btn-secondary flex items-center gap-1.5">
+          <CalendarPlus className="h-4 w-4" />
+          Agendar cita
+        </Link>
+      </div>
 
       <form onSubmit={handleSubmit} className="card p-6 space-y-5">
         <div className="grid grid-cols-2 gap-4">
