@@ -21,6 +21,19 @@
 | 11 | | | | | |
 | 12 | | | | | |
 
+## 📝 Registro diario de entrenamientos
+
+> Anotar acá cada sesión real (puede variar de la rutina base en
+> `PLAN_EJERCICIO.md` — lo importante es dejar registro de lo que realmente
+> se hizo). Complementa la tabla semanal de peso, no la reemplaza.
+
+| Fecha | Día | Sesión | Detalle | Notas |
+|---|---|---|---|---|
+| 30/06/2026 | Martes | Fuerza (circuito) | 4 ejercicios x 3 bloques de 45 seg: sentadillas con kettlebell, caminata con sentadillas con ambas mancuernas, estocadas con mancuernas, piques cortos de ida y vuelta | Variante propia tipo circuito, distinta a la rutina base de series tradicionales |
+| | | | | |
+| | | | | |
+| | | | | |
+
 ## ✅ Checkpoint fin de Fase 1 (semana 12)
 
 Completar al terminar la Fase 1 para decidir cómo ajustar la Fase 2:
