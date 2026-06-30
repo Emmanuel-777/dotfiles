@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrato de Prestación de Servicios — LexCRM</title>
+  <meta name="description" content="Contrato de Prestación de Servicios de LexCRM, sistema de gestión legal para abogados en Chile.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy-900: #0f1c36;
+      --navy-800: #14254c;
+      --blue-400: #60a5fa;
+      --blue-600: #2563eb;
+      --slate-50:  #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, sans-serif; color: var(--slate-800); background: var(--white); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    nav {
+      position: sticky; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(15,28,54,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-logo { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.03em; text-decoration: none; }
+    .nav-logo .w { color: var(--white); }
+    .nav-logo .b { color: var(--blue-400); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: rgba(255,255,255,.55); text-decoration: none;
+      font-size: .85rem; font-weight: 500; transition: color .2s;
+    }
+    .nav-back:hover { color: var(--white); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    .doc-hero {
+      background: linear-gradient(155deg, var(--navy-900) 0%, var(--navy-800) 100%);
+      padding: 4rem 2rem 3.5rem;
+      text-align: center;
+    }
+    .doc-hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: var(--white); letter-spacing: -.025em; margin-bottom: .75rem; }
+    .doc-hero .meta { font-size: .85rem; color: rgba(255,255,255,.45); }
+    .print-btn {
+      display: inline-flex; align-items: center; gap: .45rem;
+      margin-top: 1.5rem;
+      background: rgba(255,255,255,.1); color: rgba(255,255,255,.8);
+      border: 1px solid rgba(255,255,255,.18); border-radius: .5rem;
+      padding: .55rem 1.25rem; font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .print-btn:hover { background: rgba(255,255,255,.18); color: var(--white); }
+    .print-btn svg { width: 14px; height: 14px; }
+
+    .doc-wrap { max-width: 780px; margin: 0 auto; padding: 3.5rem 2rem 5rem; }
+
+    .draft-warning {
+      background: #fef3c7; border: 1.5px solid #f59e0b; border-radius: .75rem;
+      padding: 1.1rem 1.35rem; margin-bottom: 2.5rem; display: flex; gap: .85rem;
+    }
+    .draft-warning svg { width: 22px; height: 22px; flex-shrink: 0; color: #b45309; margin-top: 1px; }
+    .draft-warning p { margin: 0; font-size: .85rem; color: #78350f; line-height: 1.6; }
+    .draft-warning strong { color: #78350f; }
+
+    h2 {
+      font-size: 1.05rem; font-weight: 700; color: var(--slate-800);
+      margin: 2.25rem 0 .6rem; padding-bottom: .4rem;
+      border-bottom: 2px solid var(--slate-200);
+    }
+    h2:first-of-type { margin-top: 0; }
+    h3 { font-size: .92rem; font-weight: 600; color: var(--slate-700); margin: 1.25rem 0 .35rem; }
+
+    p { font-size: .9rem; color: var(--slate-700); margin-bottom: .8rem; }
+    ul, ol { margin: .4rem 0 .8rem 1.35rem; }
+    li { font-size: .9rem; color: var(--slate-700); margin-bottom: .35rem; }
+    li strong { color: var(--slate-800); }
+
+    .info-box {
+      background: var(--slate-50); border: 1px solid var(--slate-200);
+      border-left: 3px solid var(--blue-600);
+      border-radius: .5rem; padding: 1rem 1.25rem; margin-bottom: 1.1rem;
+    }
+    .info-box p { margin: 0; font-size: .85rem; }
+
+    .warn-box {
+      background: #fef2f2; border: 1px solid #fecaca;
+      border-left: 3px solid #dc2626;
+      border-radius: .5rem; padding: 1rem 1.25rem; margin-bottom: 1.1rem;
+    }
+    .warn-box p { margin: 0; font-size: .85rem; color: #7f1d1d; }
+    .warn-box strong { color: #991b1b; }
+
+    .sign-block {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+      margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--slate-200);
+    }
+    .sign-col { text-align: center; }
+    .sign-line { border-bottom: 1.5px solid var(--slate-400); height: 3.5rem; margin-bottom: .5rem; }
+    .sign-col p { font-size: .8rem; color: var(--slate-500); margin: 0; }
+    .sign-col strong { display: block; font-size: .85rem; color: var(--slate-800); margin-bottom: .15rem; }
+
+    footer {
+      background: var(--navy-900); padding: 1.75rem 1.5rem;
+      text-align: center; border-top: 1px solid rgba(255,255,255,.06);
+    }
+    footer p { font-size: .775rem; color: rgba(255,255,255,.28); margin: 0; }
+    footer a { color: rgba(255,255,255,.4); }
+
+    @media print {
+      nav, .doc-hero .print-btn, footer, .draft-warning { display: none !important; }
+      .doc-hero { padding: 1.5rem 0 1rem; background: none; color: #000; }
+      .doc-hero h1 { color: #000; font-size: 1.6rem; }
+      .doc-hero .meta { color: #555; }
+      .doc-wrap { padding: 1rem 0 2rem; max-width: 100%; }
+      body { color: #000; }
+      h2 { color: #000; border-bottom-color: #ccc; }
+      h3 { color: #222; }
+      p, li { color: #333; }
+      .info-box { border-color: #ccc; border-left-color: #2563eb; background: #f5f5f5; }
+      .warn-box { border-color: #ccc; border-left-color: #dc2626; background: #f5f5f5; }
+    }
+
+    @media (min-width: 768px) {
+      nav { padding: 1rem 3rem; }
+      .doc-hero { padding: 5rem 3rem 4rem; }
+    }
+    @media (max-width: 600px) {
+      .sign-block { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="w">Lex</span><span class="b">CRM</span></a>
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Volver al inicio
+  </a>
+</nav>
+
+<div class="doc-hero">
+  <h1>Contrato de Prestación de Servicios</h1>
+  <p class="meta">LexCRM — Sistema de Gestión Legal · Versión junio 2025</p>
+  <button class="print-btn" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Imprimir / Guardar PDF
+  </button>
+</div>
+
+<div class="doc-wrap">
+
+  <div class="draft-warning">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <p><strong>Borrador para revisión profesional.</strong> Este documento fue redactado como plantilla base y cubre los riesgos típicos de un servicio SaaS, pero no reemplaza la revisión de un abogado habilitado en Chile antes de usarlo con clientes reales. Ajusta el RUT/datos del Prestador, el domicilio y revisa las cláusulas de responsabilidad con un profesional antes de hacerlo vinculante.</p>
+  </div>
+
+  <h2>Comparecencia</h2>
+  <p>
+    En Santiago de Chile, a [FECHA], comparecen:
+  </p>
+  <p>
+    <strong>(a)</strong> <strong>[NOMBRE / RAZÓN SOCIAL DEL PRESTADOR]</strong>, RUT [●], con domicilio en [●], representado por [●] (en adelante, "el <strong>Prestador</strong>" o "<strong>LexCRM</strong>"); y
+  </p>
+  <p>
+    <strong>(b)</strong> <strong>[NOMBRE DEL CLIENTE / ESTUDIO JURÍDICO]</strong>, RUT [●], con domicilio en [●], representado por [●] (en adelante, el "<strong>Cliente</strong>").
+  </p>
+  <p>Ambos en conjunto, las "Partes", quienes acuerdan el siguiente Contrato de Prestación de Servicios (el "Contrato"):</p>
+
+  <h2>1. Objeto del Contrato</h2>
+  <p>
+    El Prestador otorga al Cliente una licencia de uso, no exclusiva e intransferible, sobre la plataforma de software como servicio (SaaS) denominada <strong>LexCRM</strong>, destinada a apoyar la gestión administrativa de estudios jurídicos: registro de clientes, causas, honorarios, agenda, plazos, tareas, documentos y prospectos, conforme al plan contratado.
+  </p>
+  <div class="warn-box">
+    <p><strong>LexCRM no presta servicios jurídicos ni asesoría legal.</strong> Es una herramienta tecnológica de apoyo administrativo y de gestión. El Prestador no es estudio jurídico, no ejerce la profesión de abogado y no asume responsabilidad alguna por el contenido jurídico, procesal o sustantivo de las causas que el Cliente administra en el Sistema.</p>
+  </div>
+
+  <h2>2. Descripción del Servicio</h2>
+  <p>El Servicio se presta según el plan contratado por el Cliente (Básico, Pro o Firma), de acuerdo con las funcionalidades y límites técnicos publicados en <a href="index.html">la página de planes</a> al momento de la contratación, incluyendo el límite de tamaño de archivos (10 MB por documento) y, en los planes que corresponda, el módulo de Asistente de Inteligencia Artificial.</p>
+  <p>El Prestador podrá modificar, mejorar o discontinuar funcionalidades específicas del Sistema, procurando no afectar sustancialmente las prestaciones esenciales del plan contratado y notificando al Cliente con razonable anticipación cuando el cambio sea relevante.</p>
+
+  <h2>3. Obligaciones del Prestador</h2>
+  <p>El Prestador se obliga, en la medida de sus mejores esfuerzos ("best effort"), a:</p>
+  <ul>
+    <li>Mantener el Sistema operativo y disponible, sujeto a mantenimientos programados, actualizaciones y a la disponibilidad de los proveedores de infraestructura de los que depende el Servicio (hosting, base de datos, autenticación, envío de correos y procesamiento de IA).</li>
+    <li>Aplicar medidas de seguridad razonables conforme a los estándares de la industria, según se detalla en la <a href="politica-de-privacidad.html">Política de Privacidad</a>.</li>
+    <li>Entregar al Cliente un Manual de Usuario y soporte técnico razonable por los canales habilitados (correo electrónico y WhatsApp).</li>
+    <li>Resguardar la confidencialidad de la información ingresada al Sistema, sin acceder a ella salvo para fines de soporte técnico autorizado por el Cliente o por requerimiento legal.</li>
+  </ul>
+  <div class="info-box">
+    <p>Salvo que se haya contratado expresamente un Acuerdo de Nivel de Servicio (SLA) por escrito, el Prestador <strong>no garantiza un porcentaje específico de disponibilidad (uptime)</strong> ni tiempos de respuesta determinados, dado que el Servicio depende de infraestructura de terceros fuera del control directo del Prestador.</p>
+  </div>
+
+  <h2>4. Obligaciones y Responsabilidades del Cliente</h2>
+  <p>El Cliente reconoce y acepta expresamente que es el único responsable de:</p>
+
+  <h3>4.1 Veracidad y administración de la información</h3>
+  <ul>
+    <li>Ingresar, mantener y actualizar correctamente los datos de sus propios clientes, causas, plazos y honorarios en el Sistema. El Prestador no verifica ni audita la exactitud de la información ingresada por el Cliente.</li>
+    <li>Revisar periódicamente la información registrada para detectar errores u omisiones propias de la carga de datos.</li>
+  </ul>
+
+  <h3>4.2 Cumplimiento de plazos procesales</h3>
+  <div class="warn-box">
+    <p><strong>El Sistema es una herramienta de apoyo y recordatorio, no un sistema de control procesal oficial ni un sustituto del deber de diligencia profesional del abogado.</strong> Las alertas, semáforos y notificaciones por correo electrónico que genera LexCRM se basan exclusivamente en los datos que el propio Cliente ingresó manualmente. El Cliente es el único responsable de verificar directamente en el tribunal, sistema judicial respectivo (Poder Judicial, Oficina Judicial Virtual, etc.) y demás fuentes oficiales, el estado real de sus causas y el cumplimiento efectivo de los plazos legales. El Prestador no responde por plazos vencidos, causas perdidas o perjuicios derivados de la falta de verificación independiente por parte del Cliente.</p>
+  </div>
+
+  <h3>4.3 Uso del Asistente de Inteligencia Artificial</h3>
+  <ul>
+    <li>El Cliente es el único responsable del uso profesional que dé a cualquier resumen, borrador de escrito o contenido generado por el Asistente IA.</li>
+    <li>Todo contenido generado por IA debe ser <strong>revisado, validado y corregido</strong> por el abogado responsable antes de utilizarlo en cualquier gestión, presentación o comunicación, ya que el Asistente puede generar información incompleta, desactualizada o inexacta.</li>
+    <li>El Prestador no garantiza la exactitud jurídica, vigencia normativa ni idoneidad procesal del contenido generado por el Asistente IA.</li>
+  </ul>
+
+  <h3>4.4 Credenciales y seguridad de la cuenta</h3>
+  <ul>
+    <li>Mantener en reserva sus credenciales de acceso y no compartirlas con terceros no autorizados.</li>
+    <li>Notificar de inmediato al Prestador ante cualquier sospecha de acceso no autorizado a su cuenta.</li>
+    <li>Asumir la responsabilidad por toda actividad realizada en el Sistema bajo sus credenciales, salvo que se acredite negligencia grave del Prestador.</li>
+  </ul>
+
+  <h3>4.5 Respaldo de información</h3>
+  <p>
+    Se recomienda al Cliente conservar copias propias de los documentos y antecedentes críticos de sus causas, fuera del Sistema. El Prestador realiza respaldos razonables de la infraestructura, pero no garantiza la recuperación íntegra de datos ante eventos de fuerza mayor, fallas de proveedores externos, o pérdida de información no atribuible a culpa o dolo del Prestador.
+  </p>
+
+  <h3>4.6 Obligaciones legales propias del Cliente</h3>
+  <ul>
+    <li>El Cliente es el <strong>responsable del tratamiento</strong> (en los términos de la Ley N° 19.628) de los datos personales de sus propios clientes que ingresa al Sistema, actuando el Prestador únicamente como encargado de dicho tratamiento.</li>
+    <li>El Cliente debe dar cumplimiento a sus deberes de secreto profesional, ética y normativa del Colegio de Abogados y demás regulación aplicable al ejercicio de la abogacía en Chile, independientemente del uso del Sistema.</li>
+    <li>El Cliente no debe subir al Sistema contenido ilícito, que infrinja derechos de terceros, o que vulnere la normativa vigente.</li>
+  </ul>
+
+  <h3>4.7 Pago oportuno</h3>
+  <p>El Cliente debe pagar el plan contratado dentro de los plazos acordados. La mora en el pago faculta al Prestador a suspender el acceso al Sistema conforme a la cláusula 8.</p>
+
+  <h2>5. Limitación de Responsabilidad</h2>
+  <p>
+    En la máxima medida permitida por la ley chilena:
+  </p>
+  <ul>
+    <li>El Prestador <strong>no será responsable</strong> por daños indirectos, lucro cesante, pérdida de causas judiciales, pérdida de clientes del Cliente, sanciones disciplinarias o profesionales, ni perjuicios derivados del uso o imposibilidad de uso del Sistema.</li>
+    <li>La responsabilidad total y agregada del Prestador frente al Cliente, por cualquier concepto derivado de este Contrato, se limita al monto efectivamente pagado por el Cliente durante los <strong>últimos tres (3) meses</strong> previos al hecho que origina el reclamo.</li>
+    <li>Esta limitación no aplica en casos de dolo o culpa grave debidamente acreditada del Prestador, conforme a las normas generales del derecho chileno.</li>
+    <li>El Prestador no responde por fallas, interrupciones o pérdidas de datos atribuibles a proveedores de infraestructura de terceros (hosting, base de datos, autenticación, correo electrónico o procesamiento de inteligencia artificial), sin perjuicio de adoptar medidas razonables para mitigar dichos eventos.</li>
+  </ul>
+
+  <h2>6. Propiedad y Tratamiento de Datos</h2>
+  <p>
+    El Cliente conserva la propiedad de toda la información que ingresa al Sistema. El Prestador no utiliza dicha información para fines distintos a la prestación del Servicio, conforme a lo establecido en la <a href="politica-de-privacidad.html">Política de Privacidad</a>, la cual forma parte integrante de este Contrato.
+  </p>
+
+  <h2>7. Confidencialidad</h2>
+  <p>
+    Ambas Partes se obligan a mantener confidencial la información de carácter reservado a la que tengan acceso con ocasión de este Contrato, no pudiendo divulgarla a terceros sin autorización previa y por escrito de la otra Parte, salvo requerimiento de autoridad competente.
+  </p>
+
+  <h2>8. Vigencia, Suspensión y Término</h2>
+  <ul>
+    <li>El presente Contrato rige a contar de la fecha de activación de la cuenta del Cliente, en modalidad de renovación mensual automática según el plan contratado.</li>
+    <li>Cualquiera de las Partes podrá poner término al Contrato dando aviso a la otra con a lo menos <strong>15 días corridos</strong> de anticipación.</li>
+    <li>El Prestador podrá suspender o restringir el acceso al Sistema en caso de mora en el pago superior a 10 días, uso indebido del Sistema, o incumplimiento grave de las obligaciones del Cliente bajo este Contrato, previa notificación.</li>
+    <li>Terminado el Contrato por cualquier causa, el Cliente dispondrá de <strong>30 días</strong> para solicitar la exportación de sus datos, transcurridos los cuales el Prestador podrá eliminarlos definitivamente conforme a la Política de Privacidad.</li>
+  </ul>
+
+  <h2>9. Precio y Forma de Pago</h2>
+  <p>
+    El precio del Servicio corresponde al plan contratado por el Cliente, pagadero mensualmente mediante transferencia bancaria u otro medio habilitado por el Prestador. El Prestador podrá ajustar los precios para períodos futuros, dando aviso al Cliente con a lo menos 30 días de anticipación.
+  </p>
+
+  <h2>10. Fuerza Mayor</h2>
+  <p>
+    Ninguna de las Partes será responsable por el incumplimiento de sus obligaciones cuando este se deba a caso fortuito o fuerza mayor, en los términos del artículo 45 del Código Civil, incluyendo —sin limitarse a— fallas masivas de internet, cortes de energía, desastres naturales, actos de autoridad o fallas generalizadas de los proveedores de infraestructura tecnológica utilizados por el Sistema.
+  </p>
+
+  <h2>11. Independencia de las Partes</h2>
+  <p>
+    Este Contrato no genera relación de sociedad, mandato, representación ni vínculo de subordinación o dependencia laboral entre las Partes. El Prestador actúa como proveedor independiente de servicios tecnológicos.
+  </p>
+
+  <h2>12. Modificaciones</h2>
+  <p>
+    El Prestador podrá modificar los términos de este Contrato, notificando al Cliente con a lo menos 15 días de anticipación por correo electrónico. El uso continuado del Servicio tras dicho plazo implica la aceptación de las modificaciones.
+  </p>
+
+  <h2>13. Ley Aplicable y Resolución de Controversias</h2>
+  <p>
+    Este Contrato se rige por las leyes de la República de Chile. Las Partes procurarán resolver cualquier controversia derivada de este Contrato mediante negociación directa y de buena fe. De no alcanzarse acuerdo dentro de 30 días, las Partes se someten a la jurisdicción de los tribunales ordinarios de justicia de Santiago de Chile.
+  </p>
+
+  <h2>14. Notificaciones</h2>
+  <p>
+    Toda comunicación entre las Partes se entenderá válidamente efectuada mediante correo electrónico dirigido a las direcciones registradas: para el Prestador, <a href="mailto:emaferna.contacto@gmail.com">emaferna.contacto@gmail.com</a>; para el Cliente, el correo electrónico registrado en su cuenta del Sistema.
+  </p>
+
+  <h2>15. Aceptación</h2>
+  <p>
+    Las Partes declaran haber leído, entendido y aceptado íntegramente los términos del presente Contrato, suscribiéndolo en señal de conformidad.
+  </p>
+
+  <div class="sign-block">
+    <div class="sign-col">
+      <div class="sign-line"></div>
+      <strong>[Nombre del Prestador]</strong>
+      <p>Por LexCRM</p>
+    </div>
+    <div class="sign-col">
+      <div class="sign-line"></div>
+      <strong>[Nombre del Cliente]</strong>
+      <p>Por el Cliente</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 LexCRM · Sistema de gestión legal para abogados en Chile · <a href="index.html">Volver al inicio</a></p>
+</footer>
+
+</body>
+</html>
