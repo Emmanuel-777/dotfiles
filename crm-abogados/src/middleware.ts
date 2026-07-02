@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/no-autorizado',
   '/api/notificaciones/cron',
+  '/api/notificaciones/citas-cron',
 ])
 
 export default clerkMiddleware((auth, req) => {

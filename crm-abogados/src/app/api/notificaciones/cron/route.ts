@@ -1,5 +1,5 @@
 import { db, initDB } from '@/lib/db'
-import { plazos, tareas, citas, clientes, causas, honorarios } from '@/lib/schema'
+import { plazos, tareas, citas, clientes, causas, honorarios, prospectos } from '@/lib/schema'
 import { eq, and, gte, lte, lt, ne, or } from 'drizzle-orm'
 import { getResend, buildNotificationEmail } from '@/lib/email'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     db.select({ userId: tareas.userId }).from(tareas)
       .where(and(ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'), gte(tareas.fechaVencimiento, hoy), lte(tareas.fechaVencimiento, en3dias))),
     db.select({ userId: citas.userId }).from(citas)
-      .where(and(eq(citas.estado, 'PROGRAMADA'), gte(citas.fecha, hoy), lte(citas.fecha, mañana))),
+      .where(and(or(eq(citas.estado, 'PENDIENTE'), eq(citas.estado, 'CONFIRMADA')), gte(citas.fecha, hoy), lte(citas.fecha, mañana))),
     db.select({ userId: honorarios.userId }).from(honorarios)
       .where(and(or(eq(honorarios.estado, 'PENDIENTE'), eq(honorarios.estado, 'PARCIAL')), lt(honorarios.fechaVence, hoy))),
   ])
@@ -68,18 +68,20 @@ export async function GET(request: Request) {
 
     // Citas de hoy
     const citasHoyRows = await db
-      .select({ titulo: citas.titulo, horaInicio: citas.horaInicio, clienteNombre: clientes.nombre })
+      .select({ titulo: citas.titulo, horaInicio: citas.horaInicio, clienteNombre: clientes.nombre, prospectoNombre: prospectos.nombre })
       .from(citas)
       .leftJoin(clientes, eq(citas.clienteId, clientes.id))
-      .where(and(eq(citas.userId, userId), eq(citas.estado, 'PROGRAMADA'), eq(citas.fecha, hoy)))
+      .leftJoin(prospectos, eq(citas.prospectoId, prospectos.id))
+      .where(and(eq(citas.userId, userId), or(eq(citas.estado, 'PENDIENTE'), eq(citas.estado, 'CONFIRMADA')), eq(citas.fecha, hoy)))
       .orderBy(citas.horaInicio)
 
     // Citas de mañana
     const citasMañanaRows = await db
-      .select({ titulo: citas.titulo, horaInicio: citas.horaInicio, clienteNombre: clientes.nombre })
+      .select({ titulo: citas.titulo, horaInicio: citas.horaInicio, clienteNombre: clientes.nombre, prospectoNombre: prospectos.nombre })
       .from(citas)
       .leftJoin(clientes, eq(citas.clienteId, clientes.id))
-      .where(and(eq(citas.userId, userId), eq(citas.estado, 'PROGRAMADA'), eq(citas.fecha, mañana)))
+      .leftJoin(prospectos, eq(citas.prospectoId, prospectos.id))
+      .where(and(eq(citas.userId, userId), or(eq(citas.estado, 'PENDIENTE'), eq(citas.estado, 'CONFIRMADA')), eq(citas.fecha, mañana)))
       .orderBy(citas.horaInicio)
 
     // Plazos próximos (hoy → 3 días)
@@ -114,8 +116,8 @@ export async function GET(request: Request) {
 
     const html = buildNotificationEmail({
       userName,
-      citasHoy: citasHoyRows.map(c => ({ titulo: c.titulo, horaInicio: c.horaInicio, cliente: c.clienteNombre })),
-      citasMañana: citasMañanaRows.map(c => ({ titulo: c.titulo, horaInicio: c.horaInicio, cliente: c.clienteNombre })),
+      citasHoy: citasHoyRows.map(c => ({ titulo: c.titulo, horaInicio: c.horaInicio, cliente: c.clienteNombre ?? c.prospectoNombre })),
+      citasMañana: citasMañanaRows.map(c => ({ titulo: c.titulo, horaInicio: c.horaInicio, cliente: c.clienteNombre ?? c.prospectoNombre })),
       plazosProximos: plazosProximosRows.map(p => ({ titulo: p.titulo, fecha: p.fecha.split('T')[0], rol: p.rol })),
       tareasProximas: tareasProximasRows.filter(t => t.fecha).map(t => ({ titulo: t.titulo, fecha: t.fecha!.split('T')[0] })),
       honorariosVencidos: honorariosVencidosRows.map(h => ({

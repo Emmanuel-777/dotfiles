@@ -6,6 +6,10 @@
     {
       "path": "/api/notificaciones/cron",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/notificaciones/citas-cron",
+      "schedule": "0 23 * * *"
     }
   ]
 }

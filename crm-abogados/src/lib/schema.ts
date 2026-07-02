@@ -127,6 +127,7 @@ export const citas = sqliteTable('citas', {
   valor: real('valor'),
   estado: text('estado').notNull().default('PENDIENTE'),
   notas: text('notas'),
+  recordatorioCitaEnviado: integer('recordatorio_cita_enviado').notNull().default(0),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })

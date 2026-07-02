@@ -169,6 +169,8 @@ export async function initDB() {
     `ALTER TABLE prospectos ADD COLUMN proximo_contacto TEXT`,
     // Citas pueden asociarse a un prospecto (antes de convertirse en cliente)
     `ALTER TABLE citas ADD COLUMN prospecto_id TEXT REFERENCES prospectos(id) ON DELETE SET NULL`,
+    // Recordatorio nocturno de cita del día siguiente (0=pendiente, 1=enviado)
+    `ALTER TABLE citas ADD COLUMN recordatorio_cita_enviado INTEGER NOT NULL DEFAULT 0`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}
