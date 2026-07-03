@@ -4,13 +4,15 @@ import { NextResponse } from 'next/server'
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
-  '/no-autorizado',
   '/api/notificaciones/cron',
   '/api/notificaciones/citas-cron',
   '/api/notificaciones/tareas-cron',
+  '/api/acceso/solicitud',
 ])
 
-export default clerkMiddleware((auth, req) => {
+const LANDING_URL = 'https://lexcrm.site'
+
+export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req)) return
 
   // Redirect to sign-in if not authenticated
@@ -32,7 +34,22 @@ export default clerkMiddleware((auth, req) => {
             { status: 403, headers: { 'Content-Type': 'application/json' } },
           )
         }
-        return NextResponse.redirect(new URL('/no-autorizado', req.url))
+
+        // Aviso al dueño de que este correo intentó acceder — best-effort, no bloquea la redirección
+        try {
+          await fetch(new URL('/api/acceso/solicitud', req.url), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.CRON_SECRET}`,
+            },
+            body: JSON.stringify({ email }),
+          })
+        } catch (e) {
+          console.error('Error notificando solicitud de acceso:', e)
+        }
+
+        return NextResponse.redirect(`${LANDING_URL}/?motivo=no-autorizado&email=${encodeURIComponent(email)}`)
       }
     }
   }

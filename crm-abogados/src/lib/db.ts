@@ -157,6 +157,12 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS solicitudes_acceso (
+      email TEXT PRIMARY KEY,
+      intentos INTEGER NOT NULL DEFAULT 1,
+      ultimo_aviso TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
   ]
   for (const sql of statements) {
     await client.execute(sql)

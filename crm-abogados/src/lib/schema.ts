@@ -164,6 +164,13 @@ export const perfilAbogado = sqliteTable('perfil_abogado', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const solicitudesAcceso = sqliteTable('solicitudes_acceso', {
+  email: text('email').primaryKey(),
+  intentos: integer('intentos').notNull().default(1),
+  ultimoAviso: text('ultimo_aviso'),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect

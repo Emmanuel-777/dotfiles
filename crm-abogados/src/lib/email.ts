@@ -176,7 +176,7 @@ export function buildCitaReminderEmail({
       </div>
 
       <div style="margin-top:24px;text-align:center;">
-        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://dotfiles-iota.vercel.app'}/citas"
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.lexcrm.site'}/citas"
            style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
           Ver agenda en LexCRM
         </a>
@@ -242,7 +242,7 @@ export function buildTareasPendientesEmail({
       ${restantes}
 
       <div style="margin-top:24px;text-align:center;">
-        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://dotfiles-iota.vercel.app'}/tareas"
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.lexcrm.site'}/tareas"
            style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
           Ver tareas en LexCRM
         </a>
@@ -320,11 +320,64 @@ export function buildNotificationEmail({
       ${section('Honorarios vencidos sin pagar', '#b91c1c', honorariosHtml)}
 
       <div style="margin-top:24px;text-align:center;">
-        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://dotfiles-iota.vercel.app'}/dashboard"
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.lexcrm.site'}/dashboard"
            style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
           Abrir LexCRM
         </a>
       </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+      <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+        LexCRM · Gestión Legal ·
+        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+}
+
+export function buildSolicitudAccesoEmail({
+  email,
+  intentos,
+}: {
+  email: string
+  intentos: number
+}): string {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#14254c,#1a3060);padding:28px 32px;">
+      <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Solicitud de acceso</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;">
+        Alguien intentó iniciar sesión en LexCRM y todavía no está autorizado:
+      </p>
+
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#92400e;">${email}</p>
+        <p style="margin:0;font-size:13px;color:#b45309;">
+          ${intentos === 1 ? 'Primer intento de acceso' : `${intentos} intentos de acceso`}
+        </p>
+      </div>
+
+      <p style="margin:0 0 20px;font-size:13px;color:#64748b;">
+        Si decides autorizarlo, agrega este correo a la variable <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">ALLOWED_EMAILS</code> en Vercel y vuelve a desplegar.
+      </p>
+
+      <p style="margin:0;font-size:12px;color:#94a3b8;">
+        No vas a recibir otro aviso por este mismo correo hasta dentro de 24 horas.
+      </p>
     </div>
 
     <!-- Footer -->
