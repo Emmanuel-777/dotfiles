@@ -144,6 +144,20 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS perfil_abogado (
+      user_id TEXT PRIMARY KEY,
+      email TEXT,
+      whatsapp TEXT,
+      banco TEXT,
+      tipo_cuenta TEXT,
+      numero_cuenta TEXT,
+      titular_nombre TEXT,
+      titular_rut TEXT,
+      perfil_completo INTEGER NOT NULL DEFAULT 0,
+      notificaciones_whatsapp INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
   ]
   for (const sql of statements) {
     await client.execute(sql)

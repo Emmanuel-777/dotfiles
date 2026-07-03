@@ -9,9 +9,11 @@ import GlobalSearch from '@/components/GlobalSearch'
 export default function DashboardShell({
   children,
   alertas,
+  perfilCompleto = true,
 }: {
   children: React.ReactNode
   alertas: SidebarAlertas
+  perfilCompleto?: boolean
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -28,6 +30,7 @@ export default function DashboardShell({
 
       <Sidebar
         alertas={alertas}
+        perfilCompleto={perfilCompleto}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />

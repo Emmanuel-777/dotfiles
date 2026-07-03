@@ -18,6 +18,8 @@ import {
   MessageCircle,
   Mail,
   X,
+  UserCog,
+  AlertTriangle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import LogoMark from '@/components/LogoMark'
@@ -79,10 +81,12 @@ function AlertBadge({ alertKey, alertas }: { alertKey: 'agenda' | 'tareas' | 'ci
 
 export default function Sidebar({
   alertas,
+  perfilCompleto = true,
   isOpen = false,
   onClose,
 }: {
   alertas: SidebarAlertas
+  perfilCompleto?: boolean
   isOpen?: boolean
   onClose?: () => void
 }) {
@@ -148,8 +152,33 @@ export default function Sidebar({
         })}
       </nav>
 
+      {/* Perfil */}
+      <div className="px-3 pt-3 border-t border-white/10">
+        <Link
+          href="/perfil"
+          onClick={onClose}
+          className={cn(
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+            pathname === '/perfil'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'text-slate-300 hover:bg-white/10 hover:text-white'
+          )}
+        >
+          <UserCog className="h-4 w-4 flex-shrink-0" />
+          <span className="flex-1">Mi Perfil</span>
+          {!perfilCompleto && (
+            <span
+              className="ml-auto inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-amber-950"
+              title="Datos incompletos"
+            >
+              <AlertTriangle className="h-3 w-3" />
+            </span>
+          )}
+        </Link>
+      </div>
+
       {/* Ayuda técnica */}
-      <div className="px-3 pb-2 border-t border-white/10 pt-3">
+      <div className="px-3 pb-2 border-t border-white/10 pt-3 mt-1">
         <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Soporte</p>
         <a
           href="https://wa.me/56979710838?text=Hola%2C%20necesito%20ayuda%20con%20LexCRM"

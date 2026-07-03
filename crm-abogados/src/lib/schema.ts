@@ -150,6 +150,21 @@ export const prospectos = sqliteTable('prospectos', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const perfilAbogado = sqliteTable('perfil_abogado', {
+  userId: text('user_id').primaryKey(),
+  email: text('email'),
+  whatsapp: text('whatsapp'),
+  banco: text('banco'),
+  tipoCuenta: text('tipo_cuenta'),
+  numeroCuenta: text('numero_cuenta'),
+  titularNombre: text('titular_nombre'),
+  titularRut: text('titular_rut'),
+  perfilCompleto: integer('perfil_completo').notNull().default(0),
+  notificacionesWhatsapp: integer('notificaciones_whatsapp').notNull().default(1),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect
@@ -164,3 +179,4 @@ export type Cita = typeof citas.$inferSelect
 export type NuevaCita = typeof citas.$inferInsert
 export type Prospecto = typeof prospectos.$inferSelect
 export type NuevoProspecto = typeof prospectos.$inferInsert
+export type PerfilAbogado = typeof perfilAbogado.$inferSelect

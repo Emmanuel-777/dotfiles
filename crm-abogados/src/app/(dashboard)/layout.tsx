@@ -1,8 +1,9 @@
 import DashboardShell from '@/components/DashboardShell'
 import AsistenteVirtual from '@/components/AsistenteVirtual'
+import ProfileGuard from '@/components/ProfileGuard'
 import { db, initDB } from '@/lib/db'
-import { plazos, tareas, citas, prospectos } from '@/lib/schema'
-import { eq, and, ne, gte, lte, isNull } from 'drizzle-orm'
+import { plazos, tareas, citas, prospectos, perfilAbogado } from '@/lib/schema'
+import { eq, and, ne, gte, lte, isNull, or } from 'drizzle-orm'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
@@ -26,7 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const en3dias = new Date(hoy.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString()
   const finDiaISO = new Date(hoy.getTime() + 24 * 60 * 60 * 1000).toISOString()
 
-  const [plazosRows, tareasRows, citasRows, prospectosRows] = await Promise.all([
+  const [plazosRows, tareasRows, citasRows, prospectosRows, perfilRows] = await Promise.all([
     db.select({ fecha: plazos.fecha }).from(plazos)
       .where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'))),
     db.select({ fecha: tareas.fechaVencimiento }).from(tareas)
@@ -34,7 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     db.select({ id: citas.id }).from(citas)
       .where(and(
         eq(citas.userId, userId),
-        eq(citas.estado, 'PROGRAMADA'),
+        or(eq(citas.estado, 'PENDIENTE'), eq(citas.estado, 'CONFIRMADA')),
         gte(citas.fecha, hoyISO.split('T')[0]),
         lte(citas.fecha, finDiaISO.split('T')[0]),
       )),
@@ -45,7 +46,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
         ne(prospectos.etapa, 'PERDIDO'),
         isNull(prospectos.clienteId),
       )),
+    db.select({ perfilCompleto: perfilAbogado.perfilCompleto }).from(perfilAbogado)
+      .where(eq(perfilAbogado.userId, userId)),
   ])
+
+  const perfilCompleto = (perfilRows[0]?.perfilCompleto ?? 0) === 1
 
   // Los recordatorios del embudo se guardan como fecha (YYYY-MM-DD)
   const hoyFecha = hoyISO.split('T')[0]
@@ -67,7 +72,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <DashboardShell alertas={alertas}>
+    <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto}>
+      <ProfileGuard perfilCompleto={perfilCompleto} />
       {children}
       <AsistenteVirtual />
     </DashboardShell>
