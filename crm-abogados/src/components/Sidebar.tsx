@@ -95,7 +95,7 @@ export default function Sidebar({
 
   return (
     <aside
-      className="w-64 min-h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
+      className="w-64 h-screen flex flex-col fixed left-0 top-0 z-30 print:hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 overflow-y-auto"
       style={isOpen ? { transform: 'translateX(0)' } : undefined}
     >
       {/* Logo */}
