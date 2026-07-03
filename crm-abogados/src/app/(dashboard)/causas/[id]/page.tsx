@@ -268,7 +268,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
 
         {/* Lateral */}
         <div className="space-y-6">
-          <AIPanel causaId={causa.id} tiposEscrito={TIPOS_ESCRITO} />
+          <AIPanel causaId={causa.id} tiposEscrito={TIPOS_ESCRITO} causaRol={causa.rol} causaTribunal={causa.tribunal ?? undefined} />
 
           <div className="card">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">

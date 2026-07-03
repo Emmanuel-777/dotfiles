@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck, Bell, CalendarPlus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pencil, Trash2, Phone, Mail, Building2, TrendingDown, RotateCcw, UserPlus, UserCheck, Bell, CalendarPlus, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 type Etapa = 'CONTACTO' | 'REUNION' | 'PROPUESTA' | 'GANADO' | 'PERDIDO'
@@ -51,12 +51,14 @@ function recordatorioInfo(fecha: string | null) {
 
 export default function KanbanBoard({ prospectos: initial }: { prospectos: Prospecto[] }) {
   const router = useRouter()
-  const [, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition()
   const [items, setItems] = useState(initial)
+  const [movingId, setMovingId] = useState<string | null>(null)
 
   useEffect(() => { setItems(initial) }, [initial])
 
   const moverEtapa = async (id: string, nuevaEtapa: Etapa) => {
+    setMovingId(id)
     setItems(prev => prev.map(p => p.id === id ? { ...p, etapa: nuevaEtapa } : p))
     const res = await fetch(`/api/prospectos/${id}`, {
       method: 'PATCH',
@@ -69,6 +71,7 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
     } else {
       startTransition(() => router.refresh())
     }
+    setMovingId(null)
   }
 
   const eliminar = async (id: string, nombre: string) => {
@@ -110,7 +113,15 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
 
             <div className="p-3 space-y-2.5 min-h-[80px]">
               {cards.map(p => (
-                <div key={p.id} className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+                <div
+                  key={p.id}
+                  className={[
+                    'bg-white rounded-lg border p-3 shadow-sm transition-all duration-200',
+                    movingId === p.id
+                      ? 'border-blue-400 ring-2 ring-blue-200 opacity-60'
+                      : 'border-gray-200 hover:border-gray-300 hover:shadow',
+                  ].join(' ')}
+                >
                   <div className="flex items-start gap-2 mb-1.5">
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-sm text-gray-900 truncate">{p.nombre}</p>
@@ -168,7 +179,7 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
                     ) : (
                       <Link
                         href={`/embudo/${p.id}/convertir`}
-                        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-1.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+                        className="mt-2 flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-2 py-1.5 text-[11px] font-semibold text-white hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm"
                       >
                         <UserPlus className="h-3.5 w-3.5" />
                         Convertir a cliente
@@ -177,12 +188,16 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
                   )}
 
                   <div className="flex items-center gap-0.5 mt-2 pt-2 border-t border-gray-100">
+                    {movingId === p.id && (
+                      <Loader2 className="h-3.5 w-3.5 text-blue-400 animate-spin mr-1 flex-shrink-0" />
+                    )}
                     {/* Mover izquierda */}
                     {idx > 0 && (
                       <button
                         onClick={() => moverEtapa(p.id, ORDEN[idx - 1])}
+                        disabled={movingId === p.id}
                         title="Etapa anterior"
-                        className="p-1 rounded text-gray-300 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded text-gray-300 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40"
                       >
                         <ChevronLeft className="h-3.5 w-3.5" />
                       </button>
@@ -191,8 +206,9 @@ export default function KanbanBoard({ prospectos: initial }: { prospectos: Prosp
                     {idx >= 0 && idx < ORDEN.length - 1 && (
                       <button
                         onClick={() => moverEtapa(p.id, ORDEN[idx + 1])}
+                        disabled={movingId === p.id}
                         title="Siguiente etapa"
-                        className="p-1 rounded text-gray-300 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                        className="p-1 rounded text-gray-300 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-40"
                       >
                         <ChevronRight className="h-3.5 w-3.5" />
                       </button>

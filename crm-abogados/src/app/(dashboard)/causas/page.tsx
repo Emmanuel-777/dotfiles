@@ -2,7 +2,7 @@ import { db, initDB } from '@/lib/db'
 import { causas, clientes, plazos } from '@/lib/schema'
 import { eq, desc, and, gte } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, Briefcase, AlertTriangle, Download } from 'lucide-react'
+import { Plus, Briefcase, AlertTriangle, Download, Eye, Scale, Pencil } from 'lucide-react'
 import { formatFechaCorta, ESTADOS_CAUSA } from '@/lib/utils'
 import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
@@ -75,7 +75,7 @@ export default async function CausasPage() {
       </div>
 
       <div className="card overflow-hidden overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[700px]">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="table-header">ROL / RIT</th>
@@ -84,7 +84,7 @@ export default async function CausasPage() {
               <th className="table-header">Tipo</th>
               <th className="table-header">Próximo plazo</th>
               <th className="table-header">Estado</th>
-              <th className="table-header"></th>
+              <th className="table-header sr-only">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -92,32 +92,57 @@ export default async function CausasPage() {
               const estadoInfo = ESTADOS_CAUSA[causa.estado as keyof typeof ESTADOS_CAUSA]
               const proximoPlazo = plazosPorCausa[causa.id]
               return (
-                <tr key={causa.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="table-cell font-mono font-medium text-blue-700">{causa.rol}</td>
+                <tr key={causa.id} className="group hover:bg-blue-50/40 transition-colors">
                   <td className="table-cell">
-                    <p className="font-medium text-gray-900">{cliente?.nombre}</p>
-                    <p className="text-xs text-gray-500">{cliente?.rut}</p>
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-md bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <Scale className="h-3.5 w-3.5 text-blue-600" />
+                      </div>
+                      <span className="font-mono font-semibold text-blue-700 text-sm">{causa.rol}</span>
+                    </div>
                   </td>
-                  <td className="table-cell text-gray-600 max-w-[200px]">
-                    <p className="truncate text-xs">{causa.tribunal}</p>
+                  <td className="table-cell">
+                    <p className="font-medium text-gray-900 text-sm">{cliente?.nombre ?? '—'}</p>
+                    {cliente?.rut && <p className="text-xs text-gray-400 font-mono">{cliente.rut}</p>}
                   </td>
-                  <td className="table-cell text-gray-600">{causa.tipoCausa}</td>
+                  <td className="table-cell max-w-[200px]">
+                    <p className="truncate text-xs text-gray-600">{causa.tribunal ?? '—'}</p>
+                  </td>
+                  <td className="table-cell">
+                    <span className="text-xs text-gray-600">{causa.tipoCausa}</span>
+                  </td>
                   <td className="table-cell">
                     {proximoPlazo ? (
                       <div className="flex items-center gap-1.5">
                         <AlertTriangle className="h-3.5 w-3.5 text-amber-500 flex-shrink-0" />
                         <div>
-                          <p className="text-xs font-medium text-gray-800 truncate max-w-[120px]">{proximoPlazo.titulo}</p>
-                          <p className="text-xs text-gray-500">{formatFechaCorta(proximoPlazo.fecha)}</p>
+                          <p className="text-xs font-medium text-gray-800 truncate max-w-[130px]">{proximoPlazo.titulo}</p>
+                          <p className="text-xs text-amber-600 font-medium">{formatFechaCorta(proximoPlazo.fecha)}</p>
                         </div>
                       </div>
-                    ) : <span className="text-gray-400 text-xs">—</span>}
+                    ) : <span className="text-gray-300 text-xs">—</span>}
                   </td>
                   <td className="table-cell">
                     <span className={`badge ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
                   </td>
                   <td className="table-cell">
-                    <Link href={`/causas/${causa.id}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">Ver</Link>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Link
+                        href={`/causas/${causa.id}`}
+                        title="Ver causa"
+                        className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
+                      >
+                        <Eye className="h-3 w-3" />
+                        Ver
+                      </Link>
+                      <Link
+                        href={`/causas/${causa.id}/editar`}
+                        title="Editar"
+                        className="inline-flex items-center gap-1 rounded-md bg-white border border-gray-300 px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               )

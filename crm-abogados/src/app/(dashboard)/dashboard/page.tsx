@@ -191,11 +191,16 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Próximos plazos */}
-        <div className="card">
+        <div className="card overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h2 className="font-semibold text-gray-900 flex items-center gap-2">
               <Clock className="h-4 w-4 text-amber-500" />
               Próximos plazos
+              {proximosPlazos.length > 0 && (
+                <span className="ml-1 text-[11px] font-bold bg-amber-100 text-amber-700 rounded-full px-2 py-0.5">
+                  {plazosProximos}
+                </span>
+              )}
             </h2>
             <Link href="/agenda" className="text-blue-600 text-sm hover:text-blue-700">Ver todos</Link>
           </div>
@@ -209,26 +214,34 @@ export default async function DashboardPage() {
               proximosPlazos.map(({ plazo, causa, cliente }) => {
                 const vencido = estaVencido(plazo.fecha)
                 const critico = esCritico(plazo.fecha)
+                const accentColor = vencido ? 'border-l-red-500 bg-red-50/50' : critico ? 'border-l-amber-400 bg-amber-50/30' : 'border-l-gray-200'
                 return (
-                  <div key={plazo.id} className="px-6 py-3 hover:bg-gray-50 transition-colors">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          {(vencido || critico) && <AlertTriangle className={`h-3.5 w-3.5 flex-shrink-0 ${vencido ? 'text-red-500' : 'text-amber-500'}`} />}
-                          <p className="text-sm font-medium text-gray-900 truncate">{plazo.titulo}</p>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-0.5 truncate">
-                          {cliente?.nombre} · {causa?.rol}
-                        </p>
+                  <Link
+                    key={plazo.id}
+                    href="/agenda"
+                    className={`flex items-start justify-between gap-3 px-6 py-3 border-l-4 hover:brightness-95 transition-all ${accentColor}`}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        {(vencido || critico) && (
+                          <AlertTriangle className={`h-3.5 w-3.5 flex-shrink-0 ${vencido ? 'text-red-500' : 'text-amber-500'}`} />
+                        )}
+                        <p className="text-sm font-medium text-gray-900 truncate">{plazo.titulo}</p>
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className={`text-xs font-medium ${vencido ? 'text-red-600' : critico ? 'text-amber-600' : 'text-gray-600'}`}>
-                          {formatFechaRelativa(plazo.fecha)}
-                        </p>
-                        <p className="text-xs text-gray-400">{formatFechaCorta(plazo.fecha)}</p>
-                      </div>
+                      <p className="text-xs text-gray-500 mt-0.5 truncate">
+                        {cliente?.nombre}
+                        {causa?.rol && <span className="font-mono text-blue-600 ml-1">· {causa.rol}</span>}
+                      </p>
                     </div>
-                  </div>
+                    <div className="text-right flex-shrink-0">
+                      <span className={`inline-block text-[11px] font-semibold rounded-full px-2 py-0.5 ${
+                        vencido ? 'bg-red-100 text-red-700' : critico ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {formatFechaRelativa(plazo.fecha)}
+                      </span>
+                      <p className="text-xs text-gray-400 mt-0.5">{formatFechaCorta(plazo.fecha)}</p>
+                    </div>
+                  </Link>
                 )
               })
             )}
