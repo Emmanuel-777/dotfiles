@@ -12,11 +12,11 @@
       "schedule": "0 23 * * *"
     },
     {
-      "path": "/api/notificaciones/whatsapp-tareas",
+      "path": "/api/notificaciones/tareas-cron",
       "schedule": "0 10 * * *"
     },
     {
-      "path": "/api/notificaciones/whatsapp-tareas",
+      "path": "/api/notificaciones/tareas-cron",
       "schedule": "0 16 * * *"
     }
   ]

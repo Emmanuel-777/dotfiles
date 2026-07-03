@@ -33,7 +33,6 @@ export async function PUT(req: Request) {
     numeroCuenta: body.numeroCuenta ?? null,
     titularNombre: body.titularNombre ?? null,
     titularRut: body.titularRut ?? null,
-    notificacionesWhatsapp: body.notificacionesWhatsapp === false ? 0 : 1,
   }
   const perfilCompleto = calcularPerfilCompleto(datos) ? 1 : 0
 

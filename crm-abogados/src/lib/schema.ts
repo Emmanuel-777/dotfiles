@@ -160,7 +160,6 @@ export const perfilAbogado = sqliteTable('perfil_abogado', {
   titularNombre: text('titular_nombre'),
   titularRut: text('titular_rut'),
   perfilCompleto: integer('perfil_completo').notNull().default(0),
-  notificacionesWhatsapp: integer('notificaciones_whatsapp').notNull().default(1),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
