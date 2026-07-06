@@ -3,11 +3,44 @@
 **Semana de publicación:** 3 · **Plataforma:** YouTube (largo) + recortes
 para Instagram/TikTok · **Duración objetivo:** 6-8 min
 
-**Antes de grabar, completa estos huecos con tu ejemplo real:**
-- `[HERRAMIENTA DE IA]` — la que vas a mostrar resolviendo algo en vivo.
-- `[TITULAR POLÍTICO DE EJEMPLO]` — un titular real y neutro para el
-  demo de análisis de sesgo (elige uno que no sea de la semana exacta de
-  grabación, para que no quede desactualizado si retrasas el video).
+**Material para los 3 demos en pantalla (ya definido):**
+
+1. **Pilar IA aplicada → Perplexity.** Encaja con el concepto de
+   "lente/verificar": haces una pregunta y responde citando fuentes en
+   segundos. Demo sugerido (20-30 seg): preguntarle algo que quieras
+   verificar de verdad esa semana (un dato, una cifra) y mostrar la
+   respuesta con sus fuentes.
+
+2. **Pilar Marca personal → bio genérica vs. específica** (ejemplo
+   ilustrativo, no es tu perfil real todavía — eso se hace a fondo en el
+   Video 3):
+   - **Antes (genérico):** "Consultor de negocios | Ayudo a
+     emprendedores a crecer | Mentalidad de crecimiento 🚀"
+   - **Después (específico):** "Ayudo a abogados independientes en Chile
+     a conseguir sus primeros 10 clientes sin gastar en ads"
+
+3. **Pilar Contingencia política → Claude, análisis de UN solo titular**
+   (no dos titulares comparados — el sesgo de un titular aislado no
+   siempre se nota a simple vista, ahí es donde la IA aporta algo real):
+   - **Titular (input, ficticio/neutro):** *"El Gobierno logra aprobar la
+     polémica reforma pese al fuerte rechazo ciudadano."*
+   - **Prompt a mostrar en pantalla:**
+     ```
+     Analiza este titular:
+     "El Gobierno logra aprobar la polémica reforma pese al fuerte
+     rechazo ciudadano."
+
+     1. ¿Qué palabras tienen carga negativa o positiva (connotación),
+        más allá de describir el hecho en sí?
+     2. ¿Qué información NO está confirmada en el titular, pero el
+        lector podría asumir como cierta de todas formas?
+     3. Reescríbelo de forma neutral, manteniendo los mismos hechos.
+     ```
+   - El momento fuerte del demo es la **reescritura neutral** que
+     entrega la IA al final — al compararla con el titular original, el
+     sesgo que antes pasaba desapercibido se hace evidente.
+
+**Falta completar:**
 - `[TEMA DEL PRÓXIMO VIDEO]` — el video de la semana 4 ("3 herramientas
   de IA que uso cada semana").
 
@@ -39,24 +72,33 @@ para Instagram/TikTok · **Duración objetivo:** 6-8 min
 > Este canal se mueve en tres pilares.
 >
 > El primero es inteligencia artificial aplicada. Por ejemplo — mira
-> esto en pantalla — le pido a `[HERRAMIENTA DE IA]` que resuelva esto en
-> treinta segundos. *(demo en vivo, 20-30 seg)*. Así de simple, así de
-> rápido. Y así es como quiero mostrarte estas herramientas de ahora en
-> adelante: resolviendo un problema real, no haciendo un truco de feria.
+> esto en pantalla — le pregunto a Perplexity algo que necesito
+> verificar de verdad, y en segundos me responde citando las fuentes.
+> *(demo en vivo, 20-30 seg)*. Así de simple, así de rápido. Y así es
+> como quiero mostrarte estas herramientas de ahora en adelante:
+> resolviendo un problema real, no haciendo un truco de feria.
 >
-> El segundo pilar es marca personal. Acá te muestro casos reales de
-> antes y después: perfiles que analizamos con inteligencia artificial
-> para encontrar qué los hace genéricos, y qué los hace únicos.
-> *(mostrar contraste rápido en pantalla, 15-20 seg)*.
+> El segundo pilar es marca personal. Mira estas dos frases *(mostrar en
+> pantalla)*: "Consultor de negocios, ayudo a emprendedores a crecer,
+> mentalidad de crecimiento" — contra "ayudo a abogados independientes
+> en Chile a conseguir sus primeros diez clientes sin gastar en
+> publicidad". La primera podría ser cualquiera. La segunda es alguien
+> específico, con una promesa concreta. Ese es el tipo de ajuste que
+> vamos a hacer con IA en este canal — y más adelante lo vamos a hacer
+> con tu propio perfil, no con un ejemplo inventado.
 >
 > Y el tercero es contingencia política. Y en este punto quiero ser muy
 > claro, desde este primer video: en este canal no vas a encontrar mi
 > opinión sobre el fondo de ningún tema político. Lo que vas a encontrar
-> es cómo analizarlo tú mismo. Por ejemplo, tomamos un titular como este
-> — `[TITULAR POLÍTICO DE EJEMPLO]` — y usamos inteligencia artificial
-> para detectar el sesgo en cómo está redactado. No para decirte qué
-> pensar sobre el hecho, sino para mostrarte cómo leerlo con más
-> distancia.
+> es cómo analizarlo tú mismo. Por ejemplo, tomo un titular como este
+> *(mostrar en pantalla)*: "El Gobierno logra aprobar la polémica reforma
+> pese al fuerte rechazo ciudadano". Y le pido a la IA que me diga qué
+> palabras están cargadas, qué se está asumiendo sin decirlo, y que me
+> lo reescriba de forma neutral. *(mostrar respuesta y reescritura,
+> 15-20 seg)*. Cuando ves el titular original al lado de la versión
+> neutral, el sesgo que antes no se notaba, ahora salta a la vista. No
+> te estoy diciendo qué pensar sobre la reforma — te estoy mostrando
+> cómo leer cualquier titular con más distancia.
 
 **[4:00–5:00] La regla del canal**
 
