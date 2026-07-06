@@ -27,9 +27,22 @@ reconocible al algoritmo y a la audiencia.
 
 **Tagline:** "Observa con IA — claridad en la era de la información."
 
-**Paleta de identidad sugerida:** azul oscuro/negro (seriedad, tech) +
-un acento (verde lima o cian) que sugiera "lente/foco". Evitar rojo/azul
-partidarios que puedan leerse como señal política.
+**Paleta de identidad — definitiva (logo ya elegido):** 3 variantes del
+mismo ícono ojo/lente, para usar según fondo:
+
+| Variante | Fondo | Línea (ojo) | Acento (pupila) | Uso sugerido |
+|---|---|---|---|---|
+| Navy | `#1E2C56` | `#FBF0DC` (crema) | `#E7EAF3` (lavanda pálido) | Foto de perfil (IG/TikTok/YouTube) — máximo contraste en círculo chico |
+| Blanco + crema | `#FFFFFF` | `#FBF0DC` (crema) | `#E7EAF3` (lavanda pálido) | Fondos claros, marca de agua sutil sobre video |
+| Blanco + navy | `#FFFFFF` | `#1E2C56` (navy) | `#F7DE00` (amarillo) | Banner de YouTube, thumbnails, impresión — mejor legibilidad y contraste sobre fondo claro |
+
+*(Hex extraídos por inspección visual del logo — si necesitás el valor
+exacto para imprenta, confirmalo con el eyedropper/selector de color de
+Canva sobre el archivo original.)*
+
+Evitar rojo/azul partidarios en cualquier pieza de contenido — el navy
+de marca no se usa como señal política, es parte de la identidad ya
+fijada por el logo.
 
 ---
 
