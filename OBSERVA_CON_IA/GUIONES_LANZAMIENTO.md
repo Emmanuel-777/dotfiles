@@ -1,54 +1,15 @@
 # Guiones de lanzamiento
 
-## Video 1 (semana 3) — Manifiesto: "Qué es Observa con IA"
+Los guiones completos (palabra por palabra) de cada video viven ahora en
+archivos separados dentro de [`guiones/`](./guiones/), uno por video,
+para poder trabajarlos y ajustarlos de forma independiente. Este
+documento queda como índice + notas de producción compartidas.
 
-**Duración objetivo:** 6-8 min · **Plataforma:** YouTube (largo) + recortes
-
-### Hook (0:00-0:15)
-> "Todos los días recibes cientos de titulares, opiniones y consejos de
-> marca personal — y no tienes tiempo de verificar ninguno. Este canal
-> existe para eso: usar la IA como lente para observar lo que realmente
-> importa, sin el ruido."
-
-### Desarrollo (0:15-5:30)
-
-1. **Quién eres y por qué este canal** (0:15-1:30)
-   - Presentación breve: tu perfil híbrido (no un solo mundo — cruce de
-     IA, marca personal y lectura del contexto político/social).
-   - La pregunta que da origen al canal: *"¿qué revela la IA cuando la
-     usamos para observar esto?"*
-
-2. **Los 3 pilares, explicados con un ejemplo cada uno** (1:30-4:00)
-   - **IA aplicada:** mostrar en vivo 1 prompt/herramienta resolviendo algo
-     real en 30 segundos.
-   - **Marca personal:** contraste rápido de "antes/después" de un perfil
-     analizado con IA.
-   - **Contingencia política:** ejemplo de cómo se analiza un titular con
-     IA para detectar sesgo — aclarando explícitamente: *"aquí no vas a
-     encontrar mi opinión sobre el fondo del tema — vas a encontrar cómo
-     analizarlo tú mismo."*
-
-3. **La regla del canal (diferenciador)** (4:00-5:00)
-   - Nunca opinión de un lado del espectro político.
-   - Nunca noticia del día — análisis semanal, con calma y datos.
-   - El objetivo es que la audiencia salga con una herramienta o una
-     pregunta mejor, no con una conclusión impuesta.
-
-4. **Qué esperar y cuándo** (5:00-5:30)
-   - Cadencia: 1 video grande los lunes + contenido corto en Instagram y
-     TikTok toda la semana.
-
-### CTA (5:30-6:00)
-> "Si te interesa observar el mundo y tu propia marca con más claridad y
-> menos ruido, suscríbete — el próximo lunes arrancamos con [tema del
-> primer video de pilar]."
-
-### Notas de grabación
-- Grabar en cámara al pecho/rostro (no solo pantalla) para el hook y el
-  cierre — genera más confianza en un video de presentación.
-- Guardar los 3 fragmentos de ejemplo (herramienta IA, antes/después de
-  marca, análisis de titular) como clips independientes: son la base de
-  los primeros recortes para IG/TikTok.
+| Video | Semana | Tema | Archivo |
+|---|---|---|---|
+| 1 | 3 | Manifiesto: "Qué es Observa con IA" | [`guiones/01_manifiesto.md`](./guiones/01_manifiesto.md) |
+| 2 | 4 | Pilar IA: "3 herramientas de IA que uso cada semana" | *(pendiente de pasar a archivo propio)* |
+| 3 | 5 | Pilar Marca personal: "Cómo construir tu marca personal con IA sin perder autenticidad" | *(pendiente de pasar a archivo propio)* |
 
 ---
 
