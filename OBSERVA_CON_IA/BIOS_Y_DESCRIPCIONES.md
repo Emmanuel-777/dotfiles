@@ -15,7 +15,7 @@ reconocimiento de marca:
   `@usuario`) usar siempre "Observa con IA" completo — es lo que más se
   ve y lo que la gente busca, el `@` con el "1" pesa menos.
 - Mencionar siempre el handle completo con el "1" en bio cruzada
-  ("Seguime en IG: @observaconia") para evitar que alguien busque
+  ("Sígueme en IG: @observaconia") para evitar que alguien busque
   `@observaconia` en TikTok y llegue a otra cuenta.
 - Revisar cada tanto si `@observaconia` se libera en TikTok (cuentas
   inactivas caducan) para reclamarlo y unificar.
@@ -30,16 +30,16 @@ reconocimiento de marca:
 
 **Descripción completa del canal:**
 > OBSERVA CON IA es un espacio para entender mejor lo que pasa — en el
-> mundo y en vos mismo — usando la inteligencia artificial como
+> mundo y en ti mismo — usando la inteligencia artificial como
 > herramienta de análisis, no como oráculo.
 >
-> Acá vas a encontrar:
+> Aquí vas a encontrar:
 > 🤖 IA aplicada — herramientas y casos de uso reales, sin humo.
 > 🧭 Marca personal — cómo construir posicionamiento con ayuda de IA sin
 > perder autenticidad.
 > 📊 Contingencia política — análisis con datos e IA de la actualidad,
 > sin bajar línea ideológica: te doy las herramientas para que analices
-> vos mismo.
+> tú mismo.
 >
 > Nuevo video cada lunes. Contenido corto toda la semana en Instagram y
 > TikTok.
@@ -85,5 +85,5 @@ el "1" estaba tomado, ver nota de handle inconsistente arriba)
 - Hashtags base sugeridos: #InteligenciaArtificial #MarcaPersonal
   #AnálisisPolítico #IAaplicada — sumar 2-3 específicos del tema de cada
   video.
-- CTA por plataforma: YouTube → "suscribite"; Instagram → "guardá este
-  post"; TikTok → "seguime para la parte 2".
+- CTA por plataforma: YouTube → "suscríbete"; Instagram → "guarda este
+  post"; TikTok → "sígueme para la parte 2".

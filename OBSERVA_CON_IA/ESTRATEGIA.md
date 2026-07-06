@@ -19,7 +19,7 @@ personal ni política. Para que los tres pilares no se sientan como "tres
 canales distintos", el ángulo unificador es:
 
 > **Uso la IA como lente para observar y entender lo que pasa: en el
-> mundo (política/actualidad) y en vos (tu marca personal).**
+> mundo (política/actualidad) y en ti (tu marca personal).**
 
 Cada pieza de contenido, sin importar el pilar, responde a: *"¿qué revela
 la IA cuando la usamos para observar esto?"* Esto le da un hilo conductor
@@ -36,8 +36,8 @@ mismo ícono ojo/lente, para usar según fondo:
 | Blanco + crema | `#FFFFFF` | `#FBF0DC` (crema) | `#E7EAF3` (lavanda pálido) | Fondos claros, marca de agua sutil sobre video |
 | Blanco + navy | `#FFFFFF` | `#1E2C56` (navy) | `#F7DE00` (amarillo) | Banner de YouTube, thumbnails, impresión — mejor legibilidad y contraste sobre fondo claro |
 
-*(Hex extraídos por inspección visual del logo — si necesitás el valor
-exacto para imprenta, confirmalo con el eyedropper/selector de color de
+*(Hex extraídos por inspección visual del logo — si necesitas el valor
+exacto para imprenta, confírmalo con el eyedropper/selector de color de
 Canva sobre el archivo original.)*
 
 Evitar rojo/azul partidarios en cualquier pieza de contenido — el navy
@@ -79,9 +79,9 @@ sponsors evitan canales polarizantes) y es coherente con el tono
 - El contenido político genera más engagement a corto plazo, pero es
   volátil y puede etiquetar el canal ideológicamente — el riesgo opuesto
   al objetivo de "monetizar con autoridad".
-- **Trade-off:** mismo peso que IA/marca personal = crecés más rápido con
+- **Trade-off:** mismo peso que IA/marca personal = creces más rápido con
   más riesgo reputacional. Subordinado (1 de cada 4-5 piezas, siempre
-  analítico) = crecés más lento pero con marca más segura y longeva.
+  analítico) = creces más lento pero con marca más segura y longeva.
 - **Decisión:** política = **20-25% del contenido**, siempre en formato
   "análisis con IA", nunca editorial de opinión.
 

@@ -16,7 +16,7 @@ del total de piezas ancla usadas en un mes (ver `ESTRATEGIA.md`, punto 3.2).
 4. **[L]** "Armé un asistente de IA personal en 20 minutos — así funciona"
 5. **[S]** "1 prompt que te ahorra 1 hora de trabajo esta semana"
 6. **[S]** "La IA que nadie usa (y debería)"
-7. **[S]** "Mito vs. realidad: lo que la IA SÍ y NO puede hacer por vos"
+7. **[S]** "Mito vs. realidad: lo que la IA SÍ y NO puede hacer por ti"
 8. **[C]** "5 prompts que uso todas las semanas" (carrusel con capturas)
 9. **[L]** "Probé 3 IAs para el mismo problema — cuál ganó"
 10. **[S]** "El prompt que cambia todo: contexto antes que instrucción"

@@ -5,14 +5,14 @@
 **Duración objetivo:** 6-8 min · **Plataforma:** YouTube (largo) + recortes
 
 ### Hook (0:00-0:15)
-> "Todos los días recibís cientos de titulares, opiniones y consejos de
-> marca personal — y no tenés tiempo de verificar ninguno. Este canal
+> "Todos los días recibes cientos de titulares, opiniones y consejos de
+> marca personal — y no tienes tiempo de verificar ninguno. Este canal
 > existe para eso: usar la IA como lente para observar lo que realmente
 > importa, sin el ruido."
 
 ### Desarrollo (0:15-5:30)
 
-1. **Quién sos y por qué este canal** (0:15-1:30)
+1. **Quién eres y por qué este canal** (0:15-1:30)
    - Presentación breve: tu perfil híbrido (no un solo mundo — cruce de
      IA, marca personal y lectura del contexto político/social).
    - La pregunta que da origen al canal: *"¿qué revela la IA cuando la
@@ -24,9 +24,9 @@
    - **Marca personal:** contraste rápido de "antes/después" de un perfil
      analizado con IA.
    - **Contingencia política:** ejemplo de cómo se analiza un titular con
-     IA para detectar sesgo — aclarando explícitamente: *"acá no vas a
+     IA para detectar sesgo — aclarando explícitamente: *"aquí no vas a
      encontrar mi opinión sobre el fondo del tema — vas a encontrar cómo
-     analizarlo vos mismo."*
+     analizarlo tú mismo."*
 
 3. **La regla del canal (diferenciador)** (4:00-5:00)
    - Nunca opinión de un lado del espectro político.
@@ -40,7 +40,7 @@
 
 ### CTA (5:30-6:00)
 > "Si te interesa observar el mundo y tu propia marca con más claridad y
-> menos ruido, suscribite — el próximo lunes arrancamos con [tema del
+> menos ruido, suscríbete — el próximo lunes arrancamos con [tema del
 > primer video de pilar]."
 
 ### Notas de grabación
@@ -56,12 +56,12 @@
 
 **Duración objetivo:** 5-7 min · **Plataforma:** YouTube (largo) + recortes
 
-*Nota: reemplazá `[Herramienta 1/2/3]` por las 3 que uses de verdad — el
+*Nota: reemplaza `[Herramienta 1/2/3]` por las 3 que uses de verdad — el
 guion está armado para que solo completes esos huecos y grabes.*
 
 ### Hook (0:00-0:15)
 > "Estas son las únicas 3 herramientas de IA que uso todas las semanas —
-> nada de lista genérica de 20 apps que abrís una vez y te olvidás.
+> nada de lista genérica de 20 apps que abres una vez y te olvidas.
 > Estas las uso yo, en serio, todas las semanas."
 
 ### Desarrollo (0:15-4:30)
@@ -85,12 +85,12 @@ guion está armado para que solo completes esos huecos y grabes.*
 - Mismo esquema: problema → demo → error típico.
 
 ### Cierre (4:30-5:15)
-> "De las tres, si tenés que empezar por una sola, empezá por
+> "De las tres, si tienes que empezar por una sola, empieza por
 > [Herramienta X] — es la que menos fricción tiene para el problema más
 > común: [problema]."
 
 ### CTA (5:15-5:30)
-> "¿Vos qué herramienta usás todas las semanas? Contámelo en los
+> "¿Tú qué herramienta usas todas las semanas? Cuéntamelo en los
 > comentarios — el mejor comentario se convierte en el próximo video."
 
 ### Notas de grabación
@@ -116,13 +116,13 @@ guion está armado para que solo completes esos huecos y grabes.*
 - Nombrar el problema de fondo: usar IA para "sonar como todos los
   demás" — perfiles genéricos, bio con las mismas 5 frases hechas.
 - Marcar la tensión: *"la IA es buena generando texto correcto, no
-  necesariamente texto que suene a vos."*
+  necesariamente texto que suene a ti."*
 
 **2. El proceso, mostrado en pantalla (1:15-3:30)**
 - Mostrar el prompt real usado (sugerido, adaptable):
-  > "Actuá como un reclutador/cliente potencial que ve mi perfil de
-  > [LinkedIn/Instagram/YouTube] por primera vez. Analizá mi bio y mis
-  > últimas 5 publicaciones. Decime: (1) qué asumís que hago en base a
+  > "Actúa como un reclutador/cliente potencial que ve mi perfil de
+  > [LinkedIn/Instagram/YouTube] por primera vez. Analiza mi bio y mis
+  > últimas 5 publicaciones. Dime: (1) qué asumes que hago en base a
   > esto, (2) qué suena genérico o intercambiable con cualquier otra
   > persona del rubro, (3) qué es lo único que no podría copiar alguien
   > más."
@@ -138,15 +138,15 @@ guion está armado para que solo completes esos huecos y grabes.*
   es tuya, no de ella."*
 
 ### Cierre — mini-framework (5:00-5:45)
-> "Si querés hacer este ejercicio vos mismo, usá estas 3 preguntas:
+> "Si quieres hacer este ejercicio tú mismo, usa estas 3 preguntas:
 > 1. ¿Qué asumiría alguien que ve mi perfil por primera vez?
 > 2. ¿Qué parte de lo que digo podría decir literalmente cualquier otra
 >    persona de mi rubro?
 > 3. ¿Qué parte no podría copiar nadie más, aunque quisiera?"
 
 ### CTA (5:45-6:00)
-> "Probá el prompt con tu propio perfil y contame en los comentarios qué
-> encontraste — capaz tu resultado es el próximo caso del canal."
+> "Prueba el prompt con tu propio perfil y cuéntame en los comentarios
+> qué encontraste — quizás tu resultado sea el próximo caso del canal."
 
 ### Notas de grabación
 - Tener el prompt ya ejecutado *antes* de grabar (la respuesta de la IA
@@ -163,7 +163,7 @@ guion está armado para que solo completes esos huecos y grabes.*
       la retención).
 - [ ] Al menos 1 momento "clip-able" identificado de antemano (para el
       recorte de Reels/TikTok).
-- [ ] CTA único y claro (no combinar "suscribite" + "comentá" + "seguime
+- [ ] CTA único y claro (no combinar "suscríbete" + "comenta" + "sígueme
       en Instagram" todo junto).
 - [ ] Si el video toca el pilar político: releer la "regla de oro" de
       `ESTRATEGIA.md` antes de grabar.
