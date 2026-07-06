@@ -157,24 +157,6 @@ guion está armado para que solo completes esos huecos y grabes.*
 
 ---
 
-## Video 3 (semana 5) — Pilar Marca personal: "Cómo construir tu marca personal con IA sin perder autenticidad"
-
-**Formato:** outline estructurado
-
-- **Hook (0:00-0:15):** "Le pedí a la IA que analizara mi propio perfil
-  público — esto es lo que encontró, y lo que cambié."
-- **Cuerpo:**
-  1. El riesgo real: usar IA para "sonar como todos los demás".
-  2. Proceso paso a paso: qué le pediste a la IA (prompt real, mostrado
-     en pantalla) y qué feedback te dio.
-  3. Qué cambiaste y qué NO cambiaste (para marcar el límite de
-     autenticidad).
-- **Cierre:** un mini-framework de 3 preguntas para que la audiencia
-  audite su propio perfil.
-- **CTA:** invitar a compartir su resultado en los comentarios.
-
----
-
 ## Checklist antes de grabar cualquiera de los 3
 
 - [ ] Hook escrito y ensayado en voz alta (primeros 15 segundos deciden
