@@ -9,6 +9,11 @@
 >
 > **Tagline:** *"Observa con IA — claridad en la era de la información."*
 
+## 📄 Documento único
+
+- [`OBSERVA_CON_IA.pdf`](./OBSERVA_CON_IA.pdf) — los 5 documentos de abajo
+  compilados en un único PDF, listo para leer o compartir.
+
 ## 📂 Contenido de esta carpeta
 
 - [`ESTRATEGIA.md`](./ESTRATEGIA.md) — identidad del canal, los 3 pilares de
