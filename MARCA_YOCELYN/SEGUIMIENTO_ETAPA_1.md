@@ -3,7 +3,7 @@
 
 > Checklist de ejecución de la Etapa 1 ($200.000 + IVA), aprobada por Yocelyn.
 > Referencia del "qué y por qué" en `ETAPA_1_COLORIMETRIA_BRIEF_TARGET_PLAN.md`
-> (sección 5). Este documento se actualiza a medida que se avanza — marcar
+> (sección 6). Este documento se actualiza a medida que se avanza — marcar
 > ✅ al completar cada tarea.
 
 **Estado:** ✅ Completado · ⏳ Pendiente · 🔄 En curso
@@ -16,14 +16,14 @@
 |---|---|---|---|
 | Auditoría completa de @yocelyncea (contenido, seguidores, tono) | Emmanuel | ⏳ | |
 | Cuestionario de descubrimiento enviado | Emmanuel | ✅ | `CUESTIONARIO_MARCA_PERSONAL.md` / versión Word enviada |
-| Respuesta al cuestionario | Yocelyn | ⏳ | Bloquea decisión final de usuario/bio/target de contenido |
+| Respuesta al cuestionario | Yocelyn | ✅ | Recibido — pivote clave: hoy solo atiende postulantes, no pacientes en general |
 | Colorimetría "Autoridad Cálida" definida | Emmanuel | ✅ | Ver sección 0 de `ETAPA_1_COLORIMETRIA_BRIEF_TARGET_PLAN.md` |
-| Validación de colorimetría con Yocelyn | Ambos | ⏳ | Presentar paleta y confirmar que la siente representativa |
-| Definición de usuario, nombre visible y bio | Ambos | ⏳ | Propuesta lista: `@yocelyncea.psi` / "Yocelyn Cea \| Psicóloga Clínica" |
-| Target segmentado (primario/secundario/terciario) | Emmanuel | ✅ | Ver sección 3 del mismo documento |
-| Agendar sesión de fotos profesional ($30.000–$40.000, aparte) | Yocelyn | ⏳ | Necesaria antes de Semana 2 (foto de perfil definitiva) |
+| Validación de colorimetría con Yocelyn | Ambos | ✅ | Confirmó: "sí me representa" |
+| Definición de usuario, nombre visible y bio | Ambos | 🔄 | Ella prefiere usuario con "yocelyn cea"; confirmar spelling exacto final (¿@yocelyncea.psi?) |
+| Target segmentado — **actualizado: postulantes PDI/FF.AA. como eje primario** | Emmanuel | ✅ | Ver sección 3 actualizada del mismo documento |
+| Agendar sesión de fotos profesional ($30.000–$40.000, aparte) | Yocelyn | ⏳ | Ya tiene algunas fotos propias; evaluar si alcanzan o se agenda sesión nueva |
 
-**Próximo hito:** tener la respuesta del cuestionario y la sesión de fotos agendada antes de cerrar la semana, para no atrasar el diseño de logo/grid en Semana 1.
+**Próximo hito:** confirmar usuario/handle final y definir si se agenda sesión de fotos nueva o se trabaja con las fotos que ya tiene, para no atrasar el diseño de logo/grid en Semana 1.
 
 ---
 
@@ -33,7 +33,7 @@
 |---|---|---|---|
 | Diseño de logo/isotipo | Emmanuel | ⏳ | Usar prompt de brief gráfico (sección 2) |
 | Manual básico de marca (borrador) | Emmanuel | ⏳ | |
-| Guion Reel 1 | Emmanuel | ✅ | Hook: "Fui investigadora de delitos sexuales en la PDI. Hoy soy psicóloga clínica." |
+| Guion Reel 1 | Emmanuel | ✅ | Hook: "Fui oficial de la PDI. Hoy preparo a quienes quieren serlo." |
 | Grabación Reel 1 | Yocelyn | ⏳ | |
 | Copy de post de presentación | Emmanuel | ✅ | Ver sección 4 del documento base |
 | Publicación post de presentación + Reel 1 | Ambos | ⏳ | Fijar (pin) el Reel en el perfil |
@@ -48,7 +48,7 @@
 | Tarea | Responsable | Estado | Notas |
 |---|---|---|---|
 | Piezas 4-6 del grid | Emmanuel | ⏳ | Mezcla educativo/testimonial según reglas de colorimetría |
-| Guion + grabación Reel 2 (ángulo PDI/Carabineros) | Ambos | ⏳ | Target secundario |
+| Guion + grabación Reel 2 (preparación de postulantes PDI/FF.AA.) | Ambos | ⏳ | Target primario — usar el dato del 100% de aprobación |
 | Publicación Reel 2 | Ambos | ⏳ | |
 | Foto de perfil editada con IA | Emmanuel | ⏳ | Usar prompt de la sección 1 (requiere sesión de fotos ya realizada) |
 
@@ -61,7 +61,7 @@
 | Tarea | Responsable | Estado | Notas |
 |---|---|---|---|
 | Piezas 7-9 del grid (grid completo) | Emmanuel | ⏳ | |
-| Guion + grabación Reel 3 (ángulo padres/señales de abuso) | Ambos | ⏳ | Target primario |
+| Guion + grabación Reel 3 (historia PDI + trauma/abuso) | Ambos | ⏳ | Target secundario — autoridad de marca |
 | Publicación Reel 3 | Ambos | ⏳ | |
 | Primeras Stories de interacción (encuestas/preguntas) | Yocelyn | ⏳ | Para activar algoritmo |
 
@@ -73,7 +73,7 @@
 
 | Tarea | Responsable | Estado | Notas |
 |---|---|---|---|
-| Guion + grabación Reel 4 (ángulo general/testimonial) | Ambos | ⏳ | Target terciario |
+| Guion + grabación Reel 4 (qué evalúa la etapa psicológica + testimonial de resultados) | Ambos | ⏳ | Cierre del eje postulantes |
 | Publicación Reel 4 | Ambos | ⏳ | |
 | Entrega de manual básico de marca | Emmanuel | ⏳ | |
 | Balance de auditoría (alcance, seguidores, interacción del mes) | Emmanuel | ⏳ | |

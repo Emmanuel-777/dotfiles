@@ -35,6 +35,8 @@ Principio rector: **todo subtono es cálido** (piel, luz, materiales, fondos). C
 
 Esta colorimetría es el filtro de decisión: ante cualquier duda de diseño o foto ("¿este fondo sirve?", "¿esta plantilla funciona?"), se valida contra esta tabla antes de aprobar.
 
+**✅ Validada por Yocelyn** (cuestionario de descubrimiento): "sí me representa".
+
 ---
 
 ## 1. Prompt optimizado — Edición de foto de perfil para Instagram
@@ -89,8 +91,11 @@ Contexto de posicionamiento:
   calidez clínica (psicóloga).
 - Frase ancla / hook: variaciones de "Investigó la verdad. Hoy acompaña la
   sanación" (ver banco de hooks en primera persona del proyecto).
-- Público objetivo: pacientes en general, padres preocupados por señales de
-  abuso, funcionarios PDI/Carabineros y sus familias (Región del Biobío).
+- Público objetivo: postulantes a la PDI, Fuerzas Armadas y otras escuelas
+  matrices que rinden la etapa psicológica de ingreso (eje principal); padres
+  preocupados por señales de abuso y funcionarios PDI/Carabineros como
+  segundo eje (historia y autoridad de marca). Atención remota a nivel
+  nacional, no solo Región del Biobío.
 
 Sistema de color obligatorio (no proponer alternativas):
 - Azul Marino Institucional #14213D (primario, ~55%)
@@ -128,63 +133,94 @@ de grid) listas para pasar a un diseñador o herramienta como Canva.
 
 ## 3. Target de Yocelyn
 
+> **Actualizado tras el cuestionario de descubrimiento respondido por Yocelyn
+> (jul. 2026):** hoy su agenda está completa solo con postulantes — no
+> atiende pacientes en general. Se decidió posicionar la marca alrededor de
+> ese negocio real, con el trauma/abuso como historia de fondo que le da
+> autoridad, no como oferta comercial principal.
+
 ### Target primario
-**Padres/madres preocupados por señales de abuso en sus hijos (infanto-adolescentes)**
-- Buscan a alguien que entienda tanto el lado clínico como el lado investigativo/legal de un posible abuso.
-- Dolor: miedo, culpa, urgencia, desconfianza en el sistema.
-- Necesitan: validación rápida, claridad sobre pasos a seguir, un profesional con autoridad real (no solo título, sino experiencia en el sistema PDI).
-- Por qué Yocelyn: es la única con doble credencial (investigó estos casos + hoy los trata clínicamente).
+**Postulantes a la PDI, Fuerzas Armadas y otras escuelas matrices, que rinden la etapa psicológica de ingreso**
+- Dolor: miedo a "quedar eliminado" en la etapa psicológica, desconocimiento de qué evalúa realmente el examen, falta de preparación específica (no genérica).
+- Necesitan: un profesional que conozca el proceso desde adentro (fue evaluadora/funcionaria de la institución), preparación concreta y orientación real.
+- Por qué Yocelyn: viene de la PDI, preparó postulantes para PDI y Fuerzas Armadas, y **el 100% de quienes ha preparado ha aprobado la prueba psicológica** — prueba social directa y verificable, debe ser el gancho central de la marca.
+- Cobertura: atención remota nacional (Talca, Linares, Chillán, Quillón, Iquique, Antofagasta, Santiago, Viña del Mar, Concepción, Coronel, Lota), no limitada a Biobío.
 
-### Target secundario
-**Funcionarios PDI/Carabineros y sus familias (salud mental ocupacional)**
-- Nicho poco atendido en la Región del Biobío.
-- Dolor: estrés operacional, trauma acumulado, estigma de "pedir ayuda" dentro de la institución.
-- Necesitan: un psicólogo que hable su mismo idioma institucional, que no los juzgue ni los trate como "civiles".
-- Por qué Yocelyn: viene de la institución, entiende el código y la cultura interna.
+### Target secundario (historia y autoridad de marca)
+**Padres preocupados por señales de abuso + funcionarios PDI/Carabineros y sus familias**
+- Dolor: miedo, culpa, urgencia (padres); estrés operacional y estigma de pedir ayuda (funcionarios).
+- Rol en la estrategia: no es el foco comercial actual, pero sostiene la narrativa de autoridad y diferenciación (ex Subprefecta PDI, especialista en delitos sexuales) que hace confiable también su servicio de preparación de postulantes.
 
-### Target terciario (base/ampliación)
-**Pacientes adultos en general (público psicológico estándar)**
-- Buscan atención clínica de calidad, presencial u online (Encuadrado).
-- Dolor: ansiedad, duelo, relaciones, salud mental general — sin relación directa con abuso o PDI.
-- Necesitan: cercanía, profesionalismo, disponibilidad de agenda.
-- Rol en la estrategia: sostiene el volumen de consultas mientras los targets primario/secundario construyen diferenciación y posicionamiento de nicho.
+### Target terciario (en pausa)
+**Pacientes adultos/infanto-adolescentes en general**
+- Yocelyn ya tuvo pacientes en este perfil (adultos y un niño de 5 años), pero hoy no tiene cupos por la demanda de postulantes.
+- Se mantiene como línea de contenido ocasional, sin prometer disponibilidad inmediata mientras la agenda esté copada.
 
 ### Nota estratégica
-El contenido debe priorizar 70% target primario + secundario (donde está el diferenciador y menor competencia) y 30% target terciario (para no cerrar la puerta a consultas generales, que hoy son la base de ingresos).
+El contenido debe priorizar **preparación de postulantes** (el negocio real y el diferenciador comercial más fuerte, con el dato del 100% de aprobación), usando el trauma/abuso y la trayectoria PDI como telón de autoridad — no como oferta activa mientras la agenda esté llena.
 
 ---
 
 ## 4. Reseña para la primera publicación
 
+> Actualizada para liderar con el negocio real de Yocelyn (preparación de
+> postulantes) y su prueba social más fuerte (100% de aprobación), sin usar
+> el testimonio del caso de suicidio (ver sección 5 — no se usa en redes).
+
 Copy listo para publicar (post de presentación, cuenta nueva):
 
 ```
-Fui investigadora de delitos sexuales en la PDI. Hoy soy psicóloga clínica.
+Fui oficial de la PDI. Hoy preparo a quienes quieren serlo.
 
-Durante años mi trabajo fue buscar la verdad en los momentos más difíciles de
-las personas. Vi de cerca el dolor, el silencio y lo que cuesta hablar cuando
-algo duele demasiado.
+Durante años viví desde adentro lo que significa postular a la PDI: la
+exigencia, la incertidumbre, y sobre todo, la etapa psicológica — la que más
+dudas genera y la que más gente deja fuera.
 
-Hoy uso esa misma experiencia, pero desde otro lugar: acompañando a quienes
-necesitan sanar. Ya sea que estés buscando ayuda para ti, para tu hijo o hija,
-o simplemente necesites un espacio donde hablar sin miedo a ser juzgado, este
-es un lugar seguro.
+Hoy, como psicóloga clínica, preparo a postulantes de la PDI, Fuerzas Armadas
+y otras escuelas matrices para enfrentar esa etapa con seguridad real, no con
+suerte. Hasta ahora, el 100% de quienes he preparado ha aprobado la prueba
+psicológica.
 
-Soy Yocelyn Cea, psicóloga clínica, y esta es mi nueva casa digital. Aquí voy a
-compartir contenido sobre salud mental, señales de alerta y sanación — con la
-misma seriedad con la que investigué la verdad, y la misma calidez con la que
-hoy acompaño a mis pacientes.
+También acompaño procesos de sanación en trauma y abuso — otra parte de mi
+historia en la PDI que hoy uso desde la psicología clínica.
+
+Soy Yocelyn Cea, y esta es mi nueva casa digital.
 
 Si me conocías de antes, bienvenido/a a esta nueva etapa.
 Si es primera vez que me lees, gracias por estar aquí.
 
-📍 Atención presencial y online (Región del Biobío)
+📍 Atención presencial y online (a nivel nacional)
 👇 Agenda tu hora (link en bio)
 ```
 
 ---
 
-## 5. Plan digital — Etapa 1 (Auditoría, Diseño de Marca y Contenido en Video)
+## 5. Datos confirmados por el cuestionario de descubrimiento
+
+Respuestas de Yocelyn (jul. 2026) que ya se incorporaron a este documento y
+que sirven de referencia para guion, precios y bio:
+
+- **Nombre profesional:** "Yocelyn Cea" (sin apellido materno en marca).
+- **Registrada** en el Registro Nacional de Prestadores de Salud — mostrar como respaldo en el perfil.
+- **Experiencia clínica post-PDI:** 7 meses (se compensa comunicando autoridad institucional, no años de trayectoria clínica).
+- **Precio:** $40.000 por sesión de 1 hora, presencial u online.
+- **Agendamiento:** WhatsApp @yocelyncea.
+- **Cobertura real:** Talca, Linares, Chillán, Quillón, Iquique, Antofagasta, Santiago, Viña del Mar, Concepción, Coronel y Lota (online) — no acotar el mensaje solo a "Región del Biobío".
+- **Testimonio ancla:** 100% de los postulantes preparados por ella han aprobado la prueba psicológica.
+- **Servicios adicionales futuros (interés confirmado):** charlas/talleres a instituciones (PDI, Carabineros, colegios) — hoy no ofrecidos, evaluar para Etapa 2/3.
+- **Tono:** formal, no tutea, sin humor ni informalidad; cómoda a cámara; contenido educativo y narrativo por igual.
+- **Redes de interés:** Instagram, LinkedIn y Facebook (no TikTok).
+- **Meta:** 10 pacientes/mes le basta; prioriza reconocimiento e invitaciones a medios por sobre volumen.
+
+**⚠️ No usar en contenido público:** Yocelyn compartió el caso de una
+adolescente víctima que se suicidó esperando un informe policial que no
+alcanzó a entregar a tiempo. Es un testimonio real y muy fuerte, pero por
+decisión explícita **no se convierte en contenido de redes por ahora** — 
+queda solo como contexto interno para entender su motivación profesional.
+
+---
+
+## 6. Plan digital — Etapa 1 (Auditoría, Diseño de Marca y Contenido en Video)
 
 Ejecución de la Etapa 1 de la propuesta comercial ($200.000 + IVA), estructurada en 5 semanas desde la aprobación:
 
@@ -197,22 +233,22 @@ Ejecución de la Etapa 1 de la propuesta comercial ($200.000 + IVA), estructurad
 
 ### Semana 1 — Diseño base + lanzamiento
 - Diseño de logo/isotipo y manual básico de marca (usando prompt de la sección 2).
-- Grabación de Reel 1 (hook recomendado: "Fui investigadora de delitos sexuales en la PDI. Hoy soy psicóloga clínica").
+- Grabación de Reel 1 (hook recomendado: "Fui oficial de la PDI. Hoy preparo a quienes quieren serlo").
 - Publicación del post de presentación (sección 4) + Reel 1.
 - Creación de las primeras 3 piezas del grid de arranque.
 
 ### Semana 2 — Consolidación de grid
 - Publicación de piezas 4-5-6 del grid (mezcla educativo/testimonial según reglas de colorimetría).
-- Grabación y publicación de Reel 2 (ángulo: target secundario, salud mental ocupacional PDI/Carabineros).
+- Grabación y publicación de Reel 2 (ángulo: target primario, preparación de postulantes PDI/FF.AA. — usar el dato del 100% de aprobación).
 - Edición de foto de perfil definitiva con el prompt de la sección 1.
 
 ### Semana 3 — Profundización de contenido
 - Publicación de piezas 7-8-9 del grid (grid de 9 completo).
-- Grabación y publicación de Reel 3 (ángulo: target primario, padres y señales de abuso).
+- Grabación y publicación de Reel 3 (ángulo: target secundario, historia PDI + trauma/abuso como autoridad de marca).
 - Primeras Stories de interacción (encuestas, preguntas) para activar algoritmo.
 
 ### Semana 4 — Cierre de etapa y transición
-- Grabación y publicación de Reel 4 (ángulo: target terciario, atención general/testimonial).
+- Grabación y publicación de Reel 4 (ángulo: proceso real de preparación de postulantes — qué evalúa la etapa psicológica, testimonial de resultados).
 - Entrega de manual básico de marca a Yocelyn.
 - Balance de auditoría: métricas de alcance, seguidores, interacción del primer mes.
 - Preparación de brief para Etapa 2 (landing page para Google Ads).
