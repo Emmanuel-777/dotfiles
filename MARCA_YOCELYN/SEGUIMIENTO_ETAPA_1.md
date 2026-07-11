@@ -19,11 +19,12 @@
 | Respuesta al cuestionario | Yocelyn | ✅ | Recibido — pivote clave: hoy solo atiende postulantes, no pacientes en general |
 | Colorimetría "Autoridad Cálida" definida | Emmanuel | ✅ | Ver sección 0 de `ETAPA_1_COLORIMETRIA_BRIEF_TARGET_PLAN.md` |
 | Validación de colorimetría con Yocelyn | Ambos | ✅ | Confirmó: "sí me representa" |
-| Definición de usuario, nombre visible y bio | Ambos | 🔄 | Ella prefiere usuario con "yocelyn cea"; confirmar spelling exacto final (¿@yocelyncea.psi?) |
+| Definición de usuario, nombre visible y bio | Ambos | ✅ | Cuenta creada: `@yocelyncea.psi` / "Yocelyn Cea \| Psicóloga Clínica" / bio de 144 caracteres lista |
 | Target segmentado — **actualizado: postulantes PDI/FF.AA. como eje primario** | Emmanuel | ✅ | Ver sección 3 actualizada del mismo documento |
-| Agendar sesión de fotos profesional ($30.000–$40.000, aparte) | Yocelyn | ⏳ | Ya tiene algunas fotos propias; evaluar si alcanzan o se agenda sesión nueva |
+| Fotos de perfil/contenido | Yocelyn | ✅ | Decisión: se usan las fotos que ya tiene, sin sesión nueva |
+| Corregir link de WhatsApp en bio (doble encoding: `%2520`) | Yocelyn | ⏳ | Repegar `https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20agendar%20una%20hora` sin re-codificar |
 
-**Próximo hito:** confirmar usuario/handle final y definir si se agenda sesión de fotos nueva o se trabaja con las fotos que ya tiene, para no atrasar el diseño de logo/grid en Semana 1.
+**Próximo hito:** corregir el link de WhatsApp en el bio y pasar a Semana 1 — logo, guion Reel 1 y primeras piezas del grid.
 
 ---
 

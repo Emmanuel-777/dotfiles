@@ -212,6 +212,18 @@ que sirven de referencia para guion, precios y bio:
 - **Redes de interés:** Instagram, LinkedIn y Facebook (no TikTok).
 - **Meta:** 10 pacientes/mes le basta; prioriza reconocimiento e invitaciones a medios por sobre volumen.
 
+**Cuenta creada y confirmada:** `@yocelyncea.psi` / nombre visible "Yocelyn Cea | Psicóloga Clínica". Bio final (144 caracteres):
+
+```
+Oficial PDI (r) - Psicóloga Clínica.
+Preparo el ingreso a PDI y FF.AA.
+Trauma y abuso.
+Biobío presencial · Online todo Chile 🇨🇱
+Agenda tu hora 📅
+```
+
+Fotos: se usan las que Yocelyn ya tiene (no se agenda sesión nueva).
+
 **⚠️ No usar en contenido público:** Yocelyn compartió el caso de una
 adolescente víctima que se suicidó esperando un informe policial que no
 alcanzó a entregar a tiempo. Es un testimonio real y muy fuerte, pero por
