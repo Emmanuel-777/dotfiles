@@ -22,9 +22,9 @@
 | Definición de usuario, nombre visible y bio | Ambos | ✅ | Cuenta creada: `@yocelyncea.psi` / "Yocelyn Cea \| Psicóloga Clínica" / bio de 144 caracteres lista |
 | Target segmentado — **actualizado: postulantes PDI/FF.AA. como eje primario** | Emmanuel | ✅ | Ver sección 3 actualizada del mismo documento |
 | Fotos de perfil/contenido | Yocelyn | ✅ | Decisión: se usan las fotos que ya tiene, sin sesión nueva |
-| Corregir link de WhatsApp en bio (doble encoding: `%2520`) | Yocelyn | ⏳ | Repegar `https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20agendar%20una%20hora` sin re-codificar |
+| Corregir link de WhatsApp en bio (doble encoding: `%2520`) | Yocelyn | ✅ | Corregido |
 
-**Próximo hito:** corregir el link de WhatsApp en el bio y pasar a Semana 1 — logo, guion Reel 1 y primeras piezas del grid.
+**Semana 0 cerrada.** Próximo hito: Semana 1 — logo, guion Reel 1 y primeras 3 piezas del grid.
 
 ---
 
