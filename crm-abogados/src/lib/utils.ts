@@ -75,6 +75,14 @@ export function esCritico(date: Date | string): boolean {
   return d <= limite && !isPast(d)
 }
 
+// Ventana más amplia para fechas de prescripción penal (Ley 21.719) — requieren
+// mucha más anticipación que un plazo procesal común.
+export function esCriticoPrescripcion(date: Date | string): boolean {
+  const d = typeof date === 'string' ? new Date(date) : date
+  const limite = addDays(new Date(), 90)
+  return d <= limite && !isPast(d)
+}
+
 export const ESTADOS_CAUSA = {
   EN_TRAMITE: { label: 'En Trámite', color: 'bg-blue-100 text-blue-800' },
   TERMINADA: { label: 'Terminada', color: 'bg-green-100 text-green-800' },

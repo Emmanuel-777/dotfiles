@@ -1,7 +1,8 @@
 import { getUserId } from '@/lib/auth'
 import { db, initDB } from '@/lib/db'
 import { causas, clientes, plazos } from '@/lib/schema'
-import { eq, and, gte } from 'drizzle-orm'
+import { eq, and, gte, ne } from 'drizzle-orm'
+import { registrarAuditoria } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,11 +26,13 @@ export async function GET() {
 
   await initDB()
 
+  // Las causas Penales quedan excluidas de la exportación masiva (Ley 21.719,
+  // Arts. 24-25 — prohibición de tratamiento masivo de datos de infracciones penales).
   const rows = await db
     .select({ causa: causas, cliente: clientes })
     .from(causas)
     .leftJoin(clientes, eq(causas.clienteId, clientes.id))
-    .where(eq(causas.userId, userId))
+    .where(and(eq(causas.userId, userId), ne(causas.tipoCausa, 'Penal')))
     .orderBy(causas.rol)
 
   const hoy = new Date().toISOString()
@@ -75,6 +78,13 @@ export async function GET() {
   const BOM = '﻿'
   const csv = BOM + lineas.join('\r\n')
   const fecha = new Date().toISOString().split('T')[0]
+
+  await registrarAuditoria({
+    userId,
+    accion: 'EXPORT_CSV_CAUSAS',
+    entidad: 'causa',
+    detalle: `${rows.length} causas exportadas`,
+  })
 
   return new Response(csv, {
     headers: {

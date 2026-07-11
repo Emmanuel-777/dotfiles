@@ -17,6 +17,10 @@ const client = createClient(
 export const db = drizzle(client, { schema })
 
 export async function initDB() {
+  // SQLite/libSQL no fuerza claves foráneas por defecto — sin esto, los
+  // ON DELETE CASCADE/SET NULL definidos abajo no se aplican en runtime.
+  await client.execute('PRAGMA foreign_keys = ON')
+
   const statements = [
     `CREATE TABLE IF NOT EXISTS clientes (
       id TEXT PRIMARY KEY,
@@ -163,6 +167,15 @@ export async function initDB() {
       ultimo_aviso TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS registros_auditoria (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      accion TEXT NOT NULL,
+      entidad TEXT NOT NULL,
+      entidad_id TEXT,
+      detalle TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
   ]
   for (const sql of statements) {
     await client.execute(sql)
@@ -190,6 +203,8 @@ export async function initDB() {
     `ALTER TABLE citas ADD COLUMN prospecto_id TEXT REFERENCES prospectos(id) ON DELETE SET NULL`,
     // Recordatorio nocturno de cita del día siguiente (0=pendiente, 1=enviado)
     `ALTER TABLE citas ADD COLUMN recordatorio_cita_enviado INTEGER NOT NULL DEFAULT 0`,
+    // Fecha de prescripción para causas penales (Ley 21.719, Arts. 24-25)
+    `ALTER TABLE causas ADD COLUMN fecha_prescripcion TEXT`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

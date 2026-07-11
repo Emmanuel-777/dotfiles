@@ -3,6 +3,7 @@ import { db, initDB } from '@/lib/db'
 import { tareas } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
+import { encrypt } from '@/lib/crypto'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   await initDB()
@@ -21,7 +22,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const { id: _id, createdAt: _ca, causaId: _ci, userId: _ui, ...data } = body
 
   if (data.credencialesPortal && typeof data.credencialesPortal === 'object') {
-    data.credencialesPortal = JSON.stringify(data.credencialesPortal)
+    data.credencialesPortal = encrypt(JSON.stringify(data.credencialesPortal))
   }
   if (typeof data.esDerivada === 'boolean') {
     data.esDerivada = data.esDerivada ? 1 : 0

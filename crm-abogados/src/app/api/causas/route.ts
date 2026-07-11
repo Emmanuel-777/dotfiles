@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
-  const { rol, tribunal, tipoCausa, materia, estado, fechaIngreso, contraparte, abogadoResponsable, descripcion, clienteId } = body
+  const { rol, tribunal, tipoCausa, materia, estado, fechaIngreso, contraparte, abogadoResponsable, descripcion, clienteId, fechaPrescripcion } = body
 
   if (!rol || !tribunal || !clienteId) {
     return NextResponse.json({ error: 'ROL, tribunal y cliente son requeridos' }, { status: 400 })
@@ -53,6 +53,7 @@ export async function POST(req: Request) {
     abogadoResponsable,
     descripcion,
     clienteId,
+    fechaPrescripcion: fechaPrescripcion || null,
     createdAt: now,
     updatedAt: now,
   })

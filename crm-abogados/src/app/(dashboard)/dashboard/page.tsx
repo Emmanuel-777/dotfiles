@@ -2,7 +2,7 @@ import { db, initDB } from '@/lib/db'
 import { clientes, causas, plazos, honorarios, tareas, actuaciones } from '@/lib/schema'
 import {
   formatMonto, formatFechaCorta, formatFechaRelativa,
-  estaVencido, esCritico, ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA,
+  estaVencido, esCritico, esCriticoPrescripcion, ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA,
   urgenciaTarea, URGENCIA_CLASES,
 } from '@/lib/utils'
 import Link from 'next/link'
@@ -44,6 +44,7 @@ export default async function DashboardPage() {
     recordatoriosPendientes,
     plazosVencidosRows,
     tareasVencidasRows,
+    causasPenalesRows,
   ] = await Promise.all([
     db.select({ count: count() }).from(clientes).where(eq(clientes.userId, userId)),
     db.select({ count: count() }).from(causas).where(eq(causas.userId, userId)),
@@ -85,6 +86,9 @@ export default async function DashboardPage() {
       .limit(10),
     db.select({ count: count() }).from(plazos).where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'), lt(plazos.fecha, hoy))),
     db.select({ count: count() }).from(tareas).where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'), isNotNull(tareas.fechaVencimiento), lt(tareas.fechaVencimiento, hoy))),
+    db.select({ id: causas.id, rol: causas.rol, fechaPrescripcion: causas.fechaPrescripcion })
+      .from(causas)
+      .where(and(eq(causas.userId, userId), eq(causas.tipoCausa, 'Penal'), isNotNull(causas.fechaPrescripcion))),
   ])
 
   const plazosVencidos = plazosVencidosRows[0]?.count ?? 0
@@ -97,6 +101,10 @@ export default async function DashboardPage() {
   const plazosProximos = plazosProximosRows[0]?.count ?? 0
   const montoPendiente = Number(honorariosPendientes[0]?.total ?? 0)
   const tareasActivas = tareasActivasRows[0]?.count ?? 0
+
+  const causasPenalesProximas = causasPenalesRows
+    .filter((c) => c.fechaPrescripcion && esCriticoPrescripcion(c.fechaPrescripcion))
+    .sort((a, b) => (a.fechaPrescripcion! < b.fechaPrescripcion! ? -1 : 1))
 
   // Nulls al final en el widget
   const conFecha = proximasTareas.filter((r) => r.tarea.fechaVencimiento)
@@ -146,6 +154,27 @@ export default async function DashboardPage() {
               </Link>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Alerta — causas penales próximas a prescribir */}
+      {causasPenalesProximas.length > 0 && (
+        <div className="mb-6 flex items-center gap-4 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-100">
+            <AlertTriangle className="h-5 w-5 text-amber-600" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-amber-900">
+              {causasPenalesProximas.length} {causasPenalesProximas.length === 1 ? 'causa penal se acerca' : 'causas penales se acercan'} a su fecha de prescripción
+            </p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              Revisa si corresponde eliminar los datos conforme a la Ley 21.719 (Arts. 24-25) — {causasPenalesProximas.slice(0, 3).map((c) => c.rol).join(', ')}
+              {causasPenalesProximas.length > 3 && '…'}
+            </p>
+          </div>
+          <Link href="/causas" className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors flex-shrink-0">
+            Ver causas <ArrowRight className="h-3 w-3" />
+          </Link>
         </div>
       )}
 

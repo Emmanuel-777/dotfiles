@@ -4,6 +4,7 @@ import { tareas, causas, clientes } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
+import { encrypt } from '@/lib/crypto'
 
 export async function GET(req: NextRequest) {
   await initDB()
@@ -47,7 +48,7 @@ export async function POST(req: Request) {
   if (!cliente) return NextResponse.json({ error: 'Cliente no encontrado' }, { status: 404 })
 
   if (body.credencialesPortal && typeof body.credencialesPortal === 'object') {
-    body.credencialesPortal = JSON.stringify(body.credencialesPortal)
+    body.credencialesPortal = encrypt(JSON.stringify(body.credencialesPortal))
   }
   if (typeof body.esDerivada === 'boolean') {
     body.esDerivada = body.esDerivada ? 1 : 0

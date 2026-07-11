@@ -3,6 +3,7 @@ import { db, initDB } from '@/lib/db'
 import { clientes, causas, honorarios } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
+import { registrarAuditoria } from '@/lib/audit'
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   await initDB()
@@ -32,6 +33,18 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
   await initDB()
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
+
   await db.delete(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
+
+  await registrarAuditoria({
+    userId,
+    accion: 'DELETE_CLIENTE',
+    entidad: 'cliente',
+    entidadId: params.id,
+    detalle: cliente ? `${cliente.nombre} (${cliente.rut})` : null,
+  })
+
   return NextResponse.json({ ok: true })
 }

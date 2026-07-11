@@ -13,6 +13,7 @@ import { eq, asc, desc } from 'drizzle-orm'
 import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock, Plus } from 'lucide-react'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import { requireUserId } from '@/lib/auth'
+import { parseCredenciales } from '@/lib/crypto'
 
 export const dynamic = 'force-dynamic'
 
@@ -110,7 +111,7 @@ export default async function TareasPage() {
             const clases = urgencia ? URGENCIA_CLASES[urgencia] : null
             const estadoT = ESTADOS_TAREA[tarea.estado as keyof typeof ESTADOS_TAREA]
             const prioridadT = PRIORIDADES_TAREA[tarea.prioridad as keyof typeof PRIORIDADES_TAREA]
-            const creds = tarea.credencialesPortal ? JSON.parse(tarea.credencialesPortal) : null
+            const creds = parseCredenciales(tarea.credencialesPortal) as { sistema?: string; usuario?: string } | null
 
             return (
               <div

@@ -11,6 +11,7 @@ import AIPanel from '@/components/AIPanel'
 import CausaDocUpload from '@/components/CausaDocUpload'
 import { TIPOS_ESCRITO } from '@/lib/ai/prompts'
 import { requireUserId } from '@/lib/auth'
+import { parseCredenciales } from '@/lib/crypto'
 
 export const dynamic = 'force-dynamic'
 
@@ -85,6 +86,17 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
             <p className="text-xs text-gray-500">Actuaciones</p>
             <p className="text-sm font-medium text-gray-800 mt-0.5">{acts.length}</p>
           </div>
+          {causa.fechaPrescripcion && (
+            <div>
+              <p className="text-xs text-gray-500 flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3 text-red-500" />
+                Prescripción penal
+              </p>
+              <p className={`text-sm font-medium mt-0.5 ${estaVencido(causa.fechaPrescripcion) ? 'text-red-600' : esCritico(causa.fechaPrescripcion) ? 'text-amber-600' : 'text-gray-800'}`}>
+                {formatFechaCorta(causa.fechaPrescripcion)}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -159,7 +171,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                   const prioridadT = PRIORIDADES_TAREA[tarea.prioridad as keyof typeof PRIORIDADES_TAREA]
                   const vencida = tarea.fechaVencimiento ? estaVencido(tarea.fechaVencimiento) : false
                   const critica = tarea.fechaVencimiento ? esCritico(tarea.fechaVencimiento) : false
-                  const creds = tarea.credencialesPortal ? JSON.parse(tarea.credencialesPortal) : null
+                  const creds = parseCredenciales(tarea.credencialesPortal) as { sistema?: string; usuario?: string } | null
                   return (
                     <div key={tarea.id} className="px-6 py-3">
                       <div className="flex items-start justify-between gap-3">

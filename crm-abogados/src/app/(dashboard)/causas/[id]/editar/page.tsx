@@ -23,6 +23,7 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
     abogadoResponsable: '',
     descripcion: '',
     clienteId: '',
+    fechaPrescripcion: '',
   })
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
         abogadoResponsable: causa.abogadoResponsable ?? '',
         descripcion: causa.descripcion ?? '',
         clienteId: causa.clienteId ?? '',
+        fechaPrescripcion: causa.fechaPrescripcion ? causa.fechaPrescripcion.split('T')[0] : '',
       })
     })
   }, [params.id])
@@ -57,7 +59,11 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
       const res = await fetch(`/api/causas/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, fechaIngreso: new Date(form.fechaIngreso).toISOString() }),
+        body: JSON.stringify({
+          ...form,
+          fechaIngreso: new Date(form.fechaIngreso).toISOString(),
+          fechaPrescripcion: form.fechaPrescripcion || null,
+        }),
       })
       if (!res.ok) throw new Error(await res.text())
       toast.success('Cambios guardados')
@@ -151,6 +157,14 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
             <label className="label">Fecha de ingreso *</label>
             <input name="fechaIngreso" type="date" value={form.fechaIngreso} onChange={handleChange} required className="input" />
           </div>
+
+          {form.tipoCausa === 'Penal' && (
+            <div>
+              <label className="label">Fecha de prescripción de la acción penal</label>
+              <input name="fechaPrescripcion" type="date" value={form.fechaPrescripcion} onChange={handleChange} className="input" />
+              <p className="text-xs text-gray-400 mt-1">Se usa para alertarte cuando se acerque, conforme a la Ley 21.719 (Arts. 24-25).</p>
+            </div>
+          )}
 
           <div>
             <label className="label">Carátula</label>

@@ -3,7 +3,7 @@ import { clientes, causas, honorarios, tareas } from '@/lib/schema'
 import { eq, and, asc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock } from 'lucide-react'
+import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
@@ -52,6 +52,14 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                   <FileText className="h-4 w-4" />
                   Reporte
                 </Link>
+                <a
+                  href={`/api/clientes/${cliente.id}/exportar`}
+                  className="btn-secondary flex items-center gap-1.5"
+                  title="Descarga todos los datos de este cliente en formato JSON"
+                >
+                  <Download className="h-4 w-4" />
+                  Exportar todos los datos
+                </a>
                 <Link href={`/clientes/${cliente.id}/editar`} className="btn-secondary">Editar</Link>
               </div>
             </div>

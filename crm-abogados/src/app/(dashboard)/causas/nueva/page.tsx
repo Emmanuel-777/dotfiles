@@ -35,6 +35,7 @@ function NuevaCausaForm() {
     abogadoResponsable: '',
     descripcion: '',
     clienteId: searchParams.get('clienteId') || '',
+    fechaPrescripcion: '',
   })
 
   useEffect(() => {
@@ -180,6 +181,14 @@ function NuevaCausaForm() {
             <label className="label">Fecha de ingreso *</label>
             <input name="fechaIngreso" type="date" value={form.fechaIngreso} onChange={handleChange} required className="input" />
           </div>
+
+          {form.tipoCausa === 'Penal' && (
+            <div>
+              <label className="label">Fecha de prescripción de la acción penal</label>
+              <input name="fechaPrescripcion" type="date" value={form.fechaPrescripcion} onChange={handleChange} className="input" />
+              <p className="text-xs text-gray-400 mt-1">Se usa para alertarte cuando se acerque, conforme a la Ley 21.719 (Arts. 24-25).</p>
+            </div>
+          )}
 
           <div>
             <label className="label">Carátula</label>

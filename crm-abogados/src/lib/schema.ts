@@ -31,6 +31,7 @@ export const causas = sqliteTable('causas', {
   abogadoResponsable: text('abogado_responsable'),
   descripcion: text('descripcion'),
   clienteId: text('cliente_id').notNull().references(() => clientes.id),
+  fechaPrescripcion: text('fecha_prescripcion'),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
@@ -171,6 +172,16 @@ export const solicitudesAcceso = sqliteTable('solicitudes_acceso', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const registrosAuditoria = sqliteTable('registros_auditoria', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  accion: text('accion').notNull(),
+  entidad: text('entidad').notNull(),
+  entidadId: text('entidad_id'),
+  detalle: text('detalle'),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect
@@ -186,3 +197,4 @@ export type NuevaCita = typeof citas.$inferInsert
 export type Prospecto = typeof prospectos.$inferSelect
 export type NuevoProspecto = typeof prospectos.$inferInsert
 export type PerfilAbogado = typeof perfilAbogado.$inferSelect
+export type RegistroAuditoria = typeof registrosAuditoria.$inferSelect
