@@ -1,7 +1,9 @@
 # LexCRM — Manual de Usuario
 ## Guía para abogados
 
-> Versión 1.0 · Sistema de gestión legal para abogados en Chile
+> Versión 2.0 · Julio 2026 · Sistema de gestión legal para abogados en Chile
+>
+> **Nota:** este archivo es la referencia de texto rápida. El documento oficial para entregar a clientes es `MANUAL_USUARIO.pdf` (diseñado para A4), generado a partir de `MANUAL_USUARIO.html`.
 
 ---
 
@@ -9,257 +11,194 @@
 
 LexCRM es tu sistema de gestión legal en la nube. Te permite llevar el control de tus clientes, causas, honorarios, agenda, documentos y prospectos desde cualquier dispositivo con internet, sin instalar nada.
 
-**Accedes desde:** el enlace que te entregó tu proveedor (ej. `tu-estudio.vercel.app`)
+Módulos: Dashboard, Clientes, Causas, Honorarios, Citas, Agenda y Plazos, Documentos, Tareas, Embudo, Asistente IA, Mi Perfil.
 
 ---
 
-## Primer acceso
+## Primer acceso y activación de tu cuenta
 
-1. Abre el enlace de tu LexCRM en el navegador
-2. Clic en **"Registrarse"**
-3. Usa tu email autorizado (el que entregaste a tu proveedor) o inicia con Google
-4. Sigue los pasos de verificación
-5. Tu proveedor recibirá una notificación y aprobará tu acceso — esto puede tomar unos minutos
-6. Una vez aprobado, entras directamente al **Dashboard**
-
-> Si ves la pantalla "Acceso no autorizado", contacta a tu proveedor — puede que el email no coincida con el registrado.
+1. Recibes el enlace de acceso de tu proveedor.
+2. "Registrarse" con el correo que entregaste al contratar.
+3. Verificación de correo.
+4. Tu proveedor autoriza tu correo específico — si intentas con otro correo, verás "Acceso no autorizado" (es normal mientras se confirma el pago).
+5. Una vez autorizado, entras primero a completar tu perfil, luego al Dashboard.
 
 ---
 
-## Pantalla principal — Dashboard
+## Mi Perfil — datos obligatorios
 
-Al entrar, el Dashboard te muestra un resumen del estado de tu estudio:
+La primera vez, el sistema exige completar el perfil antes de dejarte usar el resto:
 
-- **Vencimientos próximos:** causas con plazos en los próximos 7 días
-- **Accesos rápidos:** botones para agregar cliente, causa, honorario o cita
-- **KPIs financieros:** total emitido vs cobrado en los últimos 6 meses, con gráfico de barras
-- **Tasa de cobro:** porcentaje de honorarios efectivamente cobrados
+- Correo electrónico de contacto
+- WhatsApp (recibes ahí los recordatorios de tareas pendientes)
+- Banco, tipo de cuenta, número de cuenta, nombre y RUT del titular
 
-El **semáforo en el menú lateral** te avisa de situaciones urgentes:
-- 🔴 Rojo = vencido (requiere acción inmediata)
-- 🟡 Amarillo = vence en 3 días o menos
-- 🔵 Azul = citas programadas para hoy
+Estos datos son para que te lleguen los pagos que correspondan por citas u otros conceptos. El número de cuenta y el RUT se guardan **cifrados**.
+
+Editable en cualquier momento desde "Mi Perfil" en el menú lateral.
 
 ---
 
-## Menú lateral
+## Dashboard — pantalla principal
 
-| Sección | Para qué sirve |
-|---|---|
-| **Dashboard** | Resumen general |
-| **Clientes** | Registro de tus clientes |
-| **Causas** | Expedientes y seguimiento de casos |
-| **Honorarios** | Facturación y cobros |
-| **Agenda** | Citas y recordatorios |
-| **Tareas** | Pendientes y seguimientos |
-| **Embudo** | Gestión de prospectos (clientes potenciales) |
+- Tarjetas: Clientes activos, Causas en trámite, Tareas activas, Plazos próximos, Honorarios por cobrar
+- Accesos rápidos para crear cliente/causa/cita/plazo/honorario/documento
+- Paneles: Próximos plazos, Causas recientes, Tareas activas, Recordatorios pendientes, y (si aplica) Causas penales próximas a prescribir
+- Banner rojo si hay asuntos vencidos
+
+---
+
+## Navegación y semáforo de alertas
+
+🔴 Vencido · 🟡 Próximo a vencer · 🔵 Citas de hoy
+
+Menú: Dashboard, Embudo, Clientes, Causas, Tareas, Citas, Agenda y Plazos, Documentos, Honorarios, Mi Perfil, Soporte (WhatsApp/correo), Cerrar sesión.
 
 ---
 
 ## Clientes
 
-### Agregar un cliente
-1. Menú → **Clientes** → clic en **"Nuevo cliente"**
-2. Completa los datos:
-   - **RUT** (obligatorio, sin puntos, con guión: `12345678-9`)
-   - Nombre completo o razón social
-   - Tipo: Persona natural o Jurídica
-   - Email, teléfono, dirección (opcionales)
-3. Clic en **"Guardar"**
+**Agregar:** Clientes → Nuevo cliente → RUT (obligatorio, `12345678-9`), nombre, tipo (natural/jurídica), contacto (opcional) → Guardar.
 
-### Buscar un cliente
-- Usa la **barra de búsqueda** en la parte superior (ícono de lupa o atajo `Ctrl+K` / `Cmd+K`)
-- Puedes buscar por nombre, RUT o email
+**Buscar:** barra superior o `Ctrl+K` / `Cmd+K`, por nombre, RUT o email.
 
-### Ver el perfil de un cliente
-Clic en el nombre del cliente → verás:
-- Sus datos de contacto
-- Todas sus causas asociadas
-- Sus honorarios pendientes y pagados
+**Eliminar:** desde Editar cliente → Eliminar cliente. Borra también todas sus causas, tareas, documentos, plazos y honorarios asociados — irreversible.
 
 ---
 
 ## Causas
 
-### Agregar una causa
-1. Menú → **Causas** → **"Nueva causa"**
-2. Completa:
-   - **Cliente** (selecciona de la lista)
-   - **Número de rol** (ej. `C-1234-2024`)
-   - **Tribunal**
-   - **Tipo de causa** (Civil, Laboral, Familia, Penal, etc.)
-   - **Estado** (Activa, Suspendida, Terminada, Archivada)
-   - **Fecha de ingreso**
-   - **Fecha de vencimiento** (si aplica — activa el semáforo)
-   - **Descripción / notas**
-3. Guardar
+**Agregar:** Causas → Nueva causa → Cliente, ROL/RIT, Tribunal, Tipo (Civil, Laboral, Familia, Penal, Comercial, Tributario, Administrativo, Constitucional, Otro), Fecha de ingreso, Estado inicial (En Trámite / Suspendida / Terminada / Archivada).
 
-### Seguimiento de una causa
-Dentro de cada causa puedes:
-- Editar los datos en cualquier momento
-- Ver el historial de honorarios asociados
-- Usar el **Asistente IA** (si está activado):
-  - **"Generar resumen"**: crea un resumen ejecutivo de la causa
-  - **"Borrador de escrito"**: genera un borrador basado en los datos del caso
+Dentro de cada causa: editar, plazos/audiencias, tareas, actuaciones (con compromisos y recordatorios al cliente), documentos, honorarios, Asistente IA.
+
+**Exportar listado:** Excel desde Causas — las causas Penales quedan excluidas por disposición legal.
+
+---
+
+## Causas penales — tratamiento especial
+
+Conforme a la Ley N° 21.719:
+
+- Campo adicional **Fecha de prescripción de la acción penal** (solo tipo Penal) — alerta en el Dashboard hasta 90 días antes.
+- Excluidas de la exportación masiva de causas.
+- Auditoría interna de accesos/exportaciones sensibles.
+
+No limita el trabajo normal con la causa — solo restringe descargas masivas.
 
 ---
 
 ## Honorarios
 
-### Registrar un honorario
-1. Menú → **Honorarios** → **"Nuevo honorario"**
-2. Completa:
-   - **Cliente y causa** asociada
-   - **Concepto** (descripción del servicio)
-   - **Monto** en pesos chilenos
-   - **Estado:** Emitido, Pagado o Anulado
-   - **Fecha de emisión** y **fecha de pago** (esta última al cobrar)
-3. Guardar
+**Registrar:** Cliente, causa (opcional), Tipo (Honorario/Gasto), descripción, monto CLP, fecha de emisión.
 
-### Marcar un honorario como pagado
-1. Entra al honorario
-2. Cambia el estado a **"Pagado"**
-3. Ingresa la **fecha de pago**
-4. Guardar
+**Estados:** Pendiente, Parcial, Pagado, Anulado.
 
-Los montos cobrados vs emitidos aparecen en el gráfico del Dashboard.
+**Marcar pagado:** entra al honorario → cambia estado → fecha de pago → guardar.
 
 ---
 
-## Agenda
+## Citas
 
-### Agregar una cita
-1. Menú → **Agenda** → **"Nueva cita"**
-2. Completa:
-   - **Título** de la cita
-   - **Fecha y hora**
-   - **Cliente** (opcional)
-   - **Descripción / notas**
-3. Guardar
+**Agendar:** título, modalidad (Presencial, Google Meet, Zoom, Telefónica — botón "Crear sala" para Meet/Zoom), fecha/hora, cliente o prospecto (obligatorio) + causa (opcional), gratuita o valor.
 
-Las citas del día aparecen en el **badge azul** del menú lateral.
+Envío automático de correo de confirmación y recordatorio la noche anterior.
+
+**Estados:** Pendiente → Confirmada → Completada, o Cancelada.
+
+---
+
+## Agenda y Plazos
+
+Distinto de Citas: plazos procesales (Audiencia, Vencimiento, Notificación, Presentación, Otro) ligados a una causa.
+
+**Agregar:** causa, título, tipo, fecha, notas.
+
+Vista en tres bloques: Vencidos, Próximos, Completados.
+
+---
+
+## Documentos
+
+**Subir:** Documentos → Subir documento (o desde la causa) → archivo, nombre, tipo (Escrito, Resolución, Contrato, Poder, Otro), causa.
+
+Listado central con acceso directo a la causa y descarga.
 
 ---
 
 ## Tareas
 
-### Agregar una tarea
-1. Menú → **Tareas** → **"Nueva tarea"**
-2. Completa el título, fecha límite y prioridad
-3. Guardar
+**Agregar:** título, descripción, fecha límite, prioridad (Baja/Media/Alta/Urgente), cliente o causa.
 
-Las tareas vencidas o próximas aparecen en el **semáforo** del menú.
+**Derivar a tercero:** casilla "Derivar a tercero" → nombre/correo del tercero + credenciales de portal opcionales (sistema/usuario/contraseña) — se guardan **cifradas**.
 
 ---
 
 ## Embudo de prospectos
 
-El embudo te permite gestionar clientes potenciales antes de que se conviertan en clientes reales.
+Etapas: Contacto → Reunión → Propuesta → Ganado / Perdido.
 
-### Etapas del embudo
-```
-Contacto → Reunión → Propuesta → Ganado / Perdido
-```
+**Agregar prospecto:** nombre, empresa, contacto, origen, valor estimado, próximo contacto.
 
-### Agregar un prospecto
-1. Menú → **Embudo** → **"Nuevo prospecto"**
-2. Completa:
-   - Nombre y empresa (si aplica)
-   - Email y teléfono
-   - Origen: cómo llegó a ti (Referido, Redes sociales, Web, etc.)
-   - Etapa inicial
-   - Valor estimado del caso (opcional, en pesos)
-   - Próximo contacto (fecha de seguimiento)
-3. Guardar
+Mover entre etapas con flechas en el tablero. Al ganar, botón "Convertir a cliente" (precarga datos, pide RUT).
 
-### Mover un prospecto entre etapas
-En el tablero kanban, cada tarjeta tiene flechas `←` `→` para avanzar o retroceder el prospecto en el embudo.
+---
 
-### Convertir un prospecto en cliente
-Cuando ganas el caso:
-1. El prospecto pasa a etapa **"Ganado"**
-2. Aparece el botón **"Convertir a cliente"**
-3. Confirma los datos (se precargan automáticamente)
-4. Ingresa el **RUT** del cliente
-5. Se crea el cliente y quedan vinculados
+## Asistente de Inteligencia Artificial
 
-### Recordatorios de seguimiento
-Cada prospecto puede tener una **fecha de próximo contacto**:
-- 🔴 Vencido → badge rojo en el menú
-- 🟡 Vence en ≤3 días → badge amarillo
-- El banner en la página del embudo muestra los pendientes
+Dentro de cada causa, panel lateral derecho:
+
+- **Resumen de causa:** resumen ejecutivo a partir de actuaciones, plazos y tareas.
+- **Borrador de escrito:** elige tipo + instrucciones opcionales → borrador editable.
+
+> Herramienta de apoyo, no sustituye el criterio profesional. Revisa siempre antes de usar.
 
 ---
 
 ## Búsqueda global
 
-Presiona `Ctrl+K` (Windows/Linux) o `Cmd+K` (Mac) desde cualquier pantalla para abrir la búsqueda global.
-
-Puedes buscar:
-- Clientes por nombre o RUT
-- Causas por número de rol
-- Honorarios por concepto
+`Ctrl+K` / `Cmd+K` desde cualquier pantalla. Busca clientes (nombre/RUT), causas (ROL), citas (título).
 
 ---
 
-## Asistente IA (si está activado)
+## Exportar o eliminar tus datos
 
-Disponible dentro de cada causa, en el panel lateral derecho.
+**Exportar datos de un cliente:** ficha del cliente → "Exportar todos los datos" → descarga causas, actuaciones, plazos, documentos, honorarios, tareas y citas completas.
 
-### Generar resumen
-1. Entra a una causa
-2. Panel "Asistente IA" → **"Generar resumen"**
-3. La IA lee los datos de la causa y genera un resumen ejecutivo en segundos
-
-### Borrador de escrito
-1. Panel "Asistente IA" → **"Borrador de escrito"**
-2. Describe brevemente qué tipo de escrito necesitas
-3. La IA genera un borrador que puedes copiar y editar
-
-> El asistente IA es una herramienta de apoyo. Siempre revisa y ajusta el texto generado antes de usarlo.
+**Eliminar cliente:** Editar cliente → Eliminar cliente — borrado permanente e irreversible de todo lo asociado.
 
 ---
 
-## Cierre de sesión
+## Privacidad y seguridad
 
-Menú lateral → abajo del todo → **"Cerrar sesión"**
-
----
-
-## Privacidad y seguridad de tus datos
-
-- Tu información está cifrada y almacenada en servidores seguros en la nube
-- Solo tú (y quienes tú autorices) pueden ver tus datos
-- La contraseña la maneja Google o el sistema de verificación de email — nunca la vemos nosotros
-- Puedes solicitar la exportación o eliminación de tus datos en cualquier momento contactando a tu proveedor
+- Cifrado en tránsito (HTTPS) y en reposo.
+- Credenciales de portal y cuenta bancaria con cifrado reforzado adicional.
+- Acceso restringido solo a cuentas autorizadas.
+- Contraseña gestionada por el sistema de autenticación — nunca visible para el proveedor.
+- Tratamiento reforzado para causas penales (Ley N° 21.719).
+- Exportación/eliminación de datos disponible en cualquier momento.
+- Registro interno de auditoría en exportaciones y eliminaciones.
 
 ---
 
 ## Preguntas frecuentes
 
-**¿Puedo acceder desde mi celular?**
-Sí, la app funciona en cualquier navegador móvil (Chrome, Safari). No tiene app nativa por ahora.
+**¿Celular?** Sí, cualquier navegador móvil, sin app nativa.
 
-**¿Qué pasa si pierdo mi contraseña?**
-En la pantalla de login → **"¿Olvidaste tu contraseña?"** → recibes un email de recuperación.
+**¿Olvidé mi contraseña?** "¿Olvidaste tu contraseña?" en login → correo de recuperación.
 
-**¿Mis datos se guardan automáticamente?**
-Sí, cada formulario guarda al hacer clic en "Guardar". No hay pérdida de datos entre sesiones.
+**¿Se guarda automático?** Sí, al hacer clic en "Guardar".
 
-**¿Puedo usar LexCRM sin internet?**
-No, requiere conexión a internet para funcionar.
+**¿Sin internet?** No funciona offline.
 
-**¿La IA puede equivocarse?**
-Sí. El asistente IA es una herramienta de apoyo, no un sustituto del criterio legal. Siempre revisa el contenido generado.
+**¿La IA se equivoca?** Sí, es apoyo — revisa siempre.
 
-**¿Cómo agrego a mi secretaria o socio?**
-Contacta a tu proveedor para que autorice el email adicional.
+**¿Cómo agrego a mi secretaria o socio?** Hoy cada cuenta autorizada es independiente, no comparte los mismos clientes/causas entre correos distintos. Si necesitas trabajo compartido, contacta a tu proveedor — funcionalidad en desarrollo.
+
+**¿Si dejo de pagar?** Los datos se conservan; el acceso se suspende hasta regularizar.
 
 ---
 
 ## Soporte
 
-Ante cualquier problema, contacta a tu proveedor de LexCRM con:
-- Descripción del problema
-- Captura de pantalla (si aplica)
-- El email con el que intentabas acceder
+Desde el menú lateral (WhatsApp o correo). Incluye: descripción del problema, captura de pantalla si aplica, y el correo con el que accedes.

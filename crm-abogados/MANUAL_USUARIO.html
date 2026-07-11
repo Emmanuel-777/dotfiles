@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LexCRM — Manual de Usuario</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #1e293b;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+  :root {
+    --navy-900: #0f1c36;
+    --navy-800: #14254c;
+    --navy-700: #1a3060;
+    --blue-600: #2563eb;
+    --blue-500: #3b82f6;
+    --blue-50: #eff6ff;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-800: #1e293b;
+    --amber-50: #fffbeb;
+    --amber-200: #fde68a;
+    --amber-700: #b45309;
+    --green-50: #f0fdf4;
+    --green-200: #86efac;
+    --green-700: #15803d;
+  }
+
+  /* ── PORTADA ── */
+  .cover {
+    width: 210mm; height: 297mm;
+    background: linear-gradient(155deg, var(--navy-900) 0%, var(--navy-800) 55%, #1c3268 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: white;
+    page-break-after: always;
+    position: relative;
+  }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(96,165,250,.12); border: 1px solid rgba(96,165,250,.3);
+    color: #60a5fa; font-size: 9pt; font-weight: 700;
+    padding: 5px 16px; border-radius: 99px; margin-bottom: 28px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .cover-logo { font-size: 40pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+  .cover-logo .w { color: #ffffff; }
+  .cover-logo .b { color: #60a5fa; }
+  .cover-title { font-size: 22pt; font-weight: 800; margin-top: 30px; margin-bottom: 10px; }
+  .cover-sub { font-size: 12pt; color: rgba(255,255,255,.6); max-width: 380px; line-height: 1.6; }
+  .cover-footer {
+    position: absolute; bottom: 30mm; left: 0; right: 0;
+    text-align: center; font-size: 9pt; color: rgba(255,255,255,.4);
+  }
+  .cover-footer strong { color: rgba(255,255,255,.7); }
+
+  /* ── ÍNDICE ── */
+  .toc {
+    width: 210mm; min-height: 297mm; padding: 22mm 20mm;
+    page-break-after: always;
+  }
+  .toc h1 { font-size: 20pt; color: var(--navy-800); margin-bottom: 6mm; }
+  .toc-list { list-style: none; }
+  .toc-list li {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 5px 0; font-size: 11pt; color: var(--slate-800);
+    border-bottom: 1px dotted var(--slate-200);
+  }
+  .toc-list .num { color: var(--blue-600); font-weight: 700; width: 22px; flex-shrink: 0; }
+
+  /* ── CONTENIDO ── */
+  .page {
+    width: 210mm; min-height: 297mm; padding: 18mm 20mm 22mm;
+    page-break-after: always; position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .section-tag {
+    display: inline-block; font-size: 8pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--blue-600); margin-bottom: 4px;
+  }
+  h1.section-title {
+    font-size: 18pt; color: var(--navy-800); font-weight: 800;
+    margin-bottom: 4mm; padding-bottom: 3mm; border-bottom: 2px solid var(--slate-200);
+  }
+  h2 {
+    font-size: 12.5pt; color: var(--navy-800); font-weight: 700;
+    margin-top: 6mm; margin-bottom: 2.5mm;
+  }
+  h3 {
+    font-size: 11pt; color: var(--navy-700); font-weight: 700;
+    margin-top: 4mm; margin-bottom: 2mm;
+  }
+  p { margin-bottom: 2.5mm; color: var(--slate-600); }
+  ul, ol { margin: 2mm 0 3mm 5mm; color: var(--slate-600); }
+  li { margin-bottom: 1.3mm; }
+  strong { color: var(--slate-800); }
+  code {
+    background: var(--slate-100); color: var(--navy-800);
+    padding: 1px 5px; border-radius: 3px; font-size: 9.5pt; font-family: 'Courier New', monospace;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 9.5pt; }
+  th {
+    background: var(--navy-800); color: white; text-align: left;
+    padding: 5px 8px; font-weight: 700; font-size: 9pt;
+  }
+  td { padding: 5px 8px; border-bottom: 1px solid var(--slate-200); color: var(--slate-600); }
+  tr:nth-child(even) td { background: var(--slate-50); }
+
+  .callout {
+    border-radius: 6px; padding: 3mm 4mm; margin: 3mm 0 4mm;
+    font-size: 9.5pt; border-left: 3px solid;
+  }
+  .callout-tip { background: var(--green-50); border-color: var(--green-200); color: var(--green-700); }
+  .callout-warn { background: var(--amber-50); border-color: var(--amber-200); color: var(--amber-700); }
+  .callout-info { background: var(--blue-50); border-color: #93c5fd; color: #1d4ed8; }
+  .callout strong { color: inherit; }
+
+  .steps { counter-reset: step; margin: 2mm 0 4mm; }
+  .steps li {
+    counter-increment: step; list-style: none; position: relative;
+    padding-left: 8mm; margin-bottom: 2.5mm; color: var(--slate-600);
+  }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 0;
+    background: var(--blue-600); color: white; font-size: 8pt; font-weight: 700;
+    width: 5.5mm; height: 5.5mm; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .badge-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .dot-red { background: #ef4444; } .dot-amber { background: #f59e0b; } .dot-blue { background: #3b82f6; }
+
+  .footer-mark {
+    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
+    display: flex; justify-content: space-between; font-size: 7.5pt; color: var(--slate-400);
+    border-top: 1px solid var(--slate-200); padding-top: 2mm;
+  }
+  .footer-mark .brand { font-weight: 700; }
+  .footer-mark .brand .w { color: var(--navy-800); } .footer-mark .brand .b { color: var(--blue-600); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="cover">
+  <div class="cover-badge">Sistema de gestión legal</div>
+  <div class="cover-logo"><span class="w">Lex</span><span class="b">CRM</span></div>
+  <div class="cover-title">Manual de Usuario</div>
+  <div class="cover-sub">Guía completa para abogados y estudios jurídicos — todo lo que necesitas para operar tu estudio desde LexCRM.</div>
+  <div class="cover-footer">Versión 2.0 · Julio 2026<br><strong>lexcrm.site</strong></div>
+</div>
+
+<!-- ═══════════ ÍNDICE ═══════════ -->
+<div class="toc">
+  <h1>Índice</h1>
+  <ul class="toc-list">
+    <li><span class="num">01</span> ¿Qué es LexCRM?</li>
+    <li><span class="num">02</span> Primer acceso y activación de tu cuenta</li>
+    <li><span class="num">03</span> Mi Perfil — datos obligatorios</li>
+    <li><span class="num">04</span> Dashboard — pantalla principal</li>
+    <li><span class="num">05</span> Navegación y semáforo de alertas</li>
+    <li><span class="num">06</span> Clientes</li>
+    <li><span class="num">07</span> Causas</li>
+    <li><span class="num">08</span> Causas penales — tratamiento especial</li>
+    <li><span class="num">09</span> Honorarios</li>
+    <li><span class="num">10</span> Citas</li>
+    <li><span class="num">11</span> Agenda y Plazos</li>
+    <li><span class="num">12</span> Documentos</li>
+    <li><span class="num">13</span> Tareas</li>
+    <li><span class="num">14</span> Embudo de prospectos</li>
+    <li><span class="num">15</span> Asistente de Inteligencia Artificial</li>
+    <li><span class="num">16</span> Búsqueda global</li>
+    <li><span class="num">17</span> Exportar o eliminar tus datos</li>
+    <li><span class="num">18</span> Privacidad y seguridad</li>
+    <li><span class="num">19</span> Preguntas frecuentes</li>
+    <li><span class="num">20</span> Soporte</li>
+  </ul>
+</div>
+
+<!-- ═══════════ 01 · QUÉ ES LEXCRM ═══════════ -->
+<div class="page">
+  <span class="section-tag">01</span>
+  <h1 class="section-title">¿Qué es LexCRM?</h1>
+  <p>LexCRM es tu sistema de gestión legal en la nube. Te permite llevar el control de tus clientes, causas, honorarios, agenda, documentos y prospectos desde cualquier dispositivo con internet, sin instalar nada.</p>
+  <p>Accedes siempre desde el mismo enlace que te entregó tu proveedor. No necesitas instalar ningún programa — funciona directamente en el navegador, tanto en computador como en el celular.</p>
+
+  <h2>¿Qué incluye?</h2>
+  <table>
+    <tr><th>Módulo</th><th>Para qué sirve</th></tr>
+    <tr><td>Dashboard</td><td>Resumen general del estado de tu estudio</td></tr>
+    <tr><td>Clientes</td><td>Fichas de tus clientes con todos sus datos</td></tr>
+    <tr><td>Causas</td><td>Expedientes y seguimiento de cada caso</td></tr>
+    <tr><td>Honorarios</td><td>Registro de cobros y facturación</td></tr>
+    <tr><td>Citas</td><td>Reuniones presenciales, Meet, Zoom o telefónicas</td></tr>
+    <tr><td>Agenda y Plazos</td><td>Plazos procesales, audiencias y vencimientos</td></tr>
+    <tr><td>Documentos</td><td>Archivos asociados a cada causa</td></tr>
+    <tr><td>Tareas</td><td>Pendientes propios o derivados a terceros</td></tr>
+    <tr><td>Embudo</td><td>Seguimiento de clientes potenciales</td></tr>
+    <tr><td>Asistente IA</td><td>Resúmenes y borradores de escritos con ayuda de IA</td></tr>
+  </table>
+
+  <div class="callout callout-info">
+    <strong>Importante:</strong> LexCRM es una herramienta de gestión. No reemplaza tu criterio profesional ni constituye asesoría jurídica.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 02 · PRIMER ACCESO ═══════════ -->
+<div class="page">
+  <span class="section-tag">02</span>
+  <h1 class="section-title">Primer acceso y activación de tu cuenta</h1>
+  <p>El acceso a LexCRM es autorizado manualmente por tu proveedor una vez que contratas el servicio. El proceso es el siguiente:</p>
+
+  <ol class="steps">
+    <li>Recibirás el enlace de acceso a tu LexCRM.</li>
+    <li>Haz clic en <strong>"Registrarse"</strong> e ingresa con el correo electrónico que entregaste al contratar.</li>
+    <li>Completa la verificación de tu correo (recibirás un código o enlace de confirmación).</li>
+    <li>Tu proveedor autoriza tu correo específico — si intentas entrar con un correo distinto al registrado, el sistema te mostrará <strong>"Acceso no autorizado"</strong>.</li>
+    <li>Una vez autorizado, entrarás automáticamente a completar tu perfil (ver sección siguiente) y luego al Dashboard.</li>
+  </ol>
+
+  <div class="callout callout-warn">
+    <strong>¿Ves "Acceso no autorizado"?</strong> Es normal la primera vez, mientras tu proveedor confirma tu pago y activa tu correo. El sistema le envía un aviso automático apenas intentas entrar — no necesitas hacer nada más que esperar la confirmación.
+  </div>
+
+  <h2>Recuperar tu contraseña</h2>
+  <p>En la pantalla de inicio de sesión, haz clic en <strong>"¿Olvidaste tu contraseña?"</strong> y sigue las instrucciones que recibirás por correo.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 03 · MI PERFIL ═══════════ -->
+<div class="page">
+  <span class="section-tag">03</span>
+  <h1 class="section-title">Mi Perfil — datos obligatorios</h1>
+  <p>La primera vez que entras, el sistema te va a pedir <strong>completar tu perfil antes de dejarte usar el resto del sistema</strong>. Esto es obligatorio y solo toma un par de minutos.</p>
+
+  <h2>Datos que debes completar</h2>
+  <ul>
+    <li><strong>Correo electrónico</strong> de contacto</li>
+    <li><strong>WhatsApp</strong> — ahí recibirás los recordatorios automáticos de tareas pendientes</li>
+    <li><strong>Banco</strong></li>
+    <li><strong>Tipo de cuenta</strong> (corriente, vista, ahorro o RUT)</li>
+    <li><strong>Número de cuenta</strong></li>
+    <li><strong>Nombre del titular</strong></li>
+    <li><strong>RUT del titular</strong></li>
+  </ul>
+
+  <div class="callout callout-info">
+    <strong>¿Para qué se usan tus datos bancarios?</strong> Son los datos necesarios para que te lleguen los pagos que te correspondan por citas u otros conceptos gestionados a través de la plataforma.
+  </div>
+
+  <div class="callout callout-tip">
+    <strong>Seguridad:</strong> tu número de cuenta y tu RUT se guardan <strong>cifrados</strong> — ni siquiera el equipo técnico puede leerlos directamente desde la base de datos.
+  </div>
+
+  <p>Puedes volver a editar estos datos cuando quieras desde <strong>"Mi Perfil"</strong> en el menú lateral.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 04 · DASHBOARD ═══════════ -->
+<div class="page">
+  <span class="section-tag">04</span>
+  <h1 class="section-title">Dashboard — pantalla principal</h1>
+  <p>Al entrar, el Dashboard te muestra de un vistazo el estado de tu estudio:</p>
+
+  <h2>Tarjetas de resumen</h2>
+  <ul>
+    <li><strong>Clientes activos</strong></li>
+    <li><strong>Causas en trámite</strong></li>
+    <li><strong>Tareas activas</strong></li>
+    <li><strong>Plazos próximos</strong></li>
+    <li><strong>Honorarios por cobrar</strong></li>
+  </ul>
+
+  <h2>Accesos rápidos</h2>
+  <p>Botones directos para crear un cliente, causa, cita, plazo, honorario o documento nuevo, sin tener que navegar por el menú.</p>
+
+  <h2>Paneles del Dashboard</h2>
+  <ul>
+    <li><strong>Próximos plazos</strong> — con color según urgencia</li>
+    <li><strong>Causas recientes</strong></li>
+    <li><strong>Tareas activas</strong> — con leyenda de colores (a tiempo / próxima a vencer / vencida)</li>
+    <li><strong>Recordatorios pendientes</strong> — compromisos con clientes que quedaron agendados</li>
+    <li><strong>Causas penales próximas a prescribir</strong> — si corresponde (ver sección 08)</li>
+  </ul>
+
+  <div class="callout callout-warn">
+    Si tienes asuntos vencidos (plazos o tareas), aparece un banner rojo en la parte superior con acceso directo para revisarlos.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 05 · NAVEGACIÓN ═══════════ -->
+<div class="page">
+  <span class="section-tag">05</span>
+  <h1 class="section-title">Navegación y semáforo de alertas</h1>
+  <p>El menú lateral izquierdo te lleva a cada módulo del sistema. Junto a algunos ítems vas a ver una burbuja de color:</p>
+
+  <table>
+    <tr><th>Color</th><th>Significado</th></tr>
+    <tr><td><span class="badge-dot dot-red"></span>Rojo</td><td>Vencido — requiere acción inmediata</td></tr>
+    <tr><td><span class="badge-dot dot-amber"></span>Ámbar</td><td>Próximo a vencer — revisar pronto</td></tr>
+    <tr><td><span class="badge-dot dot-blue"></span>Azul</td><td>Citas programadas para hoy</td></tr>
+  </table>
+
+  <h2>Secciones del menú</h2>
+  <table>
+    <tr><th>Sección</th><th>Contenido</th></tr>
+    <tr><td>Dashboard</td><td>Resumen general</td></tr>
+    <tr><td>Embudo</td><td>Prospectos / clientes potenciales</td></tr>
+    <tr><td>Clientes</td><td>Tus clientes registrados</td></tr>
+    <tr><td>Causas</td><td>Expedientes judiciales</td></tr>
+    <tr><td>Tareas</td><td>Pendientes propios o derivados</td></tr>
+    <tr><td>Citas</td><td>Reuniones agendadas</td></tr>
+    <tr><td>Agenda y Plazos</td><td>Plazos procesales, audiencias, vencimientos</td></tr>
+    <tr><td>Documentos</td><td>Archivos de tus causas</td></tr>
+    <tr><td>Honorarios</td><td>Cobros y pagos</td></tr>
+    <tr><td>Mi Perfil</td><td>Tus datos de contacto y cuenta bancaria</td></tr>
+  </table>
+
+  <p>Al final del menú encontrarás los accesos de <strong>Soporte</strong> (WhatsApp y correo) y el botón de <strong>Cerrar sesión</strong>.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 06 · CLIENTES ═══════════ -->
+<div class="page">
+  <span class="section-tag">06</span>
+  <h1 class="section-title">Clientes</h1>
+
+  <h2>Agregar un cliente</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Clientes</strong> → <strong>"Nuevo cliente"</strong></li>
+    <li>Completa el <strong>RUT</strong> (obligatorio, formato <code>12345678-9</code>)</li>
+    <li>Nombre completo o razón social</li>
+    <li>Tipo: Persona natural o Persona jurídica</li>
+    <li>Email, teléfono y dirección (opcionales)</li>
+    <li>Clic en <strong>"Guardar"</strong></li>
+  </ol>
+
+  <h2>Buscar un cliente</h2>
+  <p>Usa la barra de búsqueda superior (o el atajo <code>Ctrl+K</code> / <code>Cmd+K</code>) — puedes buscar por nombre, RUT o email.</p>
+
+  <h2>Ficha del cliente</h2>
+  <p>Al entrar a un cliente verás sus datos de contacto, todas sus causas asociadas, y sus honorarios pendientes y pagados.</p>
+
+  <h2>Editar o eliminar un cliente</h2>
+  <p>Desde la ficha del cliente → <strong>"Editar"</strong>. Ahí también encontrarás el botón <strong>"Eliminar cliente"</strong>.</p>
+  <div class="callout callout-warn">
+    <strong>Al eliminar un cliente se eliminan también todas sus causas, tareas, documentos, plazos y honorarios asociados.</strong> Esta acción no se puede deshacer.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 07 · CAUSAS ═══════════ -->
+<div class="page">
+  <span class="section-tag">07</span>
+  <h1 class="section-title">Causas</h1>
+
+  <h2>Agregar una causa</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Causas</strong> → <strong>"Nueva causa"</strong></li>
+    <li><strong>Cliente</strong> asociado</li>
+    <li><strong>ROL / RIT</strong> (ej. <code>C-1234-2024</code>)</li>
+    <li><strong>Tribunal</strong> (busca entre los tribunales predefinidos por tipo de causa, o escribe uno nuevo)</li>
+    <li><strong>Tipo de causa:</strong> Civil, Laboral, Familia, Penal, Comercial, Tributario, Administrativo, Constitucional u Otro</li>
+    <li><strong>Fecha de ingreso</strong></li>
+    <li><strong>Carátula, abogado responsable, descripción</strong> (opcionales)</li>
+    <li><strong>Estado inicial:</strong> En Trámite, Suspendida, Terminada o Archivada</li>
+  </ol>
+
+  <h2>Dentro de cada causa puedes</h2>
+  <ul>
+    <li>Editar los datos en cualquier momento</li>
+    <li>Agregar <strong>plazos y audiencias</strong></li>
+    <li>Registrar <strong>tareas</strong> asociadas</li>
+    <li>Registrar <strong>actuaciones</strong> (avances del caso) con compromisos y recordatorios al cliente</li>
+    <li>Subir <strong>documentos</strong></li>
+    <li>Ver <strong>honorarios</strong> asociados</li>
+    <li>Usar el <strong>Asistente IA</strong> para generar resúmenes o borradores (ver sección 15)</li>
+  </ul>
+
+  <h2>Exportar listado de causas</h2>
+  <p>Desde <strong>Causas</strong> puedes descargar un Excel con el listado completo. Las causas de tipo <strong>Penal quedan excluidas</strong> de esta exportación masiva por disposición legal (ver siguiente sección).</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 08 · CAUSAS PENALES ═══════════ -->
+<div class="page">
+  <span class="section-tag">08</span>
+  <h1 class="section-title">Causas penales — tratamiento especial</h1>
+  <p>Si ejerces en materia penal, LexCRM le da a esas causas un tratamiento reforzado conforme a la Ley N° 21.719 de Protección de Datos Personales.</p>
+
+  <h2>Fecha de prescripción</h2>
+  <p>Al crear o editar una causa de tipo <strong>Penal</strong>, aparece un campo adicional: <strong>Fecha de prescripción de la acción penal</strong>. Complétalo cuando corresponda — el sistema te va a avisar en el Dashboard cuando se acerque esa fecha, con hasta 90 días de anticipación, para que evalúes si corresponde eliminar la información conforme a la ley.</p>
+
+  <h2>Restricciones automáticas</h2>
+  <ul>
+    <li>Las causas Penales <strong>no se incluyen</strong> en la exportación masiva (Excel) de causas.</li>
+    <li>El sistema deja registro (auditoría interna) de accesos y exportaciones sensibles.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    Esto no limita tu trabajo diario con la causa — puedes seguir viéndola, editándola y gestionándola con total normalidad. Solo se restringe su inclusión en descargas masivas junto con el resto de tus causas.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 09 · HONORARIOS ═══════════ -->
+<div class="page">
+  <span class="section-tag">09</span>
+  <h1 class="section-title">Honorarios</h1>
+
+  <h2>Registrar un honorario</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Honorarios</strong> → <strong>"Nuevo honorario"</strong></li>
+    <li><strong>Cliente</strong> y, si corresponde, <strong>causa</strong> asociada</li>
+    <li><strong>Tipo:</strong> Honorario o Gasto</li>
+    <li><strong>Descripción</strong> del concepto</li>
+    <li><strong>Monto</strong> en pesos chilenos (CLP)</li>
+    <li><strong>Fecha de emisión</strong> y, opcionalmente, fecha de vencimiento</li>
+  </ol>
+
+  <h2>Estados de un honorario</h2>
+  <table>
+    <tr><th>Estado</th><th>Significado</th></tr>
+    <tr><td>Pendiente</td><td>Emitido, aún no se ha recibido pago</td></tr>
+    <tr><td>Parcial</td><td>Se recibió un pago parcial</td></tr>
+    <tr><td>Pagado</td><td>Totalmente cobrado</td></tr>
+    <tr><td>Anulado</td><td>Sin efecto</td></tr>
+  </table>
+
+  <h2>Marcar como pagado</h2>
+  <p>Entra al honorario → cambia el estado → ingresa la fecha de pago → guarda.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 10 · CITAS ═══════════ -->
+<div class="page">
+  <span class="section-tag">10</span>
+  <h1 class="section-title">Citas</h1>
+
+  <h2>Agendar una cita</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Citas</strong> → <strong>"Nueva cita"</strong></li>
+    <li><strong>Título / motivo</strong> de la reunión</li>
+    <li><strong>Modalidad:</strong> Presencial, Google Meet, Zoom o Telefónica</li>
+    <li>Si es Meet o Zoom, puedes usar el botón <strong>"Crear sala"</strong> para generar el enlace automáticamente y pegarlo</li>
+    <li><strong>Fecha y hora</strong> (inicio y fin)</li>
+    <li><strong>Cliente o prospecto</strong> asociado (obligatorio) y causa (opcional)</li>
+    <li>Marca si es <strong>gratuita</strong> o indica el <strong>valor</strong> de la consulta</li>
+  </ol>
+
+  <h2>Confirmaciones y recordatorios automáticos</h2>
+  <p>Al agendar una cita, el sistema envía un correo de confirmación al cliente o prospecto. La noche anterior a la cita, se envía además un recordatorio automático.</p>
+
+  <h2>Estados de una cita</h2>
+  <p>Pendiente → Confirmada → Completada, o Cancelada.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 11 · AGENDA Y PLAZOS ═══════════ -->
+<div class="page">
+  <span class="section-tag">11</span>
+  <h1 class="section-title">Agenda y Plazos</h1>
+  <p>Distinto de las Citas, este módulo es para <strong>plazos procesales</strong>: audiencias, vencimientos, notificaciones y presentaciones ligadas a una causa.</p>
+
+  <h2>Agregar un plazo</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Agenda y Plazos</strong> → <strong>"Nuevo plazo"</strong></li>
+    <li><strong>Causa</strong> asociada</li>
+    <li><strong>Título</strong> y <strong>tipo:</strong> Audiencia, Vencimiento, Notificación, Presentación u Otro</li>
+    <li><strong>Fecha</strong></li>
+    <li>Notas (opcional)</li>
+  </ol>
+
+  <h2>Vista de la agenda</h2>
+  <p>Los plazos se organizan en tres bloques: <strong>Vencidos</strong> (rojo, requieren acción inmediata), <strong>Próximos</strong> y <strong>Completados</strong>. Un contador te muestra cuántos vencen esta semana.</p>
+
+  <p>Cuando completas un plazo, márcalo como <strong>"Completado"</strong> para que salga de las alertas activas.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 12 · DOCUMENTOS ═══════════ -->
+<div class="page">
+  <span class="section-tag">12</span>
+  <h1 class="section-title">Documentos</h1>
+
+  <h2>Subir un documento</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Documentos</strong> → <strong>"Subir documento"</strong> (o directamente desde la causa)</li>
+    <li>Selecciona el archivo (PDF, Word, imágenes)</li>
+    <li><strong>Nombre</strong> del documento</li>
+    <li><strong>Tipo:</strong> Escrito, Resolución, Contrato, Poder u Otro</li>
+    <li><strong>Causa</strong> a la que pertenece</li>
+  </ol>
+
+  <p>Todos tus documentos quedan listados en un solo lugar, organizados por tipo, con acceso directo a la causa correspondiente y botón de descarga.</p>
+
+  <div class="callout callout-tip">
+    Puedes subir un documento directamente al crear una causa nueva (por ejemplo, el poder o patrocinio inicial), sin tener que hacerlo por separado después.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 13 · TAREAS ═══════════ -->
+<div class="page">
+  <span class="section-tag">13</span>
+  <h1 class="section-title">Tareas</h1>
+
+  <h2>Agregar una tarea</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Tareas</strong> → <strong>"Nueva tarea"</strong></li>
+    <li><strong>Título, descripción, fecha límite y prioridad</strong> (Baja, Media, Alta, Urgente)</li>
+    <li>Cliente o causa asociada</li>
+  </ol>
+
+  <h2>Derivar una tarea a un tercero</h2>
+  <p>Si necesitas encargarle una gestión a otra persona (procurador, colega, gestor), marca la casilla <strong>"Derivar a tercero"</strong>:</p>
+  <ul>
+    <li>Nombre y correo del tercero</li>
+    <li><strong>Credenciales de portal</strong> (opcional) — si el tercero necesita entrar a un sistema externo (Poder Judicial, SII, etc.), puedes guardar aquí el sistema, usuario y contraseña.</li>
+  </ul>
+  <div class="callout callout-tip">
+    Las credenciales de portal se guardan <strong>cifradas</strong> — no quedan visibles como texto plano en ningún respaldo ni base de datos.
+  </div>
+
+  <p>Las tareas vencidas o próximas a vencer aparecen destacadas con color en el Dashboard y en el menú lateral.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 14 · EMBUDO ═══════════ -->
+<div class="page">
+  <span class="section-tag">14</span>
+  <h1 class="section-title">Embudo de prospectos</h1>
+  <p>El embudo te permite gestionar clientes potenciales antes de que se conviertan en clientes reales.</p>
+
+  <h2>Etapas del embudo</h2>
+  <p style="text-align:center; font-weight:700; color:var(--navy-800); margin:4mm 0;">Contacto → Reunión → Propuesta → Ganado / Perdido</p>
+
+  <h2>Agregar un prospecto</h2>
+  <ol class="steps">
+    <li>Menú → <strong>Embudo</strong> → <strong>"Nuevo prospecto"</strong></li>
+    <li>Nombre y empresa (si aplica)</li>
+    <li>Email y teléfono</li>
+    <li><strong>Origen:</strong> Referido, Redes sociales, Web u otro</li>
+    <li><strong>Valor estimado</strong> del caso (opcional)</li>
+    <li><strong>Próximo contacto</strong> (fecha de seguimiento)</li>
+  </ol>
+
+  <h2>Mover un prospecto entre etapas</h2>
+  <p>En el tablero, cada tarjeta tiene flechas para avanzar o retroceder de etapa. Puedes agendar una cita directamente desde la tarjeta.</p>
+
+  <h2>Convertir un prospecto en cliente</h2>
+  <p>Cuando ganas el caso, el prospecto pasa a "Ganado" y aparece el botón <strong>"Convertir a cliente"</strong> — confirma los datos (se precargan automáticamente) e ingresa el RUT para crear el cliente vinculado.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 15 · ASISTENTE IA ═══════════ -->
+<div class="page">
+  <span class="section-tag">15</span>
+  <h1 class="section-title">Asistente de Inteligencia Artificial</h1>
+  <p>Disponible dentro de cada causa, en el panel lateral derecho.</p>
+
+  <h2>Resumen de causa</h2>
+  <p>Genera un resumen ejecutivo del estado de la causa a partir de sus actuaciones, plazos y tareas registrados.</p>
+
+  <h2>Borrador de escrito</h2>
+  <p>Elige el tipo de escrito que necesitas y, si quieres, agrega instrucciones específicas (por ejemplo: "solicitar prórroga de 5 días por motivos de salud"). La IA genera un borrador que puedes copiar y editar.</p>
+
+  <div class="callout callout-warn">
+    <strong>El asistente IA es una herramienta de apoyo, no un sustituto del criterio profesional.</strong> Revisa y ajusta siempre el contenido generado antes de usarlo o presentarlo.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 16 · BÚSQUEDA GLOBAL ═══════════ -->
+<div class="page">
+  <span class="section-tag">16</span>
+  <h1 class="section-title">Búsqueda global</h1>
+  <p>Presiona <code>Ctrl+K</code> (Windows/Linux) o <code>Cmd+K</code> (Mac) desde cualquier pantalla, o haz clic en la barra de búsqueda de la parte superior.</p>
+
+  <p>Puedes buscar directamente:</p>
+  <ul>
+    <li>Clientes por nombre o RUT</li>
+    <li>Causas por número de ROL</li>
+    <li>Citas por título</li>
+  </ul>
+
+  <p>Los resultados te llevan directo a la ficha correspondiente, sin tener que navegar por el menú.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 17 · EXPORTAR / ELIMINAR ═══════════ -->
+<div class="page">
+  <span class="section-tag">17</span>
+  <h1 class="section-title">Exportar o eliminar tus datos</h1>
+  <p>Si un cliente te pide toda la información que tienes sobre él (es un derecho legal que puede ejercer conforme a la Ley N° 21.719), no necesitas juntarla a mano.</p>
+
+  <h2>Exportar todos los datos de un cliente</h2>
+  <ol class="steps">
+    <li>Entra a la ficha del cliente</li>
+    <li>Clic en <strong>"Exportar todos los datos"</strong></li>
+    <li>Se descarga un archivo con toda su información: causas, actuaciones, plazos, documentos, honorarios, tareas y citas</li>
+  </ol>
+
+  <h2>Eliminar los datos de un cliente</h2>
+  <p>Desde <strong>Editar cliente → Eliminar cliente</strong>. Se elimina de forma permanente el cliente y toda su información asociada (causas, tareas, documentos, plazos, honorarios).</p>
+
+  <div class="callout callout-warn">
+    Esta acción no se puede deshacer. Úsala solo cuando tengas la certeza de que corresponde eliminar la información (por ejemplo, a solicitud expresa del cliente, o al prescribir una causa penal).
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 18 · PRIVACIDAD ═══════════ -->
+<div class="page">
+  <span class="section-tag">18</span>
+  <h1 class="section-title">Privacidad y seguridad</h1>
+  <ul>
+    <li>Tus datos se almacenan en servidores con cifrado en tránsito (HTTPS) y en reposo.</li>
+    <li>Los datos especialmente sensibles — credenciales de portales de terceros y tu cuenta bancaria — se guardan <strong>cifrados de forma reforzada</strong>, no solo a nivel de servidor.</li>
+    <li>Solo tú (y quien tú autorices expresamente) puedes acceder a tus datos.</li>
+    <li>Tu contraseña la gestiona el sistema de autenticación (Clerk) o tu cuenta de Google — nunca queda visible para el proveedor.</li>
+    <li>Las causas penales reciben tratamiento reforzado conforme a la Ley N° 21.719 (ver sección 08).</li>
+    <li>Puedes exportar o eliminar los datos de cualquiera de tus clientes en cualquier momento (ver sección 17).</li>
+    <li>Cada acción de exportación o eliminación queda registrada internamente para trazabilidad.</li>
+  </ul>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 19 · FAQ ═══════════ -->
+<div class="page">
+  <span class="section-tag">19</span>
+  <h1 class="section-title">Preguntas frecuentes</h1>
+
+  <h3>¿Puedo acceder desde mi celular?</h3>
+  <p>Sí, funciona en cualquier navegador móvil (Chrome, Safari). No requiere instalar ninguna aplicación.</p>
+
+  <h3>¿Qué pasa si pierdo mi contraseña?</h3>
+  <p>En la pantalla de inicio de sesión → "¿Olvidaste tu contraseña?" → recibirás un correo de recuperación.</p>
+
+  <h3>¿Mis datos se guardan automáticamente?</h3>
+  <p>Sí, cada formulario guarda al hacer clic en "Guardar". No hay pérdida de información entre sesiones.</p>
+
+  <h3>¿Puedo usar LexCRM sin internet?</h3>
+  <p>No, requiere conexión a internet para funcionar.</p>
+
+  <h3>¿La IA puede equivocarse?</h3>
+  <p>Sí. El asistente IA es una herramienta de apoyo, no un sustituto del criterio legal. Revisa siempre el contenido antes de usarlo.</p>
+
+  <h3>¿Cómo agrego a mi secretaria o socio?</h3>
+  <p>Por ahora, cada cuenta autorizada es <strong>independiente</strong>: no comparte los mismos clientes ni causas entre distintos correos. Si necesitas que varias personas de tu estudio trabajen sobre la misma información, contacta a tu proveedor — es una funcionalidad en desarrollo.</p>
+
+  <h3>¿Qué pasa si dejo de pagar?</h3>
+  <p>Tus datos se conservan; el acceso se suspende hasta regularizar el pago. Contacta a tu proveedor ante cualquier duda sobre tu suscripción.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+<!-- ═══════════ 20 · SOPORTE ═══════════ -->
+<div class="page">
+  <span class="section-tag">20</span>
+  <h1 class="section-title">Soporte</h1>
+  <p>Ante cualquier duda o problema, contacta a tu proveedor de LexCRM directamente desde el menú lateral (sección "Soporte") por WhatsApp o correo electrónico.</p>
+
+  <h2>Para que podamos ayudarte más rápido, incluye:</h2>
+  <ul>
+    <li>Descripción breve del problema</li>
+    <li>Captura de pantalla, si es posible</li>
+    <li>El correo electrónico con el que accedes a LexCRM</li>
+  </ul>
+
+  <div class="callout callout-info" style="margin-top: 10mm;">
+    Gracias por confiar en LexCRM para la gestión de tu estudio jurídico.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual de Usuario</span></div>
+</div>
+
+</body>
+</html>
