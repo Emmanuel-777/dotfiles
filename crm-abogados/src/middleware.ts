@@ -8,9 +8,8 @@ const isPublicRoute = createRouteMatcher([
   '/api/notificaciones/citas-cron',
   '/api/notificaciones/tareas-cron',
   '/api/acceso/solicitud',
+  '/no-autorizado',
 ])
-
-const LANDING_URL = 'https://lexcrm.site'
 
 export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req)) return
@@ -49,7 +48,10 @@ export default clerkMiddleware(async (auth, req) => {
           console.error('Error notificando solicitud de acceso:', e)
         }
 
-        return NextResponse.redirect(`${LANDING_URL}/?motivo=no-autorizado&email=${encodeURIComponent(email)}`)
+        // TODO: cuando se separe el dominio (landing en la raíz, CRM en un
+        // subdominio), volver a redirigir a la landing real en vez de esta
+        // página interna: `${LANDING_URL}/?motivo=no-autorizado&email=...`
+        return NextResponse.redirect(new URL('/no-autorizado', req.url))
       }
     }
   }
