@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LexCRM — Dossier Técnico para Inversionistas</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #1e293b;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+  :root {
+    --navy-900: #0f1c36;
+    --navy-800: #14254c;
+    --navy-700: #1a3060;
+    --blue-600: #2563eb;
+    --blue-500: #3b82f6;
+    --blue-50: #eff6ff;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-800: #1e293b;
+    --amber-50: #fffbeb;
+    --amber-200: #fde68a;
+    --amber-700: #b45309;
+    --green-50: #f0fdf4;
+    --green-200: #86efac;
+    --green-700: #15803d;
+  }
+
+  /* ── PORTADA ── */
+  .cover {
+    width: 210mm; height: 297mm;
+    background: linear-gradient(155deg, var(--navy-900) 0%, var(--navy-800) 55%, #1c3268 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: white;
+    page-break-after: always;
+    position: relative;
+  }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(96,165,250,.12); border: 1px solid rgba(96,165,250,.3);
+    color: #60a5fa; font-size: 9pt; font-weight: 700;
+    padding: 5px 16px; border-radius: 99px; margin-bottom: 28px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .cover-logo { font-size: 40pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+  .cover-logo .w { color: #ffffff; }
+  .cover-logo .b { color: #60a5fa; }
+  .cover-title { font-size: 22pt; font-weight: 800; margin-top: 30px; margin-bottom: 10px; }
+  .cover-sub { font-size: 12pt; color: rgba(255,255,255,.6); max-width: 420px; line-height: 1.6; }
+  .cover-footer {
+    position: absolute; bottom: 30mm; left: 0; right: 0;
+    text-align: center; font-size: 9pt; color: rgba(255,255,255,.4);
+  }
+  .cover-footer strong { color: rgba(255,255,255,.7); }
+  .cover-confidential {
+    position: absolute; top: 20mm; left: 0; right: 0;
+    text-align: center; font-size: 8pt; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(255,255,255,.35);
+  }
+
+  /* ── ÍNDICE ── */
+  .toc {
+    width: 210mm; min-height: 297mm; padding: 22mm 20mm;
+    page-break-after: always;
+  }
+  .toc h1 { font-size: 20pt; color: var(--navy-800); margin-bottom: 6mm; }
+  .toc-list { list-style: none; }
+  .toc-list li {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 6px 0; font-size: 11pt; color: var(--slate-800);
+    border-bottom: 1px dotted var(--slate-200);
+  }
+  .toc-list .num { color: var(--blue-600); font-weight: 700; width: 22px; flex-shrink: 0; }
+
+  /* ── CONTENIDO ── */
+  .page {
+    width: 210mm; min-height: 297mm; padding: 18mm 20mm 22mm;
+    page-break-after: always; position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .section-tag {
+    display: inline-block; font-size: 8pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--blue-600); margin-bottom: 4px;
+  }
+  h1.section-title {
+    font-size: 18pt; color: var(--navy-800); font-weight: 800;
+    margin-bottom: 4mm; padding-bottom: 3mm; border-bottom: 2px solid var(--slate-200);
+  }
+  h2 {
+    font-size: 12.5pt; color: var(--navy-800); font-weight: 700;
+    margin-top: 6mm; margin-bottom: 2.5mm;
+  }
+  h3 {
+    font-size: 11pt; color: var(--navy-700); font-weight: 700;
+    margin-top: 4mm; margin-bottom: 2mm;
+  }
+  p { margin-bottom: 2.5mm; color: var(--slate-600); }
+  ul, ol { margin: 2mm 0 3mm 5mm; color: var(--slate-600); }
+  li { margin-bottom: 1.3mm; }
+  strong { color: var(--slate-800); }
+  code {
+    background: var(--slate-100); color: var(--navy-800);
+    padding: 1px 5px; border-radius: 3px; font-size: 9.5pt; font-family: 'Courier New', monospace;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 9.5pt; }
+  th {
+    background: var(--navy-800); color: white; text-align: left;
+    padding: 5px 8px; font-weight: 700; font-size: 9pt;
+  }
+  td { padding: 5px 8px; border-bottom: 1px solid var(--slate-200); color: var(--slate-600); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--slate-50); }
+
+  .callout {
+    border-radius: 6px; padding: 3mm 4mm; margin: 3mm 0 4mm;
+    font-size: 9.5pt; border-left: 3px solid;
+  }
+  .callout-tip { background: var(--green-50); border-color: var(--green-200); color: var(--green-700); }
+  .callout-warn { background: var(--amber-50); border-color: var(--amber-200); color: var(--amber-700); }
+  .callout-info { background: var(--blue-50); border-color: #93c5fd; color: #1d4ed8; }
+  .callout strong { color: inherit; }
+
+  .footer-mark {
+    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
+    display: flex; justify-content: space-between; font-size: 7.5pt; color: var(--slate-400);
+    border-top: 1px solid var(--slate-200); padding-top: 2mm;
+  }
+  .footer-mark .brand { font-weight: 700; }
+  .footer-mark .brand .w { color: var(--navy-800); } .footer-mark .brand .b { color: var(--blue-600); }
+
+  /* ── DIAGRAMA DE ARQUITECTURA ── */
+  .arch { margin: 4mm 0 5mm; }
+  .arch-row { display: flex; gap: 4mm; margin-bottom: 4mm; }
+  .arch-box {
+    flex: 1; border-radius: 8px; padding: 3mm 4mm; text-align: center;
+    border: 1.5px solid var(--slate-200); background: var(--slate-50);
+  }
+  .arch-box .t { font-weight: 800; font-size: 9.5pt; color: var(--navy-800); }
+  .arch-box .d { font-size: 8pt; color: var(--slate-500); margin-top: 1mm; line-height: 1.4; }
+  .arch-box.primary { background: var(--navy-800); border-color: var(--navy-800); }
+  .arch-box.primary .t { color: white; }
+  .arch-box.primary .d { color: rgba(255,255,255,.65); }
+  .arch-box.accent { background: var(--blue-50); border-color: #93c5fd; }
+  .arch-arrow { text-align: center; color: var(--slate-400); font-size: 10pt; margin: -2mm 0 2mm; }
+
+  .kpi-row { display: flex; gap: 4mm; margin: 4mm 0; }
+  .kpi {
+    flex: 1; border-radius: 8px; padding: 4mm; text-align: center;
+    background: var(--slate-50); border: 1.5px solid var(--slate-200);
+  }
+  .kpi .v { font-size: 16pt; font-weight: 900; color: var(--blue-600); }
+  .kpi .l { font-size: 8pt; color: var(--slate-500); margin-top: 1mm; line-height: 1.35; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="cover">
+  <div class="cover-confidential">Documento confidencial · Para evaluación de inversión</div>
+  <div class="cover-badge">Dossier técnico</div>
+  <div class="cover-logo"><span class="w">Lex</span><span class="b">CRM</span></div>
+  <div class="cover-title">Ingeniería y Manejo de Datos</div>
+  <div class="cover-sub">Arquitectura del sistema, seguridad de la información y cumplimiento de la Ley N° 21.719 de Protección de Datos Personales de Chile.</div>
+  <div class="cover-footer">Versión 1.0 · Julio 2026<br><strong>lexcrm.site</strong></div>
+</div>
+
+<!-- ═══════════ ÍNDICE ═══════════ -->
+<div class="toc">
+  <h1>Índice</h1>
+  <ul class="toc-list">
+    <li><span class="num">01</span> Resumen ejecutivo</li>
+    <li><span class="num">02</span> Arquitectura de ingeniería</li>
+    <li><span class="num">03</span> Modelo de datos y multi-tenancy</li>
+    <li><span class="num">04</span> Seguridad de la información</li>
+    <li><span class="num">05</span> Cumplimiento de la Ley N° 21.719</li>
+    <li><span class="num">06</span> Tratamiento de datos de causas penales</li>
+    <li><span class="num">07</span> Derechos de los titulares (ARCO+)</li>
+    <li><span class="num">08</span> Módulo de Inteligencia Artificial</li>
+    <li><span class="num">09</span> Unidad económica y escalabilidad</li>
+    <li><span class="num">10</span> Transparencia técnica: limitaciones actuales</li>
+    <li><span class="num">11</span> Roadmap técnico</li>
+  </ul>
+</div>
+
+<!-- ═══════════ 01 · RESUMEN EJECUTIVO ═══════════ -->
+<div class="page">
+  <span class="section-tag">01</span>
+  <h1 class="section-title">Resumen ejecutivo</h1>
+  <p><strong>LexCRM</strong> es un sistema de gestión legal en modalidad SaaS (Software as a Service) diseñado específicamente para abogados independientes y estudios jurídicos pequeños en Chile. Cubre el ciclo completo de operación de un estudio: captación de prospectos, gestión de clientes y causas, plazos procesales, citas, documentos, honorarios y tareas, con un módulo de inteligencia artificial para generación de resúmenes ejecutivos y borradores de escritos.</p>
+
+  <h2>Tesis técnica en una frase</h2>
+  <p>Arquitectura serverless moderna con costo marginal por cliente cercano a cero, y cumplimiento de la Ley N° 21.719 <strong>construido dentro del producto</strong> — no como una promesa de política, sino como funcionalidades verificables en el código — anticipándose a la entrada en plena vigencia de la ley (diciembre 2026), cuando la demanda de proveedores "compliant" por parte de estudios jurídicos se convertirá en requisito de compra.</p>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="v">10</div><div class="l">módulos funcionales en producción</div></div>
+    <div class="kpi"><div class="v">~$0–5</div><div class="l">USD/mes de infraestructura por cliente en volúmenes iniciales</div></div>
+    <div class="kpi"><div class="v">AES-256</div><div class="l">cifrado a nivel de aplicación para datos sensibles</div></div>
+    <div class="kpi"><div class="v">Dic 2026</div><div class="l">vigencia plena Ley 21.719 — ventana de oportunidad</div></div>
+  </div>
+
+  <h2>Por qué importa el ángulo regulatorio</h2>
+  <p>Un CRM jurídico no maneja datos genéricos: almacena datos sensibles (salud, situación socioeconómica), datos de obligaciones económicas y — en el caso de abogados penalistas — datos de infracciones penales, que la ley califica de <strong>carácter reservado</strong> con prohibición expresa de tratamiento masivo. El proveedor del software actúa como <strong>encargado de tratamiento</strong> (Art. 15 bis): si excede el encargo, responde como responsable, con multas de hasta 20.000 UTM (gravísimas). LexCRM fue diseñado para operar dentro de ese marco desde su arquitectura, no adaptado a posteriori.</p>
+
+  <div class="callout callout-info">
+    <strong>Estado actual:</strong> producto en producción en <strong>lexcrm.site</strong>, con onboarding manual de clientes de pago, sociedad legal constituida e iniciación de actividades en trámite ante el SII.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 02 · ARQUITECTURA ═══════════ -->
+<div class="page">
+  <span class="section-tag">02</span>
+  <h1 class="section-title">Arquitectura de ingeniería</h1>
+  <p>LexCRM es una aplicación web full-stack construida sobre un stack moderno, 100% serverless y de tipo <em>managed services</em>: no hay servidores propios que administrar, parchar ni escalar manualmente.</p>
+
+  <div class="arch">
+    <div class="arch-row">
+      <div class="arch-box accent"><div class="t">Navegador del abogado</div><div class="d">Web app responsiva · sin instalación · escritorio y móvil</div></div>
+    </div>
+    <div class="arch-arrow">▼ HTTPS / TLS</div>
+    <div class="arch-row">
+      <div class="arch-box primary"><div class="t">Vercel (Edge + Serverless)</div><div class="d">Next.js 14 · middleware de autenticación y autorización · API REST · 4 tareas programadas (crons)</div></div>
+    </div>
+    <div class="arch-arrow">▼</div>
+    <div class="arch-row">
+      <div class="arch-box"><div class="t">Turso / libSQL</div><div class="d">Base de datos SQL distribuida · cifrado en reposo · Drizzle ORM tipado</div></div>
+      <div class="arch-box"><div class="t">Clerk</div><div class="d">Autenticación y gestión de identidad · JWT verificado en el edge</div></div>
+      <div class="arch-box"><div class="t">Resend</div><div class="d">Email transaccional: confirmaciones, recordatorios, alertas</div></div>
+      <div class="arch-box"><div class="t">Anthropic Claude</div><div class="d">IA vía API · resúmenes y borradores de escritos</div></div>
+    </div>
+  </div>
+
+  <h2>Componentes y decisiones de diseño</h2>
+  <table>
+    <tr><th>Capa</th><th>Tecnología</th><th>Racional</th></tr>
+    <tr><td>Framework</td><td>Next.js 14 (App Router) + TypeScript</td><td>Renderizado en servidor (los datos nunca se exponen en APIs públicas innecesarias), tipado estático de extremo a extremo</td></tr>
+    <tr><td>Hosting</td><td>Vercel</td><td>Despliegue continuo desde Git, escalado automático, HTTPS/SSL gestionado, cero operación de servidores</td></tr>
+    <tr><td>Base de datos</td><td>Turso (libSQL) + Drizzle ORM</td><td>SQL relacional con integridad referencial; ORM tipado que elimina clases enteras de errores de acceso a datos</td></tr>
+    <tr><td>Autenticación</td><td>Clerk</td><td>Gestión de identidad delegada a un especialista: hashing de contraseñas, MFA, recuperación de cuenta, sesiones JWT</td></tr>
+    <tr><td>Email</td><td>Resend</td><td>Entregabilidad gestionada para confirmaciones de citas, recordatorios diarios y alertas al operador</td></tr>
+    <tr><td>IA</td><td>API de Anthropic (Claude)</td><td>Sin infraestructura propia de ML; pago por uso; sin entrenamiento sobre datos de clientes</td></tr>
+  </table>
+
+  <h2>Automatización programada (crons)</h2>
+  <ul>
+    <li><strong>Resumen diario</strong> por correo al abogado: citas de hoy y mañana, plazos y tareas próximos, honorarios vencidos.</li>
+    <li><strong>Recordatorio nocturno</strong> de las citas del día siguiente.</li>
+    <li><strong>Aviso de tareas pendientes</strong> dos veces al día (mañana y mediodía, hora de Chile).</li>
+  </ul>
+  <p>Todos los endpoints de cron están protegidos por un secreto de autorización (<code>Bearer</code> token) — no son invocables públicamente.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 03 · MODELO DE DATOS ═══════════ -->
+<div class="page">
+  <span class="section-tag">03</span>
+  <h1 class="section-title">Modelo de datos y multi-tenancy</h1>
+
+  <h2>Esquema relacional</h2>
+  <p>La base de datos consta de <strong>12 tablas</strong> organizadas alrededor del flujo real de trabajo de un estudio jurídico:</p>
+  <table>
+    <tr><th>Tabla</th><th>Contenido</th></tr>
+    <tr><td><code>clientes</code></td><td>Fichas de clientes del abogado (RUT único, tipo persona natural/jurídica, contacto)</td></tr>
+    <tr><td><code>causas</code></td><td>Expedientes: ROL, tribunal, tipo, estado, carátula, fecha de prescripción (penales)</td></tr>
+    <tr><td><code>actuaciones</code></td><td>Avances de cada causa, con compromisos y recordatorios al cliente</td></tr>
+    <tr><td><code>plazos</code></td><td>Plazos procesales: audiencias, vencimientos, notificaciones, presentaciones</td></tr>
+    <tr><td><code>documentos</code></td><td>Metadatos de archivos asociados a causas</td></tr>
+    <tr><td><code>honorarios</code></td><td>Cobros y gastos, con estados pendiente/parcial/pagado/anulado</td></tr>
+    <tr><td><code>tareas</code></td><td>Pendientes propios o derivados a terceros (con credenciales de portal cifradas)</td></tr>
+    <tr><td><code>citas</code></td><td>Reuniones con clientes o prospectos (presencial, Meet, Zoom, telefónica)</td></tr>
+    <tr><td><code>prospectos</code></td><td>Embudo comercial: contacto → reunión → propuesta → ganado/perdido</td></tr>
+    <tr><td><code>perfil_abogado</code></td><td>Datos de contacto y bancarios del abogado (campos sensibles cifrados)</td></tr>
+    <tr><td><code>solicitudes_acceso</code></td><td>Intentos de acceso no autorizados, con control anti-spam de notificaciones</td></tr>
+    <tr><td><code>registros_auditoria</code></td><td>Bitácora de exportaciones y eliminaciones de datos</td></tr>
+  </table>
+
+  <h2>Aislamiento multi-tenant a nivel de fila</h2>
+  <p>Cada tabla de negocio incluye una columna <code>user_id</code> con el identificador del abogado dueño de los datos. <strong>Toda consulta del sistema filtra obligatoriamente por ese identificador</strong>, verificado contra el token de sesión en el servidor. Un abogado no puede — ni por error ni por manipulación de la interfaz — acceder a datos de otro.</p>
+
+  <h2>Integridad referencial</h2>
+  <p>Las relaciones entre tablas están declaradas con claves foráneas y reglas de borrado en cascada (<code>ON DELETE CASCADE</code>) o desvinculación (<code>ON DELETE SET NULL</code>), <strong>activadas y verificadas en runtime</strong>. Eliminar un cliente elimina de forma consistente todas sus causas, actuaciones, plazos, documentos, honorarios y tareas — sin registros huérfanos. Esta garantía fue probada de forma dirigida (test de cascada completa) antes de su despliegue a producción.</p>
+
+  <div class="callout callout-tip">
+    <strong>Migraciones idempotentes:</strong> el esquema evoluciona mediante migraciones que pueden ejecutarse repetidamente sin efectos secundarios, lo que permite desplegar actualizaciones sin ventanas de mantención.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 04 · SEGURIDAD ═══════════ -->
+<div class="page">
+  <span class="section-tag">04</span>
+  <h1 class="section-title">Seguridad de la información</h1>
+
+  <h2>Cifrado en capas</h2>
+  <table>
+    <tr><th>Capa</th><th>Mecanismo</th><th>Qué protege</th></tr>
+    <tr><td>En tránsito</td><td>HTTPS / TLS en todo el tráfico</td><td>Toda comunicación navegador ↔ servidor ↔ servicios</td></tr>
+    <tr><td>En reposo (infraestructura)</td><td>Cifrado del proveedor de base de datos (Turso)</td><td>La totalidad de la base de datos</td></tr>
+    <tr><td>En reposo (aplicación)</td><td><strong>AES-256-GCM propio de LexCRM</strong></td><td>Campos de mayor sensibilidad: credenciales de portales de terceros (Poder Judicial, SII) y datos bancarios del abogado</td></tr>
+  </table>
+  <p>El cifrado a nivel de aplicación usa una clave de 256 bits, un vector de inicialización aleatorio por registro y autenticación de integridad (GCM) — un valor alterado en la base de datos no se descifra silenciosamente mal, sino que falla de forma detectable. El formato de almacenamiento es versionado, lo que permite rotaciones de clave o cambios de algoritmo futuros sin romper datos históricos.</p>
+
+  <h2>Gestión de secretos</h2>
+  <p>Ninguna clave (API keys, secretos de sesión, clave de cifrado, tokens de base de datos) existe en el código fuente ni en el repositorio Git. Todas viven exclusivamente como variables de entorno del proveedor de hosting. El sistema está diseñado para <strong>fallar de forma explícita</strong> si la clave de cifrado no está configurada — nunca degrada en silencio a guardar texto plano.</p>
+
+  <h2>Control de acceso en dos capas</h2>
+  <ol>
+    <li><strong>Autenticación (Clerk):</strong> identidad verificada mediante sesión JWT, validada en el edge antes de que la petición llegue a la aplicación.</li>
+    <li><strong>Autorización (allowlist):</strong> incluso autenticado, un correo debe estar expresamente autorizado por el operador para acceder. Un registro no autorizado queda bloqueado y genera una notificación automática al operador — el acceso es una decisión comercial explícita, no un efecto del registro.</li>
+  </ol>
+
+  <h2>Auditoría</h2>
+  <p>Las operaciones de mayor impacto — exportación masiva de causas, exportación completa de los datos de un cliente y eliminación de clientes — quedan registradas en una bitácora interna con usuario, acción, entidad afectada y fecha, dando trazabilidad conforme al Art. 14 quinquies de la Ley 21.719.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 05 · LEY 21.719 ═══════════ -->
+<div class="page">
+  <span class="section-tag">05</span>
+  <h1 class="section-title">Cumplimiento de la Ley N° 21.719</h1>
+  <p>La Ley N° 21.719 (que reemplaza a la Ley 19.628 y crea la Agencia de Protección de Datos Personales) entra en plena vigencia el <strong>1 de diciembre de 2026</strong>. LexCRM opera bajo el rol jurídico de <strong>encargado de tratamiento / tercero mandatario</strong> (Art. 2 letra x y Art. 15 bis): trata los datos por cuenta y bajo instrucciones del abogado, quien es el responsable.</p>
+
+  <h2>Mapa de cumplimiento: artículo → medida implementada</h2>
+  <table>
+    <tr><th style="width:26%">Exigencia legal</th><th>Implementación en LexCRM</th></tr>
+    <tr>
+      <td><strong>Art. 15 bis</strong> — Encargo regulado por contrato; prohibición de uso distinto al convenido</td>
+      <td>Contrato de servicios SaaS + <strong>Anexo de Tratamiento de Datos Personales (ATDP)</strong> ya redactados, con prohibición expresa de usar datos para entrenamiento de IA, marketing o cesión a terceros. Régimen de subencargo con responsabilidad solidaria.</td>
+    </tr>
+    <tr>
+      <td><strong>Art. 14 bis</strong> — Deber de secreto y confidencialidad</td>
+      <td>Cláusula de confidencialidad con sobrevivencia indefinida post-contrato; acceso técnico restringido; datos sensibles cifrados incluso frente al propio equipo técnico.</td>
+    </tr>
+    <tr>
+      <td><strong>Art. 14 quinquies</strong> — Medidas de seguridad técnicas y organizativas</td>
+      <td>Cifrado en tránsito y en reposo (doble capa), control de acceso en dos niveles, registro de auditoría de operaciones sensibles, respaldos del proveedor de base de datos.</td>
+    </tr>
+    <tr>
+      <td><strong>Art. 14 sexies</strong> — Notificación de vulneraciones de seguridad</td>
+      <td>Obligación contractual de notificar al abogado responsable por la vía más expedita (plazo comprometido en el ATDP), con detalle de datos afectados y medidas adoptadas.</td>
+    </tr>
+    <tr>
+      <td><strong>Arts. 24–25</strong> — Datos de infracciones penales: carácter reservado, prohibición de tratamiento masivo, eliminación al prescribir</td>
+      <td>Tratamiento diferenciado implementado en el producto (ver sección 06).</td>
+    </tr>
+    <tr>
+      <td><strong>Arts. 5°–9°</strong> — Derechos de los titulares (ARCO+)</td>
+      <td>Herramientas de portabilidad y supresión integradas en el producto (ver sección 07).</td>
+    </tr>
+    <tr>
+      <td><strong>Título V</strong> — Transferencia internacional de datos</td>
+      <td>Infraestructura alojada en proveedores de EE.UU. (Vercel, Turso, Clerk, Resend, Anthropic), declarado con transparencia en la política de privacidad y respaldado por cláusulas contractuales y las certificaciones de dichos proveedores (SOC 2 / ISO 27001). El hosting en región con "nivel adecuado" es una palanca de diferenciación futura.</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-info">
+    <strong>Punto clave para la tesis de inversión:</strong> estas medidas no son declaraciones de una política — son características verificables en el código y en el esquema de datos, auditables en una due diligence técnica.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 06 · DATOS PENALES ═══════════ -->
+<div class="page">
+  <span class="section-tag">06</span>
+  <h1 class="section-title">Tratamiento de datos de causas penales</h1>
+  <p>Los artículos 24 y 25 de la Ley 21.719 son el punto más delicado para un CRM usado por abogados penalistas: los datos relativos a la comisión y sanción de infracciones penales <strong>revisten carácter reservado</strong>, no pueden comunicarse a terceros salvo excepciones legales, está prohibido su <strong>tratamiento masivo</strong> en registros electrónicos, y deben eliminarse una vez prescrita la acción penal o cumplida/prescrita la pena.</p>
+
+  <h2>Cómo lo resuelve LexCRM en el producto</h2>
+  <table>
+    <tr><th>Exigencia</th><th>Mecanismo implementado</th></tr>
+    <tr>
+      <td>Prohibición de tratamiento masivo</td>
+      <td>Las causas de tipo Penal quedan <strong>excluidas automáticamente</strong> de la exportación masiva (CSV/Excel) del listado de causas. La exclusión ocurre a nivel de consulta en el servidor — no es un filtro de interfaz que pueda saltarse.</td>
+    </tr>
+    <tr>
+      <td>Eliminación al prescribir</td>
+      <td>Campo dedicado de <strong>fecha de prescripción de la acción penal</strong> en cada causa penal, con alerta proactiva en el panel principal del abogado desde <strong>90 días antes</strong> de la fecha, recordándole evaluar la eliminación conforme a la ley.</td>
+    </tr>
+    <tr>
+      <td>Trazabilidad</td>
+      <td>Toda exportación y eliminación queda en el registro de auditoría, con identificación del usuario, la acción y la fecha.</td>
+    </tr>
+    <tr>
+      <td>Acceso individual intacto</td>
+      <td>El trabajo normal del abogado con su causa penal (ver, editar, gestionar) no se ve limitado — la restricción aplica exclusivamente al tratamiento masivo.</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-tip">
+    <strong>Diferenciador competitivo:</strong> un CRM genérico (o uno extranjero) no distingue una causa penal de cualquier otro registro. LexCRM incorpora la distinción del régimen chileno directamente en su lógica de negocio.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 07 · ARCO+ ═══════════ -->
+<div class="page">
+  <span class="section-tag">07</span>
+  <h1 class="section-title">Derechos de los titulares (ARCO+)</h1>
+  <p>Los clientes de los abogados (titulares de los datos) pueden ejercer derechos de acceso, rectificación, cancelación, oposición, <strong>portabilidad</strong> y bloqueo temporal, y el abogado responsable debe responder dentro de plazos legales acotados. Como encargado, LexCRM debe proveer las herramientas para que el abogado pueda cumplir. Están integradas en el producto:</p>
+
+  <h2>Portabilidad — "Exportar todos los datos"</h2>
+  <p>Desde la ficha de cualquier cliente, un clic descarga un archivo estructurado (JSON, formato de uso común) con la totalidad de su información: ficha, causas, actuaciones, plazos, documentos, honorarios, tareas y citas. La exportación es <strong>completa por diseño</strong> — incluye también registros vinculados directamente al cliente sin pasar por una causa, un caso borde que los reportes tradicionales suelen omitir.</p>
+
+  <h2>Acceso y rectificación</h2>
+  <p>Toda la información es visible y editable por el abogado en la ficha del cliente y sus causas — puede responder una solicitud de acceso o corregir datos inexactos de inmediato.</p>
+
+  <h2>Supresión — borrado real y completo</h2>
+  <p>La eliminación de un cliente borra en cascada, de forma permanente y verificada, todos sus registros asociados (causas, actuaciones, plazos, documentos, honorarios, tareas). No quedan copias "lógicas" ocultas en la base de datos operativa. La acción queda registrada en la auditoría — se puede acreditar cuándo se eliminó, sin conservar los datos eliminados.</p>
+
+  <h2>Al término del contrato</h2>
+  <p>El marco contractual (ATDP) regula la devolución de los datos en formato estructurado o su supresión verificable, incluidos respaldos, a elección del abogado — con constancia formal de la gestión.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 08 · MÓDULO IA ═══════════ -->
+<div class="page">
+  <span class="section-tag">08</span>
+  <h1 class="section-title">Módulo de Inteligencia Artificial</h1>
+  <p>El módulo de IA es el principal diferenciador de producto frente a la gestión en planillas y a CRMs genéricos, y está construido con una postura conservadora respecto de los datos.</p>
+
+  <h2>Capacidades actuales</h2>
+  <ul>
+    <li><strong>Resumen ejecutivo de causa:</strong> a partir de las actuaciones, plazos y tareas registrados, genera un resumen del estado del caso en segundos.</li>
+    <li><strong>Borrador de escritos:</strong> el abogado elige el tipo de escrito y agrega instrucciones; la IA genera un borrador editable.</li>
+  </ul>
+
+  <h2>Arquitectura y postura de datos</h2>
+  <table>
+    <tr><th>Aspecto</th><th>Diseño</th></tr>
+    <tr><td>Proveedor</td><td>API de Anthropic (modelos Claude) — sin infraestructura propia de ML que mantener</td></tr>
+    <tr><td>Modelo de costo</td><td>Pago por uso, costo marginal por generación del orden de fracciones de centavo de dólar</td></tr>
+    <tr><td>Entrenamiento</td><td><strong>Los datos de los abogados y sus clientes no se usan para entrenar modelos</strong> — ni propios ni de terceros. La prohibición está además fijada contractualmente en el ATDP (Art. 15 bis).</td></tr>
+    <tr><td>Alcance</td><td>La IA es asistiva: el producto advierte expresamente que no sustituye el criterio profesional del abogado</td></tr>
+  </table>
+
+  <div class="callout callout-warn">
+    <strong>Riesgo regulatorio gestionado:</strong> usar datos de clientes para entrenar modelos de IA de uso general convertiría al proveedor en responsable de datos para todos los efectos legales (Art. 15 bis inciso 2°), con exposición directa a multas. LexCRM excluye ese uso por arquitectura y por contrato.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 09 · UNIDAD ECONÓMICA ═══════════ -->
+<div class="page">
+  <span class="section-tag">09</span>
+  <h1 class="section-title">Unidad económica y escalabilidad</h1>
+
+  <h2>Estructura de costos de infraestructura</h2>
+  <p>Toda la infraestructura es serverless y de pago por uso, con niveles gratuitos generosos en los volúmenes de un negocio en etapa temprana:</p>
+  <table>
+    <tr><th>Servicio</th><th>Función</th><th>Costo en etapa inicial</th></tr>
+    <tr><td>Vercel</td><td>Hosting, edge, crons</td><td>Nivel gratuito / plan base</td></tr>
+    <tr><td>Turso</td><td>Base de datos</td><td>Nivel gratuito holgado para cientos de usuarios</td></tr>
+    <tr><td>Clerk</td><td>Autenticación</td><td>Gratuito hasta 10.000 usuarios activos mensuales</td></tr>
+    <tr><td>Resend</td><td>Email transaccional</td><td>Nivel gratuito (miles de correos/mes)</td></tr>
+    <tr><td>Anthropic</td><td>IA</td><td>Pago por uso — centavos por abogado activo al mes</td></tr>
+  </table>
+  <p>El costo marginal de infraestructura por cliente adicional es <strong>cercano a cero</strong> en los primeros cientos de clientes, contra un precio de suscripción de decenas de miles de pesos chilenos mensuales — la estructura de margen bruto característica de un SaaS bien construido.</p>
+
+  <h2>Escalabilidad técnica</h2>
+  <ul>
+    <li><strong>Cómputo:</strong> funciones serverless que escalan automáticamente con la demanda; sin capacidad ociosa que pagar ni cuellos de botella de servidores propios.</li>
+    <li><strong>Datos:</strong> el aislamiento por <code>user_id</code> mantiene el costo de consulta proporcional a los datos de cada abogado, no al total del sistema.</li>
+    <li><strong>Operación:</strong> despliegue continuo desde Git; una actualización llega a todos los clientes simultáneamente, sin ventanas de mantención ni migraciones manuales por cliente.</li>
+  </ul>
+
+  <h2>Dependencias y su mitigación</h2>
+  <p>El stack depende de proveedores gestionados (riesgo de vendor). Mitigaciones concretas: el esquema es SQL estándar portable (SQLite/libSQL), el ORM abstrae el motor de base de datos, y los respaldos completos (código + historial) se mantienen fuera de los proveedores. Ningún proveedor tiene lock-in de datos propietario.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 10 · LIMITACIONES ═══════════ -->
+<div class="page">
+  <span class="section-tag">10</span>
+  <h1 class="section-title">Transparencia técnica: limitaciones actuales</h1>
+  <p>Para una evaluación seria, tan importante como lo construido es lo que aún no existe. Estado honesto del producto a la fecha de este documento:</p>
+
+  <table>
+    <tr><th>Limitación</th><th>Detalle</th><th>Plan</th></tr>
+    <tr>
+      <td>Cuentas mono-usuario</td>
+      <td>Cada cuenta autorizada es independiente: dos correos del mismo estudio no comparten clientes ni causas. No existe aún concepto de equipo ni roles.</td>
+      <td>Multiusuario con roles (vía Clerk Organizations) es el ítem principal del roadmap. El plan comercial "Firma" se retiró de la oferta hasta que exista.</td>
+    </tr>
+    <tr>
+      <td>Cobro manual</td>
+      <td>La suscripción se cobra por transferencia bancaria y la autorización de acceso es manual (allowlist). Viable en volúmenes iniciales; no escala a cientos de clientes.</td>
+      <td>Integración de pasarela de pago recurrente local (Flow / MercadoPago) en roadmap.</td>
+    </tr>
+    <tr>
+      <td>Sin certificaciones propias</td>
+      <td>LexCRM no cuenta aún con certificaciones de seguridad propias (ISO 27001, SOC 2); se apoya en las certificaciones de sus proveedores de infraestructura.</td>
+      <td>La certificación del modelo de prevención de infracciones ante la Agencia (Arts. 49–53) está identificada como meta pre-diciembre 2026.</td>
+    </tr>
+    <tr>
+      <td>Datos históricos pre-cifrado</td>
+      <td>El cifrado a nivel de aplicación aplica a escrituras nuevas; los escasos registros previos a su activación permanecen bajo el cifrado de infraestructura hasta su próxima edición.</td>
+      <td>Migración dirigida disponible como tarea puntual si un hito de auditoría lo exige.</td>
+    </tr>
+    <tr>
+      <td>Landing y app comparten dominio</td>
+      <td>El sitio de marketing existe pero aún no está publicado en el dominio raíz; la app ocupa lexcrm.site.</td>
+      <td>Separación landing (raíz) / app (subdominio) planificada como fase comercial siguiente.</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-info">
+    Ninguna de estas limitaciones compromete la operación actual con los primeros clientes de pago; definen el uso natural del capital de una eventual inversión.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+<!-- ═══════════ 11 · ROADMAP ═══════════ -->
+<div class="page">
+  <span class="section-tag">11</span>
+  <h1 class="section-title">Roadmap técnico</h1>
+
+  <table>
+    <tr><th>Iniciativa</th><th>Descripción</th><th>Impacto</th></tr>
+    <tr>
+      <td><strong>Multiusuario y roles</strong></td>
+      <td>Equipos por estudio (socio, asociado, secretaria) con datos compartidos y permisos diferenciados, sobre Clerk Organizations. Es además la base del control de acceso por roles que exige el Art. 14 quinquies en organizaciones.</td>
+      <td>Desbloquea el plan "Firma" (ticket ~2× el plan individual) y estudios medianos como segmento.</td>
+    </tr>
+    <tr>
+      <td><strong>Pasarela de pago recurrente</strong></td>
+      <td>Cobro automático mensual en CLP (Flow / MercadoPago) con activación y suspensión automática del acceso.</td>
+      <td>Elimina el cuello de botella operativo del cobro manual; habilita crecimiento sin fricción.</td>
+    </tr>
+    <tr>
+      <td><strong>Separación landing / app</strong></td>
+      <td>Sitio comercial en el dominio raíz, aplicación en subdominio, con captura automática de solicitudes de acceso ya construida.</td>
+      <td>Embudo de adquisición estándar de SaaS.</td>
+    </tr>
+    <tr>
+      <td><strong>Certificación Ley 21.719</strong></td>
+      <td>Modelo de prevención de infracciones certificable ante la Agencia de Protección de Datos (Arts. 49–53).</td>
+      <td>Atenuante legal de responsabilidad (Art. 36 N°5) y argumento comercial fuerte ante estudios que litigan en áreas sensibles — en un mercado donde la demanda por proveedores certificados se activará con la vigencia plena de la ley.</td>
+    </tr>
+    <tr>
+      <td><strong>Hosting regional</strong></td>
+      <td>Evaluación de réplica o residencia de datos en región con nivel adecuado de protección.</td>
+      <td>Diferenciador para estudios grandes con políticas estrictas de residencia de datos.</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-tip" style="margin-top: 8mm;">
+    <strong>Síntesis:</strong> LexCRM combina un stack moderno de costo marginal casi nulo, cumplimiento regulatorio construido en el producto antes de que la ley lo exija, y un roadmap donde cada ítem desbloquea directamente ingresos (multiusuario, cobro automático) o defensa regulatoria (certificación). La ventana de oportunidad es la vigencia plena de la Ley 21.719 en diciembre de 2026.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Dossier Técnico · Confidencial</span></div>
+</div>
+
+</body>
+</html>
