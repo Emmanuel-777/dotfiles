@@ -48,9 +48,15 @@ export default clerkMiddleware(async (auth, req) => {
           console.error('Error notificando solicitud de acceso:', e)
         }
 
-        // TODO: cuando se separe el dominio (landing en la raíz, CRM en un
-        // subdominio), volver a redirigir a la landing real en vez de esta
-        // página interna: `${LANDING_URL}/?motivo=no-autorizado&email=...`
+        // Con LANDING_URL definida (dominio separado: landing en la raíz,
+        // CRM en subdominio), el visitante no autorizado va a la landing con
+        // su banner de "cuenta pendiente de activación". Sin la variable,
+        // fallback a la página interna — evita loops mientras landing y CRM
+        // compartan dominio.
+        const landingUrl = process.env.LANDING_URL
+        if (landingUrl) {
+          return NextResponse.redirect(`${landingUrl}/?motivo=no-autorizado&email=${encodeURIComponent(email)}`)
+        }
         return NextResponse.redirect(new URL('/no-autorizado', req.url))
       }
     }

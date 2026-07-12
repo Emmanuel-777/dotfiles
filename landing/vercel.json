@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    { "source": "/dashboard", "destination": "https://app.lexcrm.site/dashboard", "permanent": true },
+    { "source": "/sign-in", "destination": "https://app.lexcrm.site/sign-in", "permanent": true },
+    { "source": "/sign-up", "destination": "https://app.lexcrm.site/sign-up", "permanent": true },
+    { "source": "/perfil", "destination": "https://app.lexcrm.site/perfil", "permanent": true },
+    { "source": "/clientes/:path*", "destination": "https://app.lexcrm.site/clientes/:path*", "permanent": true },
+    { "source": "/causas/:path*", "destination": "https://app.lexcrm.site/causas/:path*", "permanent": true },
+    { "source": "/citas/:path*", "destination": "https://app.lexcrm.site/citas/:path*", "permanent": true },
+    { "source": "/tareas/:path*", "destination": "https://app.lexcrm.site/tareas/:path*", "permanent": true },
+    { "source": "/agenda/:path*", "destination": "https://app.lexcrm.site/agenda/:path*", "permanent": true },
+    { "source": "/honorarios/:path*", "destination": "https://app.lexcrm.site/honorarios/:path*", "permanent": true },
+    { "source": "/documentos/:path*", "destination": "https://app.lexcrm.site/documentos/:path*", "permanent": true },
+    { "source": "/embudo/:path*", "destination": "https://app.lexcrm.site/embudo/:path*", "permanent": true }
+  ]
+}

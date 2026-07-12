@@ -148,7 +148,7 @@
 <!-- ─── HERO ─── -->
 <div class="doc-hero">
   <h1>Política de Privacidad</h1>
-  <p class="meta">Última actualización: junio 2025 · LexCRM</p>
+  <p class="meta">Última actualización: julio 2026 · LexCRM</p>
   <button class="print-btn" onclick="window.print()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
     Imprimir / Guardar PDF
@@ -168,7 +168,10 @@
 
   <h2>2. Marco Legal Aplicable</h2>
   <p>
-    El tratamiento de datos personales se rige por la <strong>Ley N° 19.628 sobre Protección de la Vida Privada</strong> de la República de Chile y sus modificaciones vigentes. Adicionalmente, en la medida en que el Servicio procese datos de personas ubicadas en la Unión Europea, se aplican los principios del Reglamento General de Protección de Datos (RGPD/GDPR).
+    El tratamiento de datos personales se rige por la <strong>Ley N° 19.628 sobre Protección de la Vida Privada</strong> de la República de Chile y sus modificaciones vigentes, y por la <strong>Ley N° 21.719</strong>, que Regula la Protección y el Tratamiento de los Datos Personales y crea la Agencia de Protección de Datos Personales, cuya plena vigencia comienza el 1 de diciembre de 2026. LexCRM ha adoptado de forma <strong>anticipada</strong> las exigencias de la Ley 21.719 aplicables a su rol de <strong>encargado de tratamiento</strong> (artículo 15 bis), según se detalla en esta Política.
+  </p>
+  <p>
+    Adicionalmente, en la medida en que el Servicio procese datos de personas ubicadas en la Unión Europea, se aplican los principios del Reglamento General de Protección de Datos (RGPD/GDPR).
   </p>
 
   <h2>3. Datos que Recopilamos</h2>
@@ -233,14 +236,34 @@
     Las medidas de seguridad implementadas incluyen:
   </p>
   <ul>
-    <li>Autenticación con gestión de identidades de nivel empresarial (Clerk)</li>
+    <li>Autenticación con gestión de identidades de nivel empresarial (Clerk), complementada con una lista de autorización de correos: el acceso al Servicio requiere habilitación expresa, no basta con registrarse</li>
     <li>Transmisión cifrada mediante HTTPS/TLS en todas las comunicaciones</li>
-    <li>Almacenamiento de documentos con acceso privado (no accesibles por URL pública)</li>
     <li>Base de datos alojada en infraestructura con cifrado en reposo</li>
+    <li><strong>Cifrado adicional a nivel de aplicación (AES-256-GCM)</strong> para los campos de mayor sensibilidad: credenciales de portales de terceros registradas en tareas derivadas y datos bancarios del abogado</li>
+    <li><strong>Registro de auditoría</strong> de las operaciones de mayor impacto: exportaciones de datos y eliminaciones de clientes quedan registradas con usuario, acción y fecha (artículo 14 quinquies, Ley 21.719)</li>
+    <li>Almacenamiento de documentos con acceso privado (no accesibles por URL pública)</li>
     <li>Acceso a archivos descargables únicamente previa verificación de identidad en servidor</li>
   </ul>
 
-  <h2>6. Proveedores de Servicios (Subencargados)</h2>
+  <h2>6. Datos Sensibles y de Infracciones Penales</h2>
+  <p>
+    Un sistema de gestión jurídica puede contener <strong>datos sensibles</strong> (artículo 2° letra g, Ley 21.719) y <strong>datos relativos a la comisión y sanción de infracciones penales</strong> (artículos 24 y 25), que revisten carácter reservado. LexCRM incorpora un tratamiento diferenciado para estos últimos:
+  </p>
+  <ul>
+    <li>Las causas de tipo <strong>Penal</strong> quedan <strong>excluidas automáticamente de la exportación masiva</strong> del listado de causas, en cumplimiento de la prohibición de tratamiento masivo del artículo 25. La exclusión opera a nivel de servidor.</li>
+    <li>Cada causa penal admite registrar la <strong>fecha de prescripción de la acción penal</strong>; el sistema alerta proactivamente al abogado con 90 días de anticipación para que evalúe la eliminación de los datos conforme a la ley.</li>
+    <li>El trabajo individual del abogado con sus causas penales no se ve limitado — la restricción aplica exclusivamente al tratamiento masivo.</li>
+  </ul>
+
+  <h2>7. Notificación de Incidentes de Seguridad</h2>
+  <p>
+    En caso de una vulneración de seguridad que ocasione la destrucción, filtración, pérdida o alteración de datos personales, o el acceso no autorizado a ellos, LexCRM notificará al abogado responsable <strong>por la vía más expedita posible y sin dilaciones indebidas</strong>, informando la naturaleza del incidente, los datos potencialmente afectados y las medidas adoptadas (artículo 14 sexies, Ley 21.719).
+  </p>
+  <p>
+    Corresponde al abogado, en su calidad de responsable de los datos de sus clientes, evaluar y efectuar las comunicaciones que procedan a la Agencia de Protección de Datos Personales y a los titulares afectados. LexCRM prestará la colaboración necesaria para ello.
+  </p>
+
+  <h2>8. Proveedores de Servicios (Subencargados)</h2>
   <p>
     Para prestar el Servicio, LexCRM utiliza los siguientes proveedores tecnológicos, con quienes hemos establecido compromisos de confidencialidad y seguridad:
   </p>
@@ -292,7 +315,7 @@
     <p>La transferencia internacional de datos a estos proveedores se realiza bajo cláusulas contractuales estándar y políticas de privacidad aceptadas internacionalmente. Todos los proveedores listados cuentan con certificaciones de seguridad reconocidas (SOC 2, ISO 27001 o equivalentes).</p>
   </div>
 
-  <h2>7. Notificaciones por Correo Electrónico</h2>
+  <h2>9. Notificaciones por Correo Electrónico</h2>
   <p>
     LexCRM envía automáticamente un <strong>resumen diario</strong> al correo del abogado cuando existen ítems pendientes relevantes. Este correo incluye:
   </p>
@@ -306,7 +329,7 @@
     Este correo es operacional (no publicitario) y forma parte esencial del servicio contratado. El abogado puede solicitar la suspensión de estos envíos escribiendo a <a href="mailto:emaferna.contacto@gmail.com">emaferna.contacto@gmail.com</a>.
   </p>
 
-  <h2>8. Conservación de los Datos</h2>
+  <h2>10. Conservación de los Datos</h2>
   <p>
     Los datos se conservan mientras la cuenta del abogado se encuentre activa. En caso de baja del servicio:
   </p>
@@ -316,22 +339,23 @@
     <li>Los archivos almacenados (documentos) se eliminan del almacenamiento en la nube en el mismo plazo</li>
   </ul>
 
-  <h2>9. Derechos del Titular de los Datos</h2>
+  <h2>11. Derechos del Titular de los Datos</h2>
   <p>
     De acuerdo con la Ley N° 19.628 y los principios aplicables de protección de datos, el abogado titular tiene los siguientes derechos respecto de sus datos personales:
   </p>
   <ul>
     <li><strong>Acceso:</strong> Conocer qué datos personales suyos son tratados por LexCRM.</li>
     <li><strong>Rectificación:</strong> Corregir datos inexactos o incompletos.</li>
-    <li><strong>Cancelación / Eliminación:</strong> Solicitar la eliminación de sus datos cuando no sean necesarios para la finalidad del servicio.</li>
+    <li><strong>Cancelación / Supresión:</strong> Solicitar la eliminación de sus datos cuando no sean necesarios para la finalidad del servicio.</li>
     <li><strong>Oposición:</strong> Oponerse al tratamiento de sus datos en determinadas circunstancias.</li>
-    <li><strong>Portabilidad:</strong> Recibir una copia de sus datos en formato estructurado.</li>
+    <li><strong>Portabilidad:</strong> Recibir una copia de sus datos en formato estructurado y de uso común.</li>
+    <li><strong>Bloqueo temporal:</strong> Solicitar la suspensión transitoria del tratamiento mientras se resuelve una solicitud, conforme a la Ley 21.719.</li>
   </ul>
   <p>
     Para ejercer cualquiera de estos derechos, el abogado debe enviar una solicitud escrita a <a href="mailto:emaferna.contacto@gmail.com">emaferna.contacto@gmail.com</a>, identificándose con nombre y correo electrónico registrado. LexCRM responderá en un plazo máximo de <strong>15 días hábiles</strong>.
   </p>
 
-  <h2>10. Responsabilidad del Abogado sobre Datos de sus Clientes</h2>
+  <h2>12. Responsabilidad del Abogado sobre Datos de sus Clientes</h2>
   <p>
     El abogado es el <strong>responsable del tratamiento</strong> de los datos personales de sus propios clientes que ingresa al sistema. LexCRM actúa como encargado de tratamiento en nombre del abogado.
   </p>
@@ -342,9 +366,13 @@
     <li>Contar con las bases legales que legitiman el tratamiento de datos de sus clientes</li>
     <li>Informar a sus clientes, cuando corresponda, sobre el uso de herramientas tecnológicas de gestión</li>
     <li>Cumplir con las obligaciones de confidencialidad propias del ejercicio profesional de la abogacía</li>
+    <li>Atender dentro de los plazos legales las solicitudes de derechos que le formulen sus propios clientes (titulares de los datos)</li>
   </ul>
+  <p>
+    Para facilitar ese cumplimiento, LexCRM provee <strong>herramientas integradas</strong> al abogado: la exportación completa de todos los datos de un cliente en formato estructurado (JSON) con un clic desde su ficha, y la eliminación definitiva de un cliente con borrado en cascada de todos sus registros asociados, quedando ambas operaciones registradas en la auditoría del sistema.
+  </p>
 
-  <h2>11. Uso del Asistente de Inteligencia Artificial</h2>
+  <h2>13. Uso del Asistente de Inteligencia Artificial</h2>
   <p>
     El plan Pro incluye un Asistente IA que genera resúmenes y borradores a partir de los datos de cada causa. Al utilizar esta funcionalidad:
   </p>
@@ -355,17 +383,17 @@
     <li>Se recomienda no incluir información altamente sensible (secretos profesionales, datos de víctimas, etc.) en los campos de notas si se utilizará el Asistente IA</li>
   </ul>
 
-  <h2>12. Cookies y Tecnologías de Seguimiento</h2>
+  <h2>14. Cookies y Tecnologías de Seguimiento</h2>
   <p>
     LexCRM utiliza cookies de sesión estrictamente necesarias para el funcionamiento del servicio (autenticación). No utiliza cookies de seguimiento, publicidad comportamental ni herramientas de analítica de terceros que recopilen datos personales.
   </p>
 
-  <h2>13. Modificaciones a esta Política</h2>
+  <h2>15. Modificaciones a esta Política</h2>
   <p>
     LexCRM se reserva el derecho a modificar esta Política de Privacidad. Cualquier cambio relevante será notificado al abogado por correo electrónico con al menos <strong>15 días de anticipación</strong>. El uso continuado del Servicio tras dicha notificación implicará la aceptación de los cambios.
   </p>
 
-  <h2>14. Contacto</h2>
+  <h2>16. Contacto</h2>
   <p>Para cualquier consulta, solicitud o ejercicio de derechos relacionados con esta Política, puede contactarnos en:</p>
   <div class="info-box">
     <p>
@@ -380,7 +408,7 @@
 
 <!-- ─── FOOTER ─── -->
 <footer>
-  <p>© 2025 LexCRM · Sistema de gestión legal para abogados en Chile · <a href="index.html">Volver al inicio</a></p>
+  <p>© 2026 LexCRM · Sistema de gestión legal para abogados en Chile · <a href="index.html">Volver al inicio</a></p>
 </footer>
 
 </body>
