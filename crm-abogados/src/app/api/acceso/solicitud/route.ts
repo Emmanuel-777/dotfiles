@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       const resend = getResend()
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
-        to: 'emaferna.contacto@gmail.com',
+        to: 'contacto@lexcrm.site',
         subject: `🔔 ${email} quiere acceder a LexCRM`,
         html: buildSolicitudAccesoEmail({ email, intentos }),
       })

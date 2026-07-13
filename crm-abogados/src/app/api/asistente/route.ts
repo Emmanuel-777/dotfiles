@@ -26,7 +26,7 @@ Semáforo en el menú lateral:
 
 Búsqueda global: Ctrl+K en Windows/Linux, Cmd+K en Mac — busca clientes, causas y honorarios.
 
-Si la pregunta es sobre acceso al sistema, facturación del servicio, errores técnicos o configuración, indica que contacte al soporte en emaferna.contacto@gmail.com.`
+Si la pregunta es sobre acceso al sistema, facturación del servicio, errores técnicos o configuración, indica que contacte al soporte en contacto@lexcrm.site.`
 
 interface Mensaje {
   role: 'user' | 'assistant'

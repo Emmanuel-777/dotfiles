@@ -191,7 +191,7 @@ export default function Sidebar({
           <span>WhatsApp</span>
         </a>
         <a
-          href="mailto:emaferna.contacto@gmail.com?subject=Ayuda%20LexCRM"
+          href="mailto:contacto@lexcrm.site?subject=Ayuda%20LexCRM"
           onClick={onClose}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/10 hover:text-white transition-all"
         >

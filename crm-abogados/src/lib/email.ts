@@ -96,7 +96,7 @@ export function buildCitaConfirmationEmail({
     <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
       <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
         LexCRM · Gestión Legal ·
-        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
       </p>
     </div>
   </div>
@@ -187,7 +187,7 @@ export function buildCitaReminderEmail({
     <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;margin-top:16px;">
       <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
         LexCRM · Gestión Legal ·
-        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
       </p>
     </div>
   </div>
@@ -253,7 +253,7 @@ export function buildTareasPendientesEmail({
     <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;margin-top:16px;">
       <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
         LexCRM · Gestión Legal ·
-        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
       </p>
     </div>
   </div>
@@ -331,7 +331,7 @@ export function buildNotificationEmail({
     <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
       <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
         LexCRM · Gestión Legal ·
-        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
       </p>
     </div>
   </div>
@@ -384,7 +384,7 @@ export function buildSolicitudAccesoEmail({
     <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
       <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
         LexCRM · Gestión Legal ·
-        <a href="mailto:emaferna.contacto@gmail.com" style="color:#94a3b8;">emaferna.contacto@gmail.com</a>
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
       </p>
     </div>
   </div>
