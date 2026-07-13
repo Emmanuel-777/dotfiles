@@ -142,7 +142,7 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
               clienteHonorarios.slice(0, 5).map((h) => {
                 const estadoInfo = ESTADOS_HONORARIO[h.estado as keyof typeof ESTADOS_HONORARIO]
                 return (
-                  <div key={h.id} className="flex items-center justify-between px-6 py-3">
+                  <Link key={h.id} href={`/honorarios/${h.id}/editar`} className="flex items-center justify-between px-6 py-3 hover:bg-gray-50 transition-colors">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{h.descripcion}</p>
                       <p className="text-xs text-gray-500">{formatFechaCorta(h.fechaEmision)}</p>
@@ -151,7 +151,7 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                       <p className="text-sm font-semibold text-gray-900">{formatMonto(h.monto)}</p>
                       <span className={`badge ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
                     </div>
-                  </div>
+                  </Link>
                 )
               })
             )}
