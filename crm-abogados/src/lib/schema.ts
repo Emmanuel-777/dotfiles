@@ -58,6 +58,8 @@ export const asesorias = sqliteTable('asesorias', {
   fecha: text('fecha').notNull(),
   tipo: text('tipo').notNull().default('Consulta general'),
   descripcion: text('descripcion').notNull(),
+  archivoUrl: text('archivo_url'),
+  archivoNombre: text('archivo_nombre'),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 })
 

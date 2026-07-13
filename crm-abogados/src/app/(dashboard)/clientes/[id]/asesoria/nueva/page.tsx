@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, NotebookPen } from 'lucide-react'
 import { toast } from 'sonner'
+import AsesoriaArchivo from '@/components/AsesoriaArchivo'
 
 const TIPOS = [
   'Consulta general',
@@ -26,6 +27,7 @@ export default function NuevaAsesoriaPage() {
     tipo: TIPOS[0],
     descripcion: '',
   })
+  const [archivo, setArchivo] = useState<{ url: string; nombre: string } | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }))
@@ -38,7 +40,7 @@ export default function NuevaAsesoriaPage() {
       const res = await fetch('/api/asesorias', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, clienteId }),
+        body: JSON.stringify({ ...form, clienteId, archivoUrl: archivo?.url, archivoNombre: archivo?.nombre }),
       })
       if (!res.ok) throw new Error(await res.text())
       toast.success('Asesoría registrada')
@@ -91,6 +93,8 @@ export default function NuevaAsesoriaPage() {
             placeholder="Ej: Consulta sobre plazo para responder demanda, se orientó al cliente sobre próximos pasos..."
           />
         </div>
+
+        <AsesoriaArchivo onChange={setArchivo} />
 
         <div className="flex gap-3 pt-1">
           <button type="submit" disabled={loading} className="btn-primary">

@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
-  const { fecha, tipo, descripcion, clienteId, causaId } = body
+  const { fecha, tipo, descripcion, clienteId, causaId, archivoUrl, archivoNombre } = body
 
   if (!descripcion || !clienteId) {
     return NextResponse.json({ error: 'Descripción y cliente son requeridos' }, { status: 400 })
@@ -46,6 +46,8 @@ export async function POST(req: NextRequest) {
     fecha: fecha || now,
     tipo: tipo || 'Consulta general',
     descripcion,
+    archivoUrl: archivoUrl || null,
+    archivoNombre: archivoNombre || null,
     createdAt: now,
   })
   const [asesoria] = await db.select().from(asesorias).where(and(eq(asesorias.id, id), eq(asesorias.userId, userId)))

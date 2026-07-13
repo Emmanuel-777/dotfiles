@@ -184,6 +184,8 @@ export async function initDB() {
       fecha TEXT NOT NULL,
       tipo TEXT NOT NULL DEFAULT 'Consulta general',
       descripcion TEXT NOT NULL,
+      archivo_url TEXT,
+      archivo_nombre TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
   ]
@@ -215,6 +217,9 @@ export async function initDB() {
     `ALTER TABLE citas ADD COLUMN recordatorio_cita_enviado INTEGER NOT NULL DEFAULT 0`,
     // Fecha de prescripción para causas penales (Ley 21.719, Arts. 24-25)
     `ALTER TABLE causas ADD COLUMN fecha_prescripcion TEXT`,
+    // Documento adjunto opcional por registro de la Bitácora de Asesoría
+    `ALTER TABLE asesorias ADD COLUMN archivo_url TEXT`,
+    `ALTER TABLE asesorias ADD COLUMN archivo_nombre TEXT`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

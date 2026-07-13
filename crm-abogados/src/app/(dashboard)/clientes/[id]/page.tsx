@@ -225,11 +225,27 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
           ) : (
             clienteAsesorias.map((a) => (
               <div key={a.id} className="px-6 py-3">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="badge bg-blue-50 text-blue-700 text-[10px]">{a.tipo}</span>
-                  <span className="text-xs text-gray-400">{formatFechaCorta(a.fecha)}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="badge bg-blue-50 text-blue-700 text-[10px]">{a.tipo}</span>
+                      <span className="text-xs text-gray-400">{formatFechaCorta(a.fecha)}</span>
+                    </div>
+                    <p className="text-sm text-gray-700 mt-1">{a.descripcion}</p>
+                    {a.archivoUrl && (
+                      <a
+                        href={`/api/asesorias/download?url=${encodeURIComponent(a.archivoUrl)}`}
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                      >
+                        <Download className="h-3 w-3" />
+                        {a.archivoNombre || 'Descargar'}
+                      </a>
+                    )}
+                  </div>
+                  <Link href={`/clientes/${cliente.id}/asesoria/${a.id}/editar`} className="flex-shrink-0 text-xs text-gray-400 hover:text-blue-600">
+                    Editar
+                  </Link>
                 </div>
-                <p className="text-sm text-gray-700 mt-1">{a.descripcion}</p>
               </div>
             ))
           )}
