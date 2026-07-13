@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LexCRM — Manual del Controlador</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #1e293b;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+  :root {
+    --navy-900: #0f1c36;
+    --navy-800: #14254c;
+    --navy-700: #1a3060;
+    --blue-600: #2563eb;
+    --blue-500: #3b82f6;
+    --blue-50: #eff6ff;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-800: #1e293b;
+    --amber-50: #fffbeb;
+    --amber-200: #fde68a;
+    --amber-700: #b45309;
+    --green-50: #f0fdf4;
+    --green-200: #86efac;
+    --green-700: #15803d;
+  }
+
+  .cover {
+    width: 210mm; height: 297mm;
+    background: linear-gradient(155deg, var(--navy-900) 0%, var(--navy-800) 55%, #1c3268 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: white;
+    page-break-after: always;
+    position: relative;
+  }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(96,165,250,.12); border: 1px solid rgba(96,165,250,.3);
+    color: #60a5fa; font-size: 9pt; font-weight: 700;
+    padding: 5px 16px; border-radius: 99px; margin-bottom: 28px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .cover-logo { font-size: 40pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+  .cover-logo .w { color: #ffffff; }
+  .cover-logo .b { color: #60a5fa; }
+  .cover-title { font-size: 22pt; font-weight: 800; margin-top: 30px; margin-bottom: 10px; }
+  .cover-sub { font-size: 12pt; color: rgba(255,255,255,.6); max-width: 420px; line-height: 1.6; }
+  .cover-footer {
+    position: absolute; bottom: 30mm; left: 0; right: 0;
+    text-align: center; font-size: 9pt; color: rgba(255,255,255,.4);
+  }
+  .cover-footer strong { color: rgba(255,255,255,.7); }
+  .cover-confidential {
+    position: absolute; top: 20mm; left: 0; right: 0;
+    text-align: center; font-size: 8pt; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(255,255,255,.35);
+  }
+
+  .toc {
+    width: 210mm; min-height: 297mm; padding: 22mm 20mm;
+    page-break-after: always;
+  }
+  .toc h1 { font-size: 20pt; color: var(--navy-800); margin-bottom: 6mm; }
+  .toc-list { list-style: none; }
+  .toc-list li {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 6px 0; font-size: 11pt; color: var(--slate-800);
+    border-bottom: 1px dotted var(--slate-200);
+  }
+  .toc-list .num { color: var(--blue-600); font-weight: 700; width: 22px; flex-shrink: 0; }
+
+  .page {
+    width: 210mm; min-height: 297mm; padding: 18mm 20mm 22mm;
+    page-break-after: always; position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .section-tag {
+    display: inline-block; font-size: 8pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--blue-600); margin-bottom: 4px;
+  }
+  h1.section-title {
+    font-size: 18pt; color: var(--navy-800); font-weight: 800;
+    margin-bottom: 4mm; padding-bottom: 3mm; border-bottom: 2px solid var(--slate-200);
+  }
+  h2 {
+    font-size: 12.5pt; color: var(--navy-800); font-weight: 700;
+    margin-top: 6mm; margin-bottom: 2.5mm;
+  }
+  h3 {
+    font-size: 11pt; color: var(--navy-700); font-weight: 700;
+    margin-top: 4mm; margin-bottom: 2mm;
+  }
+  p { margin-bottom: 2.5mm; color: var(--slate-600); }
+  ul, ol { margin: 2mm 0 3mm 5mm; color: var(--slate-600); }
+  li { margin-bottom: 1.3mm; }
+  strong { color: var(--slate-800); }
+  code {
+    background: var(--slate-100); color: var(--navy-800);
+    padding: 1px 5px; border-radius: 3px; font-size: 9.5pt; font-family: 'Courier New', monospace;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 9.5pt; }
+  th {
+    background: var(--navy-800); color: white; text-align: left;
+    padding: 5px 8px; font-weight: 700; font-size: 9pt;
+  }
+  td { padding: 5px 8px; border-bottom: 1px solid var(--slate-200); color: var(--slate-600); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--slate-50); }
+
+  .callout {
+    border-radius: 6px; padding: 3mm 4mm; margin: 3mm 0 4mm;
+    font-size: 9.5pt; border-left: 3px solid;
+  }
+  .callout-tip { background: var(--green-50); border-color: var(--green-200); color: var(--green-700); }
+  .callout-warn { background: var(--amber-50); border-color: var(--amber-200); color: var(--amber-700); }
+  .callout-info { background: var(--blue-50); border-color: #93c5fd; color: #1d4ed8; }
+  .callout strong { color: inherit; }
+
+  .footer-mark {
+    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
+    display: flex; justify-content: space-between; font-size: 7.5pt; color: var(--slate-400);
+    border-top: 1px solid var(--slate-200); padding-top: 2mm;
+  }
+  .footer-mark .brand { font-weight: 700; }
+  .footer-mark .brand .w { color: var(--navy-800); } .footer-mark .brand .b { color: var(--blue-600); }
+
+  .check { list-style: none; margin-left: 0; }
+  .check li { padding-left: 22px; position: relative; }
+  .check li::before {
+    content: ''; position: absolute; left: 0; top: 3px; width: 13px; height: 13px;
+    border: 1.5px solid var(--slate-400); border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PORTADA ═══════════ -->
+<div class="cover">
+  <div class="cover-confidential">Uso interno · No entregar al cliente final</div>
+  <div class="cover-badge">Manual operativo</div>
+  <div class="cover-logo"><span class="w">Lex</span><span class="b">CRM</span></div>
+  <div class="cover-title">Manual del Controlador</div>
+  <div class="cover-sub">Guía para el operador de LexCRM: cómo dar de alta a un nuevo cliente según el plan contratado y darle soporte.</div>
+  <div class="cover-footer">Versión 1.0 · Julio 2026<br><strong>lexcrm.site</strong></div>
+</div>
+
+<!-- ═══════════ ÍNDICE ═══════════ -->
+<div class="toc">
+  <h1>Índice</h1>
+  <ul class="toc-list">
+    <li><span class="num">01</span> Los planes vigentes</li>
+    <li><span class="num">02</span> Proceso de alta de un nuevo cliente</li>
+    <li><span class="num">03</span> Cómo el cliente crea sus propios clientes</li>
+    <li><span class="num">04</span> Registro de planes por cliente</li>
+    <li><span class="num">05</span> Cambios de plan y bajas</li>
+    <li><span class="num">06</span> Checklist operativo</li>
+  </ul>
+</div>
+
+<!-- ═══════════ 01 · PLANES ═══════════ -->
+<div class="page">
+  <span class="section-tag">01</span>
+  <h1 class="section-title">Los planes vigentes</h1>
+  <p>Este manual es para <strong>ti</strong>, el operador de LexCRM — no para el abogado cliente. Explica el proceso real, paso a paso, para dar de alta a un nuevo cliente según el plan que contrató.</p>
+
+  <table>
+    <tr><th></th><th>Básico — $25.000/mes</th><th>Pro — $45.000/mes</th></tr>
+    <tr><td>Usuarios</td><td>1</td><td>1</td></tr>
+    <tr><td>Dashboard, alertas, plazos</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Clientes, causas, honorarios</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Agenda, tareas, citas</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Embudo de prospectos</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Asistente IA (resúmenes, borradores)</td><td>❌</td><td>✅</td></tr>
+    <tr><td>Soporte prioritario</td><td>—</td><td>✅</td></tr>
+  </table>
+  <p>Precios y features tal como están publicados hoy en la landing. El plan "Firma" (multiusuario) está oculto hasta que el producto soporte roles/organizaciones.</p>
+
+  <div class="callout callout-warn">
+    <strong>Restricción técnica real:</strong> hoy el sistema NO restringe automáticamente el Asistente IA por plan. LexCRM es una única aplicación multi-tenant: cualquier email en <code>ALLOWED_EMAILS</code> obtiene acceso a todas las funciones, incluida la IA, sin importar el plan pagado. La diferenciación es hoy <strong>comercial, no técnica</strong>. Mientras no se construya el gating (columna <code>plan</code> + chequeo en <code>/api/ai/*</code> y en la UI), debes avisar tú mismo al cliente Básico que la IA no está incluida en su plan, aunque el botón esté visible. No prometas a nadie que el límite ya está aplicado en el código — no lo está.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+<!-- ═══════════ 02 · ALTA DE CLIENTE ═══════════ -->
+<div class="page">
+  <span class="section-tag">02</span>
+  <h1 class="section-title">Proceso de alta de un nuevo cliente</h1>
+
+  <h2>Paso 1 — Llega el contacto</h2>
+  <p>El prospecto escribe por WhatsApp desde la landing (<code>wa.me/56979710838</code>) con un mensaje prellenado que ya indica el plan elegido: <em>"Hola, quiero contratar el plan Básico/Pro de LexCRM"</em>. Si viene del botón de prueba gratis, el mensaje dice <em>"quiero probar LexCRM gratis 7 días"</em> — acceso completo por una semana, con recordatorio manual tuyo para dar de baja si no contrata al terminar.</p>
+
+  <h2>Paso 2 — Verificas el pago</h2>
+  <p>Envías los datos de tu cuenta bancaria y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).</p>
+
+  <h2>Paso 3 — Autorizas su email</h2>
+  <ol>
+    <li>Vercel → proyecto del CRM → <strong>Settings → Environment Variables</strong>.</li>
+    <li>Edita <code>ALLOWED_EMAILS</code> y agrega el correo del cliente, separado por coma de los existentes.</li>
+    <li>Guarda y ejecuta <strong>Redeploy</strong> (Deployments → los tres puntos del último deploy → Redeploy). Sin este paso el cambio no toma efecto.</li>
+  </ol>
+
+  <h2>Paso 4 — Envías las credenciales de entrada</h2>
+  <ul>
+    <li>Enlace: <code>https://app.lexcrm.site</code></li>
+    <li>Instrucción: clic en "Registrarse", usando exactamente el correo autorizado en el paso 3.</li>
+    <li>El Manual de Usuario en PDF (entregable estándar, incluido en todos los planes).</li>
+  </ul>
+
+  <h2>Paso 5 — El cliente completa su perfil</h2>
+  <p>Al primer ingreso, el sistema lo redirige obligatoriamente a <strong>Mi Perfil</strong> hasta que complete sus datos de contacto y cuenta bancaria (para emisión de honorarios). No puede usar el resto del CRM hasta hacerlo — es el comportamiento esperado, no un error.</p>
+
+  <h2>Paso 6 — Queda operativo</h2>
+  <p>Desde ahí el cliente ya puede cargar sus propios clientes y causas.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+<!-- ═══════════ 03 · CREACIÓN DE CLIENTES ═══════════ -->
+<div class="page">
+  <span class="section-tag">03</span>
+  <h1 class="section-title">Cómo el cliente crea sus propios clientes</h1>
+  <p>Para poder darle soporte, necesitas conocer el flujo: <strong>Clientes → Nuevo cliente</strong>.</p>
+
+  <table>
+    <tr><th>Campo</th><th>Detalle</th></tr>
+    <tr><td>Tipo de cliente</td><td>Persona natural / Persona jurídica</td></tr>
+    <tr><td>Nombre o razón social</td><td>Obligatorio</td></tr>
+    <tr><td>RUT</td><td>Obligatorio, formato <code>12.345.678-9</code></td></tr>
+    <tr><td>Email</td><td>Opcional</td></tr>
+    <tr><td>Teléfono fijo / Celular</td><td>Opcional</td></tr>
+    <tr><td>Dirección, Ciudad, Región</td><td>Opcional</td></tr>
+    <tr><td>Notas internas</td><td>Libre — preferencias de contacto, observaciones</td></tr>
+  </table>
+
+  <div class="callout callout-tip">
+    No hay límite de cantidad de clientes por cuenta en ningún plan — la diferencia Básico/Pro es solo el Asistente IA, no volumen de datos.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+<!-- ═══════════ 04 · REGISTRO DE PLANES ═══════════ -->
+<div class="page">
+  <span class="section-tag">04</span>
+  <h1 class="section-title">Registro de planes por cliente</h1>
+  <p>El sistema <strong>no guarda</strong> qué plan contrató cada abogado — <code>ALLOWED_EMAILS</code> es solo una lista de correos, sin metadata de plan. Mientras no exista una columna <code>plan</code> en la base de datos, esa información vive únicamente en tu propio registro.</p>
+
+  <h2>Qué llevar</h2>
+  <p>Mantén una planilla simple (Google Sheets sirve) con estas columnas:</p>
+  <ul>
+    <li>Email</li>
+    <li>Nombre del estudio / abogado</li>
+    <li>Plan (Básico / Pro)</li>
+    <li>Fecha de alta</li>
+    <li>Próximo cobro</li>
+    <li>Estado (activo / moroso / dado de baja)</li>
+  </ul>
+  <p>Es tu única fuente de verdad para saber a quién cobrarle este mes y a quién limitar el uso de IA "de palabra" mientras el plan Básico no tiene bloqueo técnico.</p>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+<!-- ═══════════ 05 · CAMBIOS Y BAJAS ═══════════ -->
+<div class="page">
+  <span class="section-tag">05</span>
+  <h1 class="section-title">Cambios de plan y bajas</h1>
+
+  <h2>Upgrade Básico → Pro</h2>
+  <p>No requiere cambio técnico — el cliente ya tenía acceso a la IA de facto. Solo actualiza tu planilla y el nuevo monto de cobro.</p>
+
+  <h2>Downgrade o cancelación</h2>
+  <ol>
+    <li>Vercel → <code>ALLOWED_EMAILS</code> → elimina el correo del cliente.</li>
+    <li>Redeploy.</li>
+    <li>El cliente verá el banner "cuenta pendiente de activación" la próxima vez que intente entrar — no se le borran sus datos, solo pierde acceso. Sus datos quedan en la base de datos hasta que solicite eliminación formal (derecho de supresión, Ley 21.719).</li>
+  </ol>
+
+  <h2>Renovación mensual</h2>
+  <div class="callout callout-warn">
+    No hay cobro automático — no hay pasarela de pago habilitada para Chile todavía. Debes verificar tú mismo, mes a mes, la transferencia de cada cliente activo según tu planilla. El sistema no genera ninguna alerta de pago vencido.
+  </div>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+<!-- ═══════════ 06 · CHECKLIST ═══════════ -->
+<div class="page">
+  <span class="section-tag">06</span>
+  <h1 class="section-title">Checklist operativo</h1>
+  <ul class="check">
+    <li>Prospecto confirma plan y realiza transferencia</li>
+    <li>Email agregado a <code>ALLOWED_EMAILS</code> en Vercel + Redeploy</li>
+    <li>Cliente registrado en <code>app.lexcrm.site</code> con ese correo</li>
+    <li>Cliente completó Mi Perfil</li>
+    <li>Manual de Usuario PDF enviado</li>
+    <li>Registrado en tu planilla de control de planes</li>
+    <li>(Si es Básico) Avisado de que la IA no está incluida en su plan</li>
+  </ul>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+</body>
+</html>
