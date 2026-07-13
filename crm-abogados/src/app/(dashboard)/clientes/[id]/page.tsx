@@ -1,9 +1,9 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, honorarios, tareas } from '@/lib/schema'
-import { eq, and, asc } from 'drizzle-orm'
+import { clientes, causas, honorarios, tareas, asesorias } from '@/lib/schema'
+import { eq, and, asc, desc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download } from 'lucide-react'
+import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download, NotebookPen } from 'lucide-react'
 import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
@@ -15,10 +15,11 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
   const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
   if (!cliente) notFound()
 
-  const [clienteCausas, clienteHonorarios, clienteTareas] = await Promise.all([
+  const [clienteCausas, clienteHonorarios, clienteTareas, clienteAsesorias] = await Promise.all([
     db.select().from(causas).where(and(eq(causas.clienteId, params.id), eq(causas.userId, userId))),
     db.select().from(honorarios).where(and(eq(honorarios.clienteId, params.id), eq(honorarios.userId, userId))),
     db.select().from(tareas).where(and(eq(tareas.clienteId, params.id), eq(tareas.userId, userId))).orderBy(asc(tareas.fechaVencimiento)),
+    db.select().from(asesorias).where(and(eq(asesorias.clienteId, params.id), eq(asesorias.userId, userId))).orderBy(desc(asesorias.fecha)),
   ])
 
   const totalPagado = clienteHonorarios.filter((h) => h.estado === 'PAGADO').reduce((s, h) => s + h.monto, 0)
@@ -203,6 +204,34 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                 </div>
               )
             })
+          )}
+        </div>
+      </div>
+
+      {/* Bitácora de Asesoría */}
+      <div className="card mt-6">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <NotebookPen className="h-4 w-4 text-blue-500" />
+            Bitácora de Asesoría ({clienteAsesorias.length})
+          </h2>
+          <Link href={`/clientes/${cliente.id}/asesoria/nueva`} className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1">
+            <Plus className="h-3 w-3" /> Agregar
+          </Link>
+        </div>
+        <div className="divide-y divide-gray-50">
+          {clienteAsesorias.length === 0 ? (
+            <p className="px-6 py-6 text-center text-sm text-gray-400">Sin registros de asesoría</p>
+          ) : (
+            clienteAsesorias.map((a) => (
+              <div key={a.id} className="px-6 py-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="badge bg-blue-50 text-blue-700 text-[10px]">{a.tipo}</span>
+                  <span className="text-xs text-gray-400">{formatFechaCorta(a.fecha)}</span>
+                </div>
+                <p className="text-sm text-gray-700 mt-1">{a.descripcion}</p>
+              </div>
+            ))
           )}
         </div>
       </div>

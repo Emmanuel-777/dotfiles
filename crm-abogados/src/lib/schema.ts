@@ -50,6 +50,17 @@ export const actuaciones = sqliteTable('actuaciones', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const asesorias = sqliteTable('asesorias', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
+  clienteId: text('cliente_id').notNull().references(() => clientes.id),
+  causaId: text('causa_id').references(() => causas.id),
+  fecha: text('fecha').notNull(),
+  tipo: text('tipo').notNull().default('Consulta general'),
+  descripcion: text('descripcion').notNull(),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export const plazos = sqliteTable('plazos', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().default(''),

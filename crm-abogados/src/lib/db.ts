@@ -176,6 +176,16 @@ export async function initDB() {
       detalle TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS asesorias (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL DEFAULT '',
+      cliente_id TEXT NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+      causa_id TEXT REFERENCES causas(id) ON DELETE SET NULL,
+      fecha TEXT NOT NULL,
+      tipo TEXT NOT NULL DEFAULT 'Consulta general',
+      descripcion TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
   ]
   for (const sql of statements) {
     await client.execute(sql)
