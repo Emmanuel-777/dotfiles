@@ -3,6 +3,7 @@ import { getUserId } from '@/lib/auth'
 import { getAIProvider, AIError } from '@/lib/ai'
 import { loadCausaContext } from '@/lib/ai/causa-context'
 import { RESUMEN_SYSTEM, resumenPrompt } from '@/lib/ai/prompts'
+import { getPlan } from '@/lib/plan'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -10,6 +11,11 @@ export const maxDuration = 60
 export async function POST(req: Request) {
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  const plan = await getPlan()
+  if (plan !== 'pro') {
+    return NextResponse.json({ error: 'El Asistente IA no está incluido en tu plan actual.' }, { status: 403 })
+  }
 
   const { causaId } = await req.json().catch(() => ({}))
   if (!causaId) return NextResponse.json({ error: 'Falta causaId' }, { status: 400 })

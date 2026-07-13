@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale } from 'lucide-react'
+import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock } from 'lucide-react'
 import { toast } from 'sonner'
 
 type Modo = 'resumen' | 'borrador'
@@ -11,9 +11,10 @@ interface AIPanelProps {
   tiposEscrito: string[]
   causaRol?: string
   causaTribunal?: string
+  plan: 'basico' | 'pro'
 }
 
-export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal }: AIPanelProps) {
+export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal, plan }: AIPanelProps) {
   const [modo, setModo] = useState<Modo>('resumen')
   const [loading, setLoading] = useState(false)
   const [resultado, setResultado] = useState('')
@@ -54,6 +55,39 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
     } catch {
       toast.error('No se pudo copiar')
     }
+  }
+
+  if (plan !== 'pro') {
+    return (
+      <div className="card overflow-hidden">
+        <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-4 bg-gradient-to-r from-violet-50 to-blue-50">
+          <div className="rounded-lg bg-gradient-to-br from-violet-500 to-blue-500 p-1.5">
+            <Sparkles className="h-4 w-4 text-white" />
+          </div>
+          <h2 className="text-sm font-semibold text-gray-900">Asistente IA</h2>
+          <span className="ml-auto rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+            Plan Pro
+          </span>
+        </div>
+        <div className="flex flex-col items-center gap-3 px-5 py-8 text-center">
+          <div className="rounded-full bg-gray-100 p-3">
+            <Lock className="h-5 w-5 text-gray-400" />
+          </div>
+          <p className="text-sm text-gray-600">
+            Genera resúmenes ejecutivos y borradores de escritos con IA. Esta función es parte del plan Pro.
+          </p>
+          <a
+            href="https://wa.me/56979710838?text=Hola%2C%20quiero%20actualizar%20mi%20plan%20LexCRM%20a%20Pro%20para%20usar%20el%20Asistente%20IA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary gap-2"
+          >
+            <Sparkles className="h-4 w-4" />
+            Actualizar a Pro
+          </a>
+        </div>
+      </div>
+    )
   }
 
   return (

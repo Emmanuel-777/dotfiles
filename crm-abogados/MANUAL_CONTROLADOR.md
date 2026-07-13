@@ -20,28 +20,29 @@ Este manual es para **ti** (el operador/dueño del negocio LexCRM), no para el a
 
 Precios y features tal como están publicados hoy en `landing/index.html`. El plan "Firma" (multiusuario) está oculto hasta que el producto soporte roles/organizaciones.
 
-### ⚠️ Nota importante — restricción técnica real
+### ✅ Restricción técnica real — `PLAN_PRO_EMAILS`
 
-**Hoy el sistema NO restringe automáticamente el Asistente IA por plan.** LexCRM es una única aplicación multi-tenant: cualquier email que agregues a `ALLOWED_EMAILS` obtiene acceso a **todas** las funciones, incluida la IA, sin importar si el cliente pagó Básico o Pro. La diferenciación de planes es hoy **comercial, no técnica**.
+El Asistente IA (resúmenes y borradores dentro de cada causa) **ya está restringido en el código** por una segunda variable de entorno, con el mismo patrón manual que `ALLOWED_EMAILS`:
 
-Mientras no se implemente un gating real (una columna `plan` en `perfilAbogado` + un chequeo en el endpoint `/api/ai/*` y en el botón de la UI), debes:
-- Avisar tú mismo al cliente Básico que el botón de IA no está incluido en su plan (aunque lo vea disponible), o
-- Aceptar que, en la práctica, todo cliente activo tiene acceso completo hasta que se construya la restricción.
+- `PLAN_PRO_EMAILS` en Vercel → lista de correos (separados por coma) que tienen plan Pro.
+- Cualquier correo en `ALLOWED_EMAILS` que **no** esté en `PLAN_PRO_EMAILS` queda automáticamente en plan Básico: el panel de IA le muestra un candado con botón "Actualizar a Pro" en vez del generador, y los endpoints `/api/ai/resumen` y `/api/ai/borrador` devuelven 403 si igual se intenta llamar directo.
+- Si `PLAN_PRO_EMAILS` no está definida, **todos** los clientes quedan en Básico (sin IA) — es el valor por defecto seguro.
 
-No prometas a un inversionista ni a un cliente que el límite ya está aplicado en el código — no lo está.
+**Importante al desplegar por primera vez:** si ya tienes clientes activos que pagan Pro, agrega sus correos a `PLAN_PRO_EMAILS` en el mismo redeploy en que subas este cambio — de lo contrario perderán acceso a la IA que ya venían usando.
 
 ---
 
 ## 2. Proceso de alta de un nuevo cliente
 
-**Paso 1 — Llega el contacto.** El prospecto escribe por WhatsApp desde la landing (`wa.me/56979710838`) con un mensaje prellenado que ya indica el plan elegido: *"Hola, quiero contratar el plan Básico/Pro de LexCRM"*. Si escribió desde el botón de prueba gratis, el mensaje dice *"quiero probar LexCRM gratis 7 días"* (acceso completo por 7 días, se le indica igual en `ALLOWED_EMAILS`, con recordatorio manual tuyo para dar de baja si no contrata al terminar la semana).
+**Paso 1 — Llega el contacto.** El prospecto escribe por WhatsApp desde la landing (`wa.me/56979710838`) con un mensaje prellenado que ya indica el plan elegido: *"Hola, quiero contratar el plan Básico/Pro de LexCRM"*. Si escribió desde el botón de prueba gratis, el mensaje dice *"quiero probar LexCRM gratis 7 días"* — acceso completo al plan Pro (incluida la IA) durante 7 días, con recordatorio manual tuyo para quitarlo de `PLAN_PRO_EMAILS` (y de `ALLOWED_EMAILS` si no contrata) al terminar la semana.
 
 **Paso 2 — Verificas el pago.** Le envías los datos de tu cuenta bancaria y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).
 
-**Paso 3 — Autorizas su email.**
+**Paso 3 — Autorizas su email y su plan.**
 1. Entra a **Vercel → proyecto del CRM → Settings → Environment Variables**.
 2. Edita `ALLOWED_EMAILS` y agrega el correo del cliente, separado por coma de los que ya existen.
-3. Guarda y ejecuta **Redeploy** (Deployments → los tres puntos del último deploy → Redeploy). Sin este paso el cambio no toma efecto.
+3. Si contrató **Pro** (o es trial gratuito), agrega el mismo correo también a `PLAN_PRO_EMAILS`. Si contrató **Básico**, no lo agregues ahí — queda sin IA automáticamente.
+4. Guarda y ejecuta **Redeploy** (Deployments → los tres puntos del último deploy → Redeploy). Sin este paso los cambios no toman efecto.
 
 **Paso 4 — Le envías las credenciales de entrada.** Comparte con el cliente:
 - El enlace: `https://app.lexcrm.site`
@@ -74,19 +75,26 @@ No hay límite de cantidad de clientes por cuenta en ningún plan — la diferen
 
 ## 4. Llevar registro de qué plan tiene cada cliente
 
-El sistema **no guarda** qué plan contrató cada abogado — esa información vive únicamente en tu cabeza o en tu propia planilla, porque `ALLOWED_EMAILS` es solo una lista de correos sin metadata de plan. Mientras no exista una columna `plan` en la base de datos:
+`PLAN_PRO_EMAILS` te dice quién tiene Pro hoy, pero no guarda historial ni fecha de cobro. Sigue siendo necesaria tu propia planilla:
 
 - Mantén una planilla simple (Google Sheets sirve) con columnas: Email, Nombre estudio, Plan, Fecha de alta, Próximo cobro, Estado (activo/moroso/dado de baja).
-- Es tu única fuente de verdad para saber a quién cobrarle este mes y a quién limitar el uso de IA "de palabra" mientras el plan Básico no tiene bloqueo técnico.
+- Es tu fuente de verdad para saber a quién cobrarle este mes y a quién le corresponde estar en `PLAN_PRO_EMAILS`.
 
 ---
 
 ## 5. Cambios de plan y bajas
 
-**Upgrade Básico → Pro:** no requiere cambio técnico (el cliente ya tenía acceso a la IA de facto) — solo actualiza tu planilla y el nuevo monto de cobro.
+**Upgrade Básico → Pro:**
+1. Vercel → `PLAN_PRO_EMAILS` → agrega el correo del cliente.
+2. Redeploy.
+3. Actualiza tu planilla y el nuevo monto de cobro. El cliente ve el Asistente IA disponible de inmediato, sin que tenga que hacer nada de su lado.
 
-**Downgrade o cancelación:**
-1. Vercel → `ALLOWED_EMAILS` → elimina el correo del cliente.
+**Downgrade Pro → Básico:**
+1. Vercel → `PLAN_PRO_EMAILS` → elimina el correo del cliente (déjalo en `ALLOWED_EMAILS`).
+2. Redeploy. El panel de IA le pasa a mostrar el candado con "Actualizar a Pro" en su próxima visita.
+
+**Cancelación total:**
+1. Vercel → elimina el correo de `ALLOWED_EMAILS` (y de `PLAN_PRO_EMAILS` si correspondía).
 2. Redeploy.
 3. El cliente verá el mensaje de "cuenta pendiente de activación" (banner de la landing) la próxima vez que intente entrar — no se le borran sus datos, solo pierde acceso. Sus datos quedan en la base de datos de LexCRM hasta que se solicite eliminación formal (derecho de supresión, Ley 21.719).
 
@@ -98,8 +106,8 @@ El sistema **no guarda** qué plan contrató cada abogado — esa información v
 
 - [ ] Prospecto confirma plan y realiza transferencia
 - [ ] Email agregado a `ALLOWED_EMAILS` en Vercel + Redeploy
+- [ ] (Si es Pro o trial) Email agregado también a `PLAN_PRO_EMAILS`
 - [ ] Cliente registrado en `app.lexcrm.site` con ese correo
 - [ ] Cliente completó Mi Perfil
 - [ ] Manual de Usuario PDF enviado
 - [ ] Registrado en tu planilla de control de planes
-- [ ] (Si es Básico) Avisado de que la IA no está incluida en su plan

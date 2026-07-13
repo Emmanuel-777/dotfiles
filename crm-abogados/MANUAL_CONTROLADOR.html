@@ -185,8 +185,11 @@
   </table>
   <p>Precios y features tal como están publicados hoy en la landing. El plan "Firma" (multiusuario) está oculto hasta que el producto soporte roles/organizaciones.</p>
 
+  <div class="callout callout-tip">
+    <strong>Restricción técnica real — <code>PLAN_PRO_EMAILS</code>:</strong> el Asistente IA ya está restringido en el código con el mismo patrón manual que <code>ALLOWED_EMAILS</code>. Cualquier correo en <code>ALLOWED_EMAILS</code> que no esté también en <code>PLAN_PRO_EMAILS</code> queda automáticamente en plan Básico: el panel de IA muestra un candado con botón "Actualizar a Pro", y los endpoints <code>/api/ai/resumen</code> y <code>/api/ai/borrador</code> devuelven 403 si se llaman directo. Sin la variable definida, todos quedan en Básico por defecto.
+  </div>
   <div class="callout callout-warn">
-    <strong>Restricción técnica real:</strong> hoy el sistema NO restringe automáticamente el Asistente IA por plan. LexCRM es una única aplicación multi-tenant: cualquier email en <code>ALLOWED_EMAILS</code> obtiene acceso a todas las funciones, incluida la IA, sin importar el plan pagado. La diferenciación es hoy <strong>comercial, no técnica</strong>. Mientras no se construya el gating (columna <code>plan</code> + chequeo en <code>/api/ai/*</code> y en la UI), debes avisar tú mismo al cliente Básico que la IA no está incluida en su plan, aunque el botón esté visible. No prometas a nadie que el límite ya está aplicado en el código — no lo está.
+    <strong>Al desplegar por primera vez:</strong> si ya tienes clientes activos que pagan Pro, agrega sus correos a <code>PLAN_PRO_EMAILS</code> en el mismo redeploy en que subas este cambio — de lo contrario perderán acceso a la IA que ya venían usando.
   </div>
   <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
 </div>
@@ -197,16 +200,17 @@
   <h1 class="section-title">Proceso de alta de un nuevo cliente</h1>
 
   <h2>Paso 1 — Llega el contacto</h2>
-  <p>El prospecto escribe por WhatsApp desde la landing (<code>wa.me/56979710838</code>) con un mensaje prellenado que ya indica el plan elegido: <em>"Hola, quiero contratar el plan Básico/Pro de LexCRM"</em>. Si viene del botón de prueba gratis, el mensaje dice <em>"quiero probar LexCRM gratis 7 días"</em> — acceso completo por una semana, con recordatorio manual tuyo para dar de baja si no contrata al terminar.</p>
+  <p>El prospecto escribe por WhatsApp desde la landing (<code>wa.me/56979710838</code>) con un mensaje prellenado que ya indica el plan elegido: <em>"Hola, quiero contratar el plan Básico/Pro de LexCRM"</em>. Si viene del botón de prueba gratis, el mensaje dice <em>"quiero probar LexCRM gratis 7 días"</em> — acceso completo al plan Pro (incluida la IA) durante una semana, con recordatorio manual tuyo para quitarlo de <code>PLAN_PRO_EMAILS</code> (y de <code>ALLOWED_EMAILS</code> si no contrata) al terminar.</p>
 
   <h2>Paso 2 — Verificas el pago</h2>
   <p>Envías los datos de tu cuenta bancaria y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).</p>
 
-  <h2>Paso 3 — Autorizas su email</h2>
+  <h2>Paso 3 — Autorizas su email y su plan</h2>
   <ol>
     <li>Vercel → proyecto del CRM → <strong>Settings → Environment Variables</strong>.</li>
     <li>Edita <code>ALLOWED_EMAILS</code> y agrega el correo del cliente, separado por coma de los existentes.</li>
-    <li>Guarda y ejecuta <strong>Redeploy</strong> (Deployments → los tres puntos del último deploy → Redeploy). Sin este paso el cambio no toma efecto.</li>
+    <li>Si contrató <strong>Pro</strong> (o es trial gratuito), agrega el mismo correo también a <code>PLAN_PRO_EMAILS</code>. Si contrató <strong>Básico</strong>, no lo agregues ahí — queda sin IA automáticamente.</li>
+    <li>Guarda y ejecuta <strong>Redeploy</strong> (Deployments → los tres puntos del último deploy → Redeploy). Sin este paso los cambios no toman efecto.</li>
   </ol>
 
   <h2>Paso 4 — Envías las credenciales de entrada</h2>
@@ -251,7 +255,7 @@
 <div class="page">
   <span class="section-tag">04</span>
   <h1 class="section-title">Registro de planes por cliente</h1>
-  <p>El sistema <strong>no guarda</strong> qué plan contrató cada abogado — <code>ALLOWED_EMAILS</code> es solo una lista de correos, sin metadata de plan. Mientras no exista una columna <code>plan</code> en la base de datos, esa información vive únicamente en tu propio registro.</p>
+  <p><code>PLAN_PRO_EMAILS</code> te dice quién tiene Pro hoy, pero no guarda historial ni fecha de cobro. Sigue siendo necesaria tu propia planilla.</p>
 
   <h2>Qué llevar</h2>
   <p>Mantén una planilla simple (Google Sheets sirve) con estas columnas:</p>
@@ -263,7 +267,7 @@
     <li>Próximo cobro</li>
     <li>Estado (activo / moroso / dado de baja)</li>
   </ul>
-  <p>Es tu única fuente de verdad para saber a quién cobrarle este mes y a quién limitar el uso de IA "de palabra" mientras el plan Básico no tiene bloqueo técnico.</p>
+  <p>Es tu fuente de verdad para saber a quién cobrarle este mes y a quién le corresponde estar en <code>PLAN_PRO_EMAILS</code>.</p>
   <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
 </div>
 
@@ -273,11 +277,21 @@
   <h1 class="section-title">Cambios de plan y bajas</h1>
 
   <h2>Upgrade Básico → Pro</h2>
-  <p>No requiere cambio técnico — el cliente ya tenía acceso a la IA de facto. Solo actualiza tu planilla y el nuevo monto de cobro.</p>
-
-  <h2>Downgrade o cancelación</h2>
   <ol>
-    <li>Vercel → <code>ALLOWED_EMAILS</code> → elimina el correo del cliente.</li>
+    <li>Vercel → <code>PLAN_PRO_EMAILS</code> → agrega el correo del cliente.</li>
+    <li>Redeploy.</li>
+    <li>Actualiza tu planilla y el nuevo monto de cobro. El cliente ve el Asistente IA disponible de inmediato, sin hacer nada de su lado.</li>
+  </ol>
+
+  <h2>Downgrade Pro → Básico</h2>
+  <ol>
+    <li>Vercel → <code>PLAN_PRO_EMAILS</code> → elimina el correo del cliente (déjalo en <code>ALLOWED_EMAILS</code>).</li>
+    <li>Redeploy. El panel de IA le pasa a mostrar el candado con "Actualizar a Pro" en su próxima visita.</li>
+  </ol>
+
+  <h2>Cancelación total</h2>
+  <ol>
+    <li>Vercel → elimina el correo de <code>ALLOWED_EMAILS</code> (y de <code>PLAN_PRO_EMAILS</code> si correspondía).</li>
     <li>Redeploy.</li>
     <li>El cliente verá el banner "cuenta pendiente de activación" la próxima vez que intente entrar — no se le borran sus datos, solo pierde acceso. Sus datos quedan en la base de datos hasta que solicite eliminación formal (derecho de supresión, Ley 21.719).</li>
   </ol>
@@ -296,11 +310,11 @@
   <ul class="check">
     <li>Prospecto confirma plan y realiza transferencia</li>
     <li>Email agregado a <code>ALLOWED_EMAILS</code> en Vercel + Redeploy</li>
+    <li>(Si es Pro o trial) Email agregado también a <code>PLAN_PRO_EMAILS</code></li>
     <li>Cliente registrado en <code>app.lexcrm.site</code> con ese correo</li>
     <li>Cliente completó Mi Perfil</li>
     <li>Manual de Usuario PDF enviado</li>
     <li>Registrado en tu planilla de control de planes</li>
-    <li>(Si es Básico) Avisado de que la IA no está incluida en su plan</li>
   </ul>
   <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
 </div>

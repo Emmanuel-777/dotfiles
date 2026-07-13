@@ -12,12 +12,14 @@ import CausaDocUpload from '@/components/CausaDocUpload'
 import { TIPOS_ESCRITO } from '@/lib/ai/prompts'
 import { requireUserId } from '@/lib/auth'
 import { parseCredenciales } from '@/lib/crypto'
+import { getPlan } from '@/lib/plan'
 
 export const dynamic = 'force-dynamic'
 
 export default async function CausaDetallePage({ params }: { params: { id: string } }) {
   await initDB()
   const userId = await requireUserId()
+  const plan = await getPlan()
   const [row] = await db
     .select({ causa: causas, cliente: clientes })
     .from(causas)
@@ -280,7 +282,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
 
         {/* Lateral */}
         <div className="space-y-6">
-          <AIPanel causaId={causa.id} tiposEscrito={TIPOS_ESCRITO} causaRol={causa.rol} causaTribunal={causa.tribunal ?? undefined} />
+          <AIPanel causaId={causa.id} tiposEscrito={TIPOS_ESCRITO} causaRol={causa.rol} causaTribunal={causa.tribunal ?? undefined} plan={plan} />
 
           <div className="card">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
