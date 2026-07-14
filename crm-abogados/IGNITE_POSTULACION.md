@@ -40,7 +40,7 @@
 - Semáforo visual de plazos vencidos / críticos
 - Precio en CLP, pago por Mercado Pago (sin Stripe, sin dólares)
 - Funciona en móvil (responsive)
-- 7 días de prueba gratuita
+- 3 días de prueba gratuita
 
 ---
 

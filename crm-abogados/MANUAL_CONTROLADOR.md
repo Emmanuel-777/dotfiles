@@ -34,7 +34,7 @@ El Asistente IA (resúmenes y borradores dentro de cada causa) **ya está restri
 
 ## 2. Proceso de alta de un nuevo cliente
 
-**Paso 1 — Llega el contacto.** El prospecto escribe por WhatsApp desde la landing (`wa.me/56979710838`) con un mensaje prellenado que ya indica el plan elegido: *"Hola, quiero contratar el plan Básico/Pro de LexCRM"*. Si escribió desde el botón de prueba gratis, el mensaje dice *"quiero probar LexCRM gratis 7 días"* — acceso completo al plan Pro (incluida la IA) durante 7 días, con recordatorio manual tuyo para quitarlo de `PLAN_PRO_EMAILS` (y de `ALLOWED_EMAILS` si no contrata) al terminar la semana.
+**Paso 1 — Llega el contacto.** El prospecto escribe por WhatsApp desde la landing (`wa.me/56979710838`) con un mensaje prellenado que ya indica el plan elegido: *"Hola, quiero contratar el plan Básico/Pro de LexCRM"*. Si escribió desde el botón de prueba gratis, el mensaje dice *"quiero probar LexCRM gratis 3 días"* — acceso completo al plan Pro (incluida la IA) durante 3 días, con recordatorio manual tuyo para quitarlo de `PLAN_PRO_EMAILS` (y de `ALLOWED_EMAILS` si no contrata) al terminar el plazo.
 
 **Paso 2 — Verificas el pago.** Le envías el mensaje de bienvenida con el precio del plan y los datos de tu cuenta bancaria (ver Sección 7), y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).
 
