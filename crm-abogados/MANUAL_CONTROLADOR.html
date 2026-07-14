@@ -140,6 +140,18 @@
     content: ''; position: absolute; left: 0; top: 3px; width: 13px; height: 13px;
     border: 1.5px solid var(--slate-400); border-radius: 3px;
   }
+
+  .msg-box {
+    background: #dcf8c6; border: 1px solid #b8e6a0; border-radius: 8px;
+    padding: 4mm 5mm; margin: 3mm 0 5mm; font-size: 9.5pt; color: #1e293b;
+    white-space: pre-wrap; font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .msg-box b { color: #14254c; }
+  .bank-box {
+    background: var(--slate-50); border: 1.5px solid var(--slate-200); border-radius: 8px;
+    padding: 4mm 5mm; margin: 3mm 0 5mm; font-size: 9.5pt; font-family: 'Courier New', monospace;
+    color: var(--navy-800); white-space: pre-wrap;
+  }
 </style>
 </head>
 <body>
@@ -203,7 +215,7 @@
   <p>El prospecto escribe por WhatsApp desde la landing (<code>wa.me/56979710838</code>) con un mensaje prellenado que ya indica el plan elegido: <em>"Hola, quiero contratar el plan Básico/Pro de LexCRM"</em>. Si viene del botón de prueba gratis, el mensaje dice <em>"quiero probar LexCRM gratis 7 días"</em> — acceso completo al plan Pro (incluida la IA) durante una semana, con recordatorio manual tuyo para quitarlo de <code>PLAN_PRO_EMAILS</code> (y de <code>ALLOWED_EMAILS</code> si no contrata) al terminar.</p>
 
   <h2>Paso 2 — Verificas el pago</h2>
-  <p>Envías los datos de tu cuenta bancaria y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).</p>
+  <p>Envías el mensaje de bienvenida con el precio del plan y los datos de tu cuenta bancaria (ver Sección 7) y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).</p>
 
   <h2>Paso 3 — Autorizas su email y su plan</h2>
   <ol>
@@ -316,6 +328,64 @@
     <li>Manual de Usuario PDF enviado</li>
     <li>Registrado en tu planilla de control de planes</li>
   </ul>
+  <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
+</div>
+
+<!-- ═══════════ 07 · MENSAJES WHATSAPP ═══════════ -->
+<div class="page">
+  <span class="section-tag">07</span>
+  <h1 class="section-title">Mensajes de bienvenida por WhatsApp</h1>
+  <p>Envía uno de estos dos mensajes apenas el prospecto confirma qué plan quiere contratar (Paso 2). Ya incluyen el precio y los datos bancarios reales — solo copia, pega y envía.</p>
+
+  <h2>Datos bancarios (para referencia rápida)</h2>
+  <div class="bank-box">Soluciones con IA SpA
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente N° 69584832
+Email: contacto@lexcrm.site</div>
+
+  <h2>Mensaje — Plan Básico ($25.000/mes)</h2>
+  <div class="msg-box">¡Hola! 👋 Gracias por tu interés en LexCRM.
+
+Plan Básico — $25.000/mes
+✅ Dashboard con semáforo de alertas
+✅ Clientes, causas y honorarios
+✅ Agenda, tareas y citas
+✅ Embudo de prospectos
+
+Para activar tu cuenta, realiza la transferencia a:
+
+<b>Soluciones con IA SpA</b>
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente N° 69584832
+Email: contacto@lexcrm.site
+
+Cuando nos envíes el comprobante, activamos tu acceso en minutos y te mandamos el Manual de Usuario para que empieces a trabajar de inmediato. ¿Alguna duda antes de partir?</div>
+
+  <h2>Mensaje — Plan Pro ($45.000/mes)</h2>
+  <div class="msg-box">¡Hola! 👋 Gracias por tu interés en LexCRM.
+
+Plan Pro — $45.000/mes
+✅ Todo lo del plan Básico
+✅ Asistente IA en cada causa
+✅ Generación de resúmenes ejecutivos
+✅ Borradores de escritos automáticos
+✅ Soporte prioritario
+
+Para activar tu cuenta, realiza la transferencia a:
+
+<b>Soluciones con IA SpA</b>
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente N° 69584832
+Email: contacto@lexcrm.site
+
+Cuando nos envíes el comprobante, activamos tu acceso en minutos (incluida la IA) y te mandamos el Manual de Usuario para que empieces a trabajar de inmediato. ¿Alguna duda antes de partir?</div>
+
+  <div class="callout callout-tip">
+    Los asteriscos simples (<code>*texto*</code>) son la sintaxis de negrita de WhatsApp — al pegar el mensaje se va a ver en negrita automáticamente, no hace falta editarlo.
+  </div>
   <div class="footer-mark"><span class="brand"><span class="w">Lex</span><span class="b">CRM</span></span><span>Manual del Controlador · Uso interno</span></div>
 </div>
 

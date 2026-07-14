@@ -36,7 +36,7 @@ El Asistente IA (resúmenes y borradores dentro de cada causa) **ya está restri
 
 **Paso 1 — Llega el contacto.** El prospecto escribe por WhatsApp desde la landing (`wa.me/56979710838`) con un mensaje prellenado que ya indica el plan elegido: *"Hola, quiero contratar el plan Básico/Pro de LexCRM"*. Si escribió desde el botón de prueba gratis, el mensaje dice *"quiero probar LexCRM gratis 7 días"* — acceso completo al plan Pro (incluida la IA) durante 7 días, con recordatorio manual tuyo para quitarlo de `PLAN_PRO_EMAILS` (y de `ALLOWED_EMAILS` si no contrata) al terminar la semana.
 
-**Paso 2 — Verificas el pago.** Le envías los datos de tu cuenta bancaria y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).
+**Paso 2 — Verificas el pago.** Le envías el mensaje de bienvenida con el precio del plan y los datos de tu cuenta bancaria (ver Sección 7), y confirmas la transferencia antes de activar el acceso (salvo trial gratuito).
 
 **Paso 3 — Autorizas su email y su plan.**
 1. Entra a **Vercel → proyecto del CRM → Settings → Environment Variables**.
@@ -111,3 +111,66 @@ No hay límite de cantidad de clientes por cuenta en ningún plan — la diferen
 - [ ] Cliente completó Mi Perfil
 - [ ] Manual de Usuario PDF enviado
 - [ ] Registrado en tu planilla de control de planes
+
+---
+
+## 7. Mensajes de bienvenida por WhatsApp (copiar y pegar)
+
+Envía uno de estos dos mensajes apenas el prospecto confirma qué plan quiere contratar (Paso 2). Ya incluyen el precio y los datos bancarios reales — solo copia, pega y envía.
+
+### Datos bancarios (para referencia rápida)
+
+```
+Soluciones con IA SpA
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente N° 69584832
+Email: contacto@lexcrm.site
+```
+
+### Mensaje — Plan Básico ($25.000/mes)
+
+```
+¡Hola! 👋 Gracias por tu interés en LexCRM.
+
+Plan Básico — $25.000/mes
+✅ Dashboard con semáforo de alertas
+✅ Clientes, causas y honorarios
+✅ Agenda, tareas y citas
+✅ Embudo de prospectos
+
+Para activar tu cuenta, realiza la transferencia a:
+
+*Soluciones con IA SpA*
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente N° 69584832
+Email: contacto@lexcrm.site
+
+Cuando nos envíes el comprobante, activamos tu acceso en minutos y te mandamos el Manual de Usuario para que empieces a trabajar de inmediato. ¿Alguna duda antes de partir?
+```
+
+### Mensaje — Plan Pro ($45.000/mes)
+
+```
+¡Hola! 👋 Gracias por tu interés en LexCRM.
+
+Plan Pro — $45.000/mes
+✅ Todo lo del plan Básico
+✅ Asistente IA en cada causa
+✅ Generación de resúmenes ejecutivos
+✅ Borradores de escritos automáticos
+✅ Soporte prioritario
+
+Para activar tu cuenta, realiza la transferencia a:
+
+*Soluciones con IA SpA*
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente N° 69584832
+Email: contacto@lexcrm.site
+
+Cuando nos envíes el comprobante, activamos tu acceso en minutos (incluida la IA) y te mandamos el Manual de Usuario para que empieces a trabajar de inmediato. ¿Alguna duda antes de partir?
+```
+
+Los asteriscos simples (`*texto*`) son la sintaxis de negrita de WhatsApp — al pegar el mensaje se va a ver en negrita automáticamente, no hace falta editarlo.
