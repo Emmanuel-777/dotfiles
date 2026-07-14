@@ -1,16 +1,27 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { esES } from '@clerk/localizations'
+import PwaRegister from '@/components/PwaRegister'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'LexCRM - Gestión Legal para Abogados',
   description: 'Sistema de gestión de causas, clientes y honorarios para abogados en Chile',
+  manifest: '/manifest.json',
   icons: {
     icon: '/logo.svg',
     shortcut: '/logo.svg',
-    apple: '/logo.svg',
+    apple: '/icons/apple-touch-icon.png',
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'LexCRM',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#14254c',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +31,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       appearance={{ variables: { colorPrimary: '#2563eb' } }}
     >
       <html lang="es">
-        <body>{children}</body>
+        <body>
+          <PwaRegister />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   )
