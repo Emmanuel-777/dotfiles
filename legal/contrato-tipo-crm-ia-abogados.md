@@ -237,7 +237,7 @@ El Proveedor implementará, como mínimo, las siguientes medidas técnicas y org
 
 ## 8. Notificación de Incidentes de Seguridad
 
-8.1. El Proveedor notificará al Cliente, dentro de un plazo máximo de **[24 / 48]** horas desde que tome conocimiento, cualquier Incidente de Seguridad que afecte los Datos Personales tratados, indicando: naturaleza del incidente, categorías y número aproximado de titulares y datos afectados, posibles consecuencias, y medidas adoptadas o propuestas para mitigarlo.
+8.1. El Proveedor notificará al Cliente, dentro de un plazo máximo de **24 horas** desde que tome conocimiento, cualquier Incidente de Seguridad que afecte los Datos Personales tratados, indicando: naturaleza del incidente, categorías y número aproximado de titulares y datos afectados, posibles consecuencias, y medidas adoptadas o propuestas para mitigarlo. Este plazo se fija en consideración a que el Cliente, en su calidad de Responsable de Datos, dispone de un plazo legal de 72 horas para notificar a la Agencia de Protección de Datos Personales, requiriendo tiempo suficiente para evaluar el incidente y efectuar dicha notificación.
 
 8.2. Corresponderá exclusivamente al Cliente, en su calidad de Responsable de Datos, evaluar y efectuar las comunicaciones que correspondan a la Agencia de Protección de Datos Personales y a los titulares afectados, conforme al artículo 14 sexies de la Ley, sin perjuicio de la obligación de colaboración del Proveedor para dichos efectos.
 
