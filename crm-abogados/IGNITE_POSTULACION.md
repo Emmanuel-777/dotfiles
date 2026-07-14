@@ -27,18 +27,20 @@
 - Sidebar responsive (drawer en móvil)
 
 **Planes de precio definidos:**
-| Plan | Precio/mes | Mercado Pago |
-|---|---|---|
-| Básico | $25.000 CLP | https://mpago.la/31NU6Yu |
-| Pro | $45.000 CLP | https://mpago.la/2JDNYEk |
-| Firma | $90.000 CLP | https://mpago.la/1x2v9un |
+| Plan | Precio/mes |
+|---|---|
+| Básico | $25.000 CLP |
+| Pro | $45.000 CLP |
+| Firma | $90.000 CLP |
+
+Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones con IA SpA (Banco BCI) — sin pasarela de pago automatizada por ahora.
 
 **Diferenciadores clave para el pitch:**
 - Único CRM vertical para el mercado legal chileno
 - IA integrada (asistente virtual Claude Haiku)
 - Multi-tenant (cada usuario ve solo sus datos)
 - Semáforo visual de plazos vencidos / críticos
-- Precio en CLP, pago por Mercado Pago (sin Stripe, sin dólares)
+- Precio en CLP, pago por transferencia bancaria directa (sin Stripe, sin dólares, sin comisión de pasarela)
 - Funciona en móvil (responsive)
 - 3 días de prueba gratuita
 
