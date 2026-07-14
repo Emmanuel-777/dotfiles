@@ -65,12 +65,12 @@ El canal más rápido para llegar a los primeros 3-5 clientes. No es "marketing"
 - Mensaje directo (no genérico): mencionar que construiste un CRM específico para abogados chilenos, ofrecer la demo/trial de 7 días sin compromiso.
 - Objetivo semana 1-2: agendar 10 demos, convertir al menos 3-4 en trial activo.
 
-### 4.2. Colegios de Abogados y agrupaciones gremiales regionales
+### 4.2. Oferta de convenio con instituciones y asociaciones
 
-Dado que la sociedad está domiciliada en Concepción, el punto de entrada más natural es el **Colegio de Abogados de Concepción** (y luego otros regionales: Talca, Temuco, Valdivia). Estas instituciones agrupan exactamente al público objetivo y tienen canales de comunicación con sus socios (boletines, charlas, redes).
+En vez de tocar la puerta de una institución puntual, se arma una **oferta de convenio estándar** (una página, reutilizable) que se puede ofrecer a cualquier asociación gremial, cámara o institución que agrupe abogados o estudios jurídicos: condiciones preferenciales de precio para sus socios, a cambio de difusión a su base (boletín, charla corta, redes). Estas instituciones agrupan exactamente al público objetivo y tienen canales de comunicación ya armados con sus miembros.
 
-- Acción: contactar directamente pidiendo espacio para una charla corta o demo gratuita a sus socios ("cómo digitalizar tu estudio jurídico"), o simplemente difusión en su boletín/redes.
-- Esto es más lento de conseguir pero de altísimo apalancamiento: un solo contacto institucional puede abrir la puerta a decenas de abogados de una vez.
+- Acción: redactar la oferta de convenio (descuento por socio, o mes gratuito adicional al trial) y tenerla lista para presentar a cualquier institución con la que surja una oportunidad de contacto, sin apuntar a una en particular por ahora.
+- Es más lento de activar que el contacto directo, pero de alto apalancamiento: un solo convenio institucional puede abrir la puerta a decenas de abogados de una vez.
 
 ### 4.3. Grupos gremiales en WhatsApp y Facebook
 
@@ -116,7 +116,7 @@ Una tasa de conversión trial→pago del 40% es razonable para un producto ya fu
 
 **Semanas 1-2 — Arranque directo**
 - Lista completa de contactos personales + primeros mensajes directos.
-- Primer contacto con el Colegio de Abogados de Concepción.
+- Redactar la oferta de convenio institucional (lista para usar apenas surja una oportunidad de contacto).
 - Publicar 2 posts de LinkedIn.
 - Meta: 3-4 trials activos.
 
@@ -128,7 +128,7 @@ Una tasa de conversión trial→pago del 40% es razonable para un producto ya fu
 
 **Semanas 5-6 — Activar referidos**
 - Lanzar oferta de referido a los clientes ya activos.
-- Segundo contacto gremial (otra región o segunda vuelta con el Colegio).
+- Presentar la oferta de convenio a alguna asociación o institución con la que haya surgido contacto.
 - Primer artículo de contenido SEO en la landing.
 - Meta acumulada: 7-8 clientes pagando.
 
@@ -148,13 +148,13 @@ A partir de la semana 8, con ingresos ya generados, es el momento de evaluar el 
 | Un solo operador (vos) hace producto, ventas y soporte a la vez | Priorizar rigurosamente el canal 4.1 (contacto directo) sobre contenido de largo aliento en las primeras semanas — es el que convierte más rápido por hora invertida. |
 | Cobro 100% manual, sin pasarela automática | Ya hay checklist en el Manual del Controlador; no delegar el seguimiento de pagos a la memoria — usar la planilla de control de planes desde el cliente #1. |
 | Trial de 7 días sin tarjeta puede generar "turistas" que prueban y no convierten | Contacto proactivo antes de que expire el trial (día 5-6), no esperar a que el prospecto decida solo. |
-| Dependencia de un solo canal institucional (Colegio de Abogados) que puede no responder rápido | No bloquear el plan a la respuesta del Colegio — el canal 4.1 avanza en paralelo desde el día 1. |
+| Depender de que alguna institución responda al convenio para activar ese canal | No bloquear el plan a esa respuesta — el canal 4.1 (contacto directo) avanza en paralelo desde el día 1. |
 
 ---
 
 ## 8. Próximos pasos inmediatos (esta semana)
 
 1. Armar la lista de contactos personales (mínimo 20 nombres) y enviar los primeros 5 mensajes hoy.
-2. Redactar el mensaje de contacto al Colegio de Abogados de Concepción.
+2. Redactar la oferta de convenio institucional (una página, reutilizable para cualquier asociación o institución).
 3. Publicar el primer post en LinkedIn presentando LexCRM.
 4. Crear la planilla de seguimiento (contactos, trials, conversión, MRR) si todavía no existe además de la de control de planes.
