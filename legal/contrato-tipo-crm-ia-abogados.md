@@ -8,7 +8,7 @@
 
 En **[ciudad]**, Chile, a **[día]** de **[mes]** de **[año]**, comparecen:
 
-**(a)** **[RAZÓN SOCIAL DEL PROVEEDOR]**, sociedad del giro de desarrollo de software, RUT N° **[RUT]**, representada legalmente por don/doña **[NOMBRE REPRESENTANTE]**, cédula de identidad N° **[RUT representante]**, ambos domiciliados para estos efectos en **[domicilio]**, en adelante indistintamente **"el Proveedor"**; y
+**(a)** **SOLUCIONES CON IA SpA** (nombre de fantasía **LexCRM SpA**), sociedad del giro de desarrollo de software, RUT N° **[RUT — pendiente de asignación por el SII, trámite de Inicio de Actividades en curso]**, representada legalmente por don **EMMANUEL ALEJANDRO FERNÁNDEZ SANDOVAL**, cédula de identidad N° **15.222.189-4**, ambos domiciliados para estos efectos en **O'Higgins N° 630, depto./local 304, comuna de Concepción, Región del Biobío**, en adelante indistintamente **"el Proveedor"**; y
 
 **(b)** **[RAZÓN SOCIAL DEL ESTUDIO JURÍDICO / NOMBRE DEL ABOGADO(A)]**, RUT N° **[RUT]**, representado legalmente por don/doña **[NOMBRE REPRESENTANTE]**, cédula de identidad N° **[RUT representante]**, domiciliado para estos efectos en **[domicilio]**, en adelante indistintamente **"el Cliente"**;
 
@@ -18,7 +18,7 @@ en conjunto **"las Partes"**, quienes exponen que han convenido el presente **Co
 
 ## CLÁUSULA PRIMERA — ANTECEDENTES
 
-1.1. El Proveedor es una empresa dedicada al desarrollo y explotación comercial de una plataforma de gestión de relación con clientes (CRM) con funcionalidades de inteligencia artificial, orientada a estudios jurídicos y profesionales del derecho, denominada **"[NOMBRE DEL PRODUCTO]"** (en adelante, la "**Plataforma**").
+1.1. El Proveedor es una empresa dedicada al desarrollo y explotación comercial de una plataforma de gestión de relación con clientes (CRM) con funcionalidades de inteligencia artificial, orientada a estudios jurídicos y profesionales del derecho, denominada **"LexCRM"** (en adelante, la "**Plataforma**").
 
 1.2. El Cliente es un estudio jurídico o profesional independiente que ejerce la abogacía y requiere contratar los servicios de la Plataforma para la gestión de sus causas, clientes, contrapartes y demás información asociada al ejercicio de su actividad profesional.
 
@@ -155,7 +155,7 @@ Para los efectos de este Contrato, se entenderá por:
 
 14.1. Este Contrato se rige por las leyes de la República de Chile, y en especial por la Ley N° 21.719 en lo relativo al tratamiento de Datos Personales.
 
-14.2. Toda dificultad o controversia que se produzca entre las Partes respecto de la aplicación, interpretación, validez o ejecución de este Contrato, se someterá a **[mediación previa / arbitraje / conocimiento de los tribunales ordinarios de justicia de la ciudad de [ciudad]]**.
+14.2. Toda dificultad o controversia que se produzca entre las Partes respecto de la aplicación, interpretación, validez o ejecución de este Contrato, se someterá a **[mediación previa / arbitraje / conocimiento de los tribunales ordinarios de justicia]**, en la ciudad señalada en la Cláusula Décimo Quinta.
 
 ---
 
@@ -287,7 +287,7 @@ Cuando el Cliente ejerza la abogacía en materia penal y trate a través de la P
 
 ## 16. Contactos de las Partes para Efectos de este Anexo
 
-- **Por el Proveedor:** [nombre / cargo / correo electrónico]
+- **Por el Proveedor:** Emmanuel Alejandro Fernández Sandoval, Gerente General — contacto@lexcrm.site
 - **Por el Cliente:** [nombre / cargo / correo electrónico]
 
 ---
