@@ -3,14 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MessageCircle, Mail, CheckCircle2 } from 'lucide-react'
-
-function formatPhone(celular: string): string {
-  const digits = celular.replace(/\D/g, '')
-  if (digits.startsWith('56')) return digits
-  if (digits.length === 9 && digits.startsWith('9')) return `56${digits}`
-  if (digits.length === 8) return `569${digits}`
-  return digits
-}
+import { formatPhoneWhatsApp } from '@/lib/utils'
 
 export default function ReminderButtons({
   actuacionId,
@@ -54,7 +47,7 @@ export default function ReminderButtons({
   ].filter((l) => l !== undefined).join('\n').trim()
 
   const waUrl = clienteCelular
-    ? `https://wa.me/${formatPhone(clienteCelular)}?text=${encodeURIComponent(mensaje)}`
+    ? `https://wa.me/${formatPhoneWhatsApp(clienteCelular)}?text=${encodeURIComponent(mensaje)}`
     : null
 
   const mailUrl = clienteEmail

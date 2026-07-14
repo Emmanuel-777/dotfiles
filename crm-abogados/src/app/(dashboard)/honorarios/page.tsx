@@ -1,13 +1,52 @@
 import { db, initDB } from '@/lib/db'
-import { honorarios, clientes, causas } from '@/lib/schema'
+import { honorarios, clientes, causas, perfilAbogado } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
-import { Plus, DollarSign, TrendingUp, Pencil } from 'lucide-react'
-import { formatMonto, formatFechaCorta, ESTADOS_HONORARIO } from '@/lib/utils'
+import { Plus, DollarSign, TrendingUp, Pencil, MessageCircle } from 'lucide-react'
+import { formatMonto, formatFechaCorta, formatPhoneWhatsApp, ESTADOS_HONORARIO } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
+import { decrypt, looksEncrypted } from '@/lib/crypto'
 import MonthlyBarChart, { type MonthBucket } from '@/components/MonthlyBarChart'
 
 export const dynamic = 'force-dynamic'
+
+function descifrarSiCorresponde(value: string | null): string | null {
+  if (!value) return value
+  return looksEncrypted(value) ? decrypt(value) : value
+}
+
+function mensajeCobro(params: {
+  clienteNombre: string
+  descripcion: string
+  monto: string
+  perfil: { banco: string | null; tipoCuenta: string | null; numeroCuenta: string | null; titularNombre: string | null; titularRut: string | null } | null
+}): string {
+  const { clienteNombre, descripcion, monto, perfil } = params
+  const lineas = [
+    `Estimado/a ${clienteNombre},`,
+    ``,
+    `Le escribo para recordarle el siguiente honorario pendiente de pago:`,
+    ``,
+    `📌 ${descripcion}`,
+    `💰 Monto: ${monto}`,
+  ]
+
+  const datosCompletos = perfil && perfil.banco && perfil.tipoCuenta && perfil.numeroCuenta && perfil.titularNombre && perfil.titularRut
+  if (datosCompletos) {
+    lineas.push(
+      ``,
+      `Puede realizar la transferencia a:`,
+      perfil!.titularNombre!,
+      `RUT: ${perfil!.titularRut}`,
+      perfil!.banco!,
+      perfil!.tipoCuenta!,
+      `N° de cuenta: ${perfil!.numeroCuenta}`,
+    )
+  }
+
+  lineas.push(``, `Quedo atento a su comprobante. ¡Gracias!`)
+  return lineas.filter((l) => l !== undefined).join('\n')
+}
 
 export default async function HonorariosPage() {
   await initDB()
@@ -19,6 +58,17 @@ export default async function HonorariosPage() {
     .leftJoin(causas, eq(honorarios.causaId, causas.id))
     .where(eq(honorarios.userId, userId))
     .orderBy(desc(honorarios.createdAt))
+
+  const [perfilRow] = await db.select().from(perfilAbogado).where(eq(perfilAbogado.userId, userId))
+  const perfil = perfilRow
+    ? {
+        banco: perfilRow.banco,
+        tipoCuenta: perfilRow.tipoCuenta,
+        numeroCuenta: descifrarSiCorresponde(perfilRow.numeroCuenta),
+        titularNombre: perfilRow.titularNombre,
+        titularRut: descifrarSiCorresponde(perfilRow.titularRut),
+      }
+    : null
 
   const totales = {
     pendiente: rows.filter((r) => r.honorario.estado === 'PENDIENTE' || r.honorario.estado === 'PARCIAL').reduce((s, r) => s + r.honorario.monto, 0),
@@ -119,6 +169,12 @@ export default async function HonorariosPage() {
           <tbody className="divide-y divide-gray-100">
             {rows.map(({ honorario: h, cliente, causa }) => {
               const estadoInfo = ESTADOS_HONORARIO[h.estado as keyof typeof ESTADOS_HONORARIO]
+              const porCobrar = h.estado === 'PENDIENTE' || h.estado === 'PARCIAL'
+              const waUrl = porCobrar && cliente?.celular
+                ? `https://wa.me/${formatPhoneWhatsApp(cliente.celular)}?text=${encodeURIComponent(
+                    mensajeCobro({ clienteNombre: cliente.nombre, descripcion: h.descripcion, monto: formatMonto(h.monto, h.moneda), perfil }),
+                  )}`
+                : null
               return (
                 <tr key={h.id} className="hover:bg-gray-50 transition-colors">
                   <td className="table-cell">
@@ -135,10 +191,24 @@ export default async function HonorariosPage() {
                     <span className={`badge ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
                   </td>
                   <td className="table-cell text-center">
-                    <Link href={`/honorarios/${h.id}/editar`} className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium">
-                      <Pencil className="h-3.5 w-3.5" />
-                      Editar
-                    </Link>
+                    <div className="flex items-center justify-center gap-3">
+                      <Link href={`/honorarios/${h.id}/editar`} className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium">
+                        <Pencil className="h-3.5 w-3.5" />
+                        Editar
+                      </Link>
+                      {waUrl && (
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-green-700 hover:text-green-800 font-medium"
+                          title="Enviar cobro por WhatsApp"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          Cobrar
+                        </a>
+                      )}
+                    </div>
                   </td>
                 </tr>
               )

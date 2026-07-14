@@ -33,6 +33,14 @@ export function validateRut(rut: string): boolean {
   return dv === expected.toString()
 }
 
+export function formatPhoneWhatsApp(celular: string): string {
+  const digits = celular.replace(/\D/g, '')
+  if (digits.startsWith('56')) return digits
+  if (digits.length === 9 && digits.startsWith('9')) return `56${digits}`
+  if (digits.length === 8) return `569${digits}`
+  return digits
+}
+
 export function formatMonto(monto: number, moneda = 'CLP'): string {
   if (moneda === 'CLP') {
     return new Intl.NumberFormat('es-CL', {
