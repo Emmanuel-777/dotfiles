@@ -222,6 +222,31 @@
     }
     .j-chip svg { width: 12px; height: 12px; }
 
+    /* ─── FAQ ─── */
+    .faq { background: var(--slate-50); }
+    .faq-header { margin-bottom: 2.75rem; }
+    .faq-list { max-width: 780px; display: flex; flex-direction: column; gap: .75rem; }
+    .faq-item {
+      background: var(--white); border: 1px solid var(--slate-200); border-radius: .875rem;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      cursor: pointer; list-style: none; padding: 1.15rem 1.4rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      font-weight: 700; color: var(--slate-800); font-size: .92rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary .faq-chevron {
+      flex-shrink: 0; width: 19px; height: 19px; color: var(--slate-400);
+      transition: transform .2s ease, color .2s ease;
+    }
+    .faq-item[open] summary { color: var(--blue-600); }
+    .faq-item[open] summary .faq-chevron { transform: rotate(180deg); color: var(--blue-600); }
+    .faq-answer { padding: 0 1.4rem 1.15rem; color: var(--slate-500); font-size: .86rem; line-height: 1.7; }
+    .faq-footnote { margin-top: 2rem; font-size: .85rem; color: var(--slate-500); }
+    .faq-footnote a { color: var(--blue-600); font-weight: 600; text-decoration: none; }
+    .faq-footnote a:hover { text-decoration: underline; }
+
     /* ─── CTA FINAL ─── */
     .cta-final {
       background: linear-gradient(135deg, var(--navy-800) 0%, #1a3060 100%);
@@ -661,6 +686,103 @@
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-header">
+      <p class="s-label">Preguntas frecuentes</p>
+      <h2 class="s-title">Antes de que preguntes,<br>probablemente ya lo respondimos</h2>
+      <p class="s-sub">Si tienes otra duda que no está aquí, escríbenos por WhatsApp y te respondemos directo.</p>
+    </div>
+
+    <div class="faq-list">
+
+      <details class="faq-item">
+        <summary>
+          ¿Necesito tarjeta de crédito para probarlo?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">No. El trial de 7 días te da acceso completo al plan Pro, incluida la IA, sin pedir tarjeta ni datos de pago. Si no continúas, simplemente no haces nada más.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Cómo se paga y hay contrato de permanencia?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Por transferencia bancaria mensual — sin pasarelas de pago ni comisiones en dólares. No hay contrato de permanencia: puedes darte de baja cuando quieras, el cobro es mes a mes.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Qué diferencia hay entre el plan Básico y el Pro?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Ambos incluyen clientes, causas, honorarios, agenda, tareas y embudo de prospectos, sin límite de cantidad. El plan Pro suma el Asistente IA (resúmenes de causa y borradores de escritos) y soporte prioritario.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Cuántos clientes o causas puedo cargar?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">No hay límite en ningún plan. La única diferencia entre Básico y Pro es el acceso al Asistente IA, no el volumen de datos que puedes registrar.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Mis datos y los de mis clientes están seguros?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Sí. La información se cifra en tránsito y en reposo, con una capa adicional de cifrado propio para credenciales y datos bancarios. Cumplimos la Ley N° 21.719 de Protección de Datos Personales, incluyendo notificación de incidentes de seguridad y los derechos de acceso, rectificación, supresión, oposición, portabilidad y bloqueo.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Puedo migrar mis datos desde Excel u otro sistema?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Hoy la carga se hace directamente en el sistema, cliente por cliente y causa por causa — todavía no hay importación masiva automática. Si manejas un volumen grande, escríbenos y vemos cómo ayudarte con la carga inicial.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Funciona en el celular?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Sí. LexCRM es 100% responsive y además se puede instalar en la pantalla de inicio de tu celular como una app, sin pasar por ninguna tienda de aplicaciones.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Qué pasa si necesito ayuda o tengo un problema?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Nos escribes directo por WhatsApp — no hay tickets ni esperas de días. El plan Pro tiene prioridad en la respuesta.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Sirve para estudios jurídicos con más de un abogado?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Hoy cada cuenta es de un solo usuario — dos abogados del mismo estudio todavía no comparten datos entre sí. El soporte multiusuario con roles está en desarrollo.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>
+          ¿Qué pasa con mis datos si cancelo?
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="faq-answer">Tus datos quedan resguardados y accesibles solo por ti hasta que solicites su eliminación formal (derecho de supresión de la Ley 21.719) — no se borran automáticamente al darte de baja.</p>
+      </details>
+
+    </div>
+
+    <p class="faq-footnote">¿Tu pregunta no está aquí? <a href="https://wa.me/56979710838?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20LexCRM" target="_blank" rel="noopener">Escríbenos por WhatsApp →</a></p>
   </div>
 </section>
 
