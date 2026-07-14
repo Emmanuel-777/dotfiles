@@ -8,7 +8,7 @@
 
 En **[ciudad]**, Chile, a **[día]** de **[mes]** de **[año]**, comparecen:
 
-**(a)** **SOLUCIONES CON IA SpA** (nombre de fantasía **LexCRM SpA**), sociedad del giro de desarrollo de software, RUT N° **[RUT — pendiente de asignación por el SII, trámite de Inicio de Actividades en curso]**, representada legalmente por don **EMMANUEL ALEJANDRO FERNÁNDEZ SANDOVAL**, cédula de identidad N° **15.222.189-4**, ambos domiciliados para estos efectos en **O'Higgins N° 630, depto./local 304, comuna de Concepción, Región del Biobío**, en adelante indistintamente **"el Proveedor"**; y
+**(a)** **SOLUCIONES CON IA SpA** (nombre de fantasía **LexCRM SpA**), sociedad del giro de desarrollo de software, RUT N° **78.464.829-K**, representada legalmente por don **EMMANUEL ALEJANDRO FERNÁNDEZ SANDOVAL**, cédula de identidad N° **15.222.189-4**, ambos domiciliados para estos efectos en **O'Higgins N° 630, depto./local 304, comuna de Concepción, Región del Biobío**, en adelante indistintamente **"el Proveedor"**; y
 
 **(b)** **[RAZÓN SOCIAL DEL ESTUDIO JURÍDICO / NOMBRE DEL ABOGADO(A)]**, RUT N° **[RUT]**, representado legalmente por don/doña **[NOMBRE REPRESENTANTE]**, cédula de identidad N° **[RUT representante]**, domiciliado para estos efectos en **[domicilio]**, en adelante indistintamente **"el Cliente"**;
 
