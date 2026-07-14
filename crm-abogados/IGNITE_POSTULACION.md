@@ -42,7 +42,7 @@ Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones con 
 - Semáforo visual de plazos vencidos / críticos
 - Precio en CLP, pago por transferencia bancaria directa (sin Stripe, sin dólares, sin comisión de pasarela)
 - Funciona en móvil (responsive)
-- 3 días de prueba gratuita
+- 7 días de prueba gratuita
 
 ---
 
