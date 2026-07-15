@@ -1,7 +1,7 @@
 # LexCRM — Manual de Usuario
 ## Guía para abogados
 
-> Versión 2.0 · Julio 2026 · Sistema de gestión legal para abogados en Chile
+> Versión 2.1 · Julio 2026 · Sistema de gestión legal para abogados en Chile
 >
 > **Nota:** este archivo es la referencia de texto rápida. El documento oficial para entregar a clientes es `MANUAL_USUARIO.pdf` (diseñado para A4), generado a partir de `MANUAL_USUARIO.html`.
 
@@ -30,8 +30,10 @@ Módulos: Dashboard, Clientes, Causas, Honorarios, Citas, Agenda y Plazos, Docum
 La primera vez, el sistema exige completar el perfil antes de dejarte usar el resto:
 
 - Correo electrónico de contacto
-- WhatsApp (recibes ahí los recordatorios de tareas pendientes)
+- WhatsApp de contacto
 - Banco, tipo de cuenta, número de cuenta, nombre y RUT del titular
+
+Los recordatorios automáticos de tareas, plazos y citas te llegan por **correo electrónico**, al mismo correo con el que accedes al sistema.
 
 Estos datos son para que te lleguen los pagos que correspondan por citas u otros conceptos. El número de cuenta y el RUT se guardan **cifrados**.
 
@@ -63,6 +65,8 @@ Menú: Dashboard, Embudo, Clientes, Causas, Tareas, Citas, Agenda y Plazos, Docu
 **Buscar:** barra superior o `Ctrl+K` / `Cmd+K`, por nombre, RUT o email.
 
 **Eliminar:** desde Editar cliente → Eliminar cliente. Borra también todas sus causas, tareas, documentos, plazos y honorarios asociados — irreversible.
+
+**Bitácora de Asesoría:** dentro de la ficha de cada cliente, un registro de las sesiones de asesoría que le das (independiente de sus causas). Cada entrada tiene fecha, tipo de consulta, notas y un documento adjunto opcional. Se puede editar o eliminar en cualquier momento desde "Editar" en la propia entrada.
 
 ---
 
@@ -96,6 +100,8 @@ No limita el trabajo normal con la causa — solo restringe descargas masivas.
 
 **Marcar pagado:** entra al honorario → cambia estado → fecha de pago → guardar.
 
+**Cobrar por WhatsApp:** en un honorario Pendiente o Parcial con el cliente con celular registrado, aparece un link "Cobrar" que abre WhatsApp con un mensaje prellenado — incluye el monto y, si ya completaste tus datos bancarios en Mi Perfil, también los datos de transferencia.
+
 ---
 
 ## Citas
@@ -128,9 +134,13 @@ Listado central con acceso directo a la causa y descarga.
 
 ## Tareas
 
-**Agregar:** título, descripción, fecha límite, prioridad (Baja/Media/Alta/Urgente), cliente o causa.
+**Agregar:** título, descripción, fecha y hora límite, prioridad (Baja/Media/Alta/Urgente), cliente o causa.
 
 **Derivar a tercero:** casilla "Derivar a tercero" → nombre/correo del tercero + credenciales de portal opcionales (sistema/usuario/contraseña) — se guardan **cifradas**.
+
+**Editar:** desde el ícono de lápiz junto a cada tarea, puedes modificar título, descripción, prioridad, estado y la fecha/hora límite o de compromiso.
+
+**Gestiones:** en la misma pantalla de edición puedes ir agregando un historial de seguimiento de la tarea (ej. "llamé al cliente, quedó de enviar el documento el viernes") sin perder ni sobrescribir la tarea original.
 
 ---
 
@@ -145,6 +155,8 @@ Mover entre etapas con flechas en el tablero. Al ganar, botón "Convertir a clie
 ---
 
 ## Asistente de Inteligencia Artificial
+
+> Disponible solo en el **plan Pro**. Si tu cuenta es plan Básico, el panel se muestra bloqueado con la opción de actualizar de plan.
 
 Dentro de cada causa, panel lateral derecho:
 
@@ -183,7 +195,7 @@ Dentro de cada causa, panel lateral derecho:
 
 ## Preguntas frecuentes
 
-**¿Celular?** Sí, cualquier navegador móvil, sin app nativa.
+**¿Celular?** Sí, funciona en cualquier navegador móvil. Además puedes instalarlo en la pantalla de inicio de tu celular (Chrome → "Instalar app" o "Agregar a pantalla de inicio") para abrirlo como una app, sin pasar por ninguna tienda de aplicaciones.
 
 **¿Olvidé mi contraseña?** "¿Olvidaste tu contraseña?" en login → correo de recuperación.
 
