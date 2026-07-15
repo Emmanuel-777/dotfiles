@@ -10,7 +10,7 @@ import {
 } from '@/lib/utils'
 import Link from 'next/link'
 import { eq, asc, desc } from 'drizzle-orm'
-import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock, Plus } from 'lucide-react'
+import { ListTodo, UserCheck, KeyRound, AlertTriangle, CheckCircle2, Clock, Plus, Pencil } from 'lucide-react'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import { requireUserId } from '@/lib/auth'
 import { parseCredenciales } from '@/lib/crypto'
@@ -166,7 +166,16 @@ export default async function TareasPage() {
 
                     {/* Derecha */}
                     <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                      <TareaEstadoSelect tareaId={tarea.id} estadoActual={tarea.estado} />
+                      <div className="flex items-center gap-2">
+                        <TareaEstadoSelect tareaId={tarea.id} estadoActual={tarea.estado} />
+                        <Link
+                          href={`/tareas/${tarea.id}/editar`}
+                          className="text-gray-400 hover:text-blue-600"
+                          title="Editar tarea y ver gestiones"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Link>
+                      </div>
 
                       {tarea.fechaVencimiento ? (
                         <div className={`text-right ${clases?.texto ?? 'text-gray-500'}`}>

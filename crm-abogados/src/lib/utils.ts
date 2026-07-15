@@ -62,7 +62,15 @@ export function formatFecha(date: Date | string, fmt = "d 'de' MMMM, yyyy"): str
 
 export function formatFechaCorta(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date
-  return format(d, 'dd/MM/yyyy')
+  const tieneHora = d.getHours() !== 0 || d.getMinutes() !== 0
+  return format(d, tieneHora ? "dd/MM/yyyy HH:mm 'hrs'" : 'dd/MM/yyyy')
+}
+
+/** Formatea una fecha ISO al valor esperado por <input type="datetime-local"> (hora local, sin zona). */
+export function toDatetimeLocalValue(date: string): string {
+  const d = new Date(date)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
 export function formatFechaRelativa(date: Date | string): string {

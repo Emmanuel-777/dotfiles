@@ -124,6 +124,15 @@ export const tareas = sqliteTable('tareas', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const gestionesTarea = sqliteTable('gestiones_tarea', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
+  tareaId: text('tarea_id').notNull().references(() => tareas.id),
+  fecha: text('fecha').notNull(),
+  descripcion: text('descripcion').notNull(),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export const citas = sqliteTable('citas', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().default(''),

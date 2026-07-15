@@ -176,6 +176,14 @@ export async function initDB() {
       detalle TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS gestiones_tarea (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL DEFAULT '',
+      tarea_id TEXT NOT NULL REFERENCES tareas(id) ON DELETE CASCADE,
+      fecha TEXT NOT NULL,
+      descripcion TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS asesorias (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL DEFAULT '',

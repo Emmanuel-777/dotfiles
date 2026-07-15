@@ -99,8 +99,8 @@ export default function NuevaTareaPage({ params }: { params: { id: string } }) {
           </div>
 
           <div>
-            <label className="label">Fecha límite</label>
-            <input name="fechaVencimiento" type="date" value={form.fechaVencimiento} onChange={handleChange} className="input" />
+            <label className="label">Fecha y hora límite</label>
+            <input name="fechaVencimiento" type="datetime-local" value={form.fechaVencimiento} onChange={handleChange} className="input" />
           </div>
 
           <div className="col-span-2">
