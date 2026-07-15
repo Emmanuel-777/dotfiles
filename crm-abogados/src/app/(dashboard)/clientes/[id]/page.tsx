@@ -4,7 +4,7 @@ import { eq, and, asc, desc } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download, NotebookPen } from 'lucide-react'
-import { formatMonto, formatFechaCorta, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES } from '@/lib/utils'
+import { formatMonto, formatFechaCorta, formatFechaHoraChile, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -195,7 +195,7 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                         <span className={`flex items-center gap-1 ${clases?.texto ?? ''}`}>
                           {urgencia === 'roja' && <AlertTriangle className="h-3 w-3" />}
                           {urgencia === 'amarilla' && <Clock className="h-3 w-3" />}
-                          {formatFechaCorta(t.fechaVencimiento)}
+                          {formatFechaHoraChile(t.fechaVencimiento)}
                         </span>
                       )}
                     </div>

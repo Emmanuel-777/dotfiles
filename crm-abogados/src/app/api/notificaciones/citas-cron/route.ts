@@ -2,19 +2,10 @@ import { db, initDB } from '@/lib/db'
 import { citas, clientes, prospectos } from '@/lib/schema'
 import { eq, and, or } from 'drizzle-orm'
 import { getResend, buildCitaReminderEmail } from '@/lib/email'
+import { hoyChile, sumarDiasISO } from '@/lib/utils'
 import { clerkClient } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
-
-function addDays(dateStr: string, days: number): string {
-  const d = new Date(dateStr + 'T00:00:00Z')
-  d.setUTCDate(d.getUTCDate() + days)
-  return d.toISOString().split('T')[0]
-}
-
-function chileToday(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(new Date())
-}
 
 export async function GET(request: Request) {
   const auth = request.headers.get('authorization')
@@ -24,8 +15,8 @@ export async function GET(request: Request) {
 
   await initDB()
 
-  const hoy = chileToday()
-  const mañana = addDays(hoy, 1)
+  const hoy = hoyChile()
+  const mañana = sumarDiasISO(hoy, 1)
 
   // Citas de mañana que aún no recibieron recordatorio nocturno
   const pendientes = await db

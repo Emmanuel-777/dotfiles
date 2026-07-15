@@ -4,7 +4,7 @@ import { eq, desc, asc, and } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, FileText, DollarSign, Scale, Plus, Clock, CheckCircle, AlertTriangle, User, ListTodo, UserCheck, KeyRound, Bell, Download } from 'lucide-react'
-import { formatFechaCorta, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
+import { formatFechaCorta, formatFechaHoraChile, formatMonto, ESTADOS_CAUSA, ESTADOS_PLAZO, ESTADOS_HONORARIO, PRIORIDADES_TAREA, estaVencido, esCritico } from '@/lib/utils'
 import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import ReminderButtons from '@/components/ReminderButtons'
 import AIPanel from '@/components/AIPanel'
@@ -209,7 +209,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                           {tarea.fechaVencimiento && (
                             <p className={`text-xs font-medium ${vencida && tarea.estado === 'PENDIENTE' ? 'text-red-600' : critica ? 'text-amber-600' : 'text-gray-500'}`}>
                               {vencida && <AlertTriangle className="h-3 w-3 inline mr-0.5" />}
-                              {formatFechaCorta(tarea.fechaVencimiento)}
+                              {formatFechaHoraChile(tarea.fechaVencimiento)}
                             </p>
                           )}
                         </div>

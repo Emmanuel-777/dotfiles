@@ -1,9 +1,9 @@
 import { db, initDB } from '@/lib/db'
 import { clientes, causas, plazos, honorarios, tareas, actuaciones } from '@/lib/schema'
 import {
-  formatMonto, formatFechaCorta, formatFechaRelativa,
+  formatMonto, formatFechaCorta, formatFechaHoraChile, formatFechaRelativa,
   estaVencido, esCritico, esCriticoPrescripcion, ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA,
-  urgenciaTarea, URGENCIA_CLASES,
+  urgenciaTarea, URGENCIA_CLASES, hoyChile,
 } from '@/lib/utils'
 import Link from 'next/link'
 import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck, Bell, UserPlus, FilePlus, CalendarPlus, Receipt, ArrowRight } from 'lucide-react'
@@ -29,7 +29,9 @@ export default async function DashboardPage() {
 
   const hoy = new Date().toISOString()
 
-  const hoyFecha = hoy.split('T')[0]
+  // Hoy real de Chile (no el del servidor, que corre en UTC) — usado para
+  // comparaciones día-a-día como los recordatorios de compromiso.
+  const hoyFecha = hoyChile()
 
   const [
     totalClientesRows,
@@ -373,7 +375,7 @@ export default async function DashboardPage() {
                       <span className={`badge ${estadoT?.color}`}>{estadoT?.label}</span>
                       {tarea.fechaVencimiento && (
                         <p className={`text-xs mt-1 font-medium ${clases?.texto ?? 'text-gray-400'}`}>
-                          {formatFechaCorta(tarea.fechaVencimiento)}
+                          {formatFechaHoraChile(tarea.fechaVencimiento)}
                         </p>
                       )}
                     </div>

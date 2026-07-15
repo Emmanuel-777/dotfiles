@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Scale } from 'lucide-react'
 import {
-  formatMonto, formatFechaCorta,
+  formatMonto, formatFechaCorta, formatFechaHoraChile,
   ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA, ESTADOS_HONORARIO,
 } from '@/lib/utils'
 import PrintButton from '@/components/PrintButton'
@@ -240,7 +240,7 @@ export default async function ReporteClientePage({ params }: { params: { id: str
                                 <div className="text-right flex-shrink-0">
                                   <span className={`badge text-[10px] ${estadoT?.color}`}>{estadoT?.label}</span>
                                   {tarea.fechaVencimiento && (
-                                    <p className="text-xs text-gray-500 mt-0.5">{formatFechaCorta(tarea.fechaVencimiento)}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{formatFechaHoraChile(tarea.fechaVencimiento)}</p>
                                   )}
                                 </div>
                               </div>

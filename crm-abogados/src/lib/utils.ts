@@ -1,7 +1,27 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { format, formatDistanceToNow, isPast, isToday, isTomorrow, addDays } from 'date-fns'
+import { format, formatDistanceToNow, isPast, addDays } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { formatInTimeZone } from 'date-fns-tz'
+
+const CHILE_TZ = 'America/Santiago'
+
+/**
+ * "Hoy" en Chile como YYYY-MM-DD. El servidor (Vercel) corre en UTC, así que
+ * `new Date()` solo no basta — de noche en Chile, UTC ya está en el día
+ * siguiente y todo lo que dependa de "hoy" (semáforos, "Hoy"/"Mañana",
+ * vencimientos) se adelanta varias horas respecto a la hora real de Chile.
+ */
+export function hoyChile(): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: CHILE_TZ }).format(new Date())
+}
+
+/** Suma/resta días a una fecha YYYY-MM-DD sin ambigüedad de zona horaria. */
+export function sumarDiasISO(fechaISO: string, dias: number): string {
+  const d = new Date(fechaISO + 'T00:00:00Z')
+  d.setUTCDate(d.getUTCDate() + dias)
+  return d.toISOString().slice(0, 10)
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -62,8 +82,22 @@ export function formatFecha(date: Date | string, fmt = "d 'de' MMMM, yyyy"): str
 
 export function formatFechaCorta(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date
-  const tieneHora = d.getHours() !== 0 || d.getMinutes() !== 0
-  return format(d, tieneHora ? "dd/MM/yyyy HH:mm 'hrs'" : 'dd/MM/yyyy')
+  return format(d, 'dd/MM/yyyy')
+}
+
+/**
+ * Fecha y hora en zona horaria de Chile, para campos que sí representan un
+ * instante real (vencimiento de tarea, gestiones) — a diferencia de los
+ * campos "solo fecha" (plazos, honorarios, etc.), que se muestran con
+ * formatFechaCorta sin conversión de zona horaria porque son fechas
+ * naive, no instantes reales.
+ */
+export function formatFechaHoraChile(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date
+  const hora = formatInTimeZone(d, CHILE_TZ, 'HH:mm')
+  return hora === '00:00'
+    ? formatInTimeZone(d, CHILE_TZ, 'dd/MM/yyyy')
+    : formatInTimeZone(d, CHILE_TZ, 'dd/MM/yyyy HH:mm') + ' hrs'
 }
 
 /** Formatea una fecha ISO al valor esperado por <input type="datetime-local"> (hora local, sin zona). */
@@ -75,14 +109,16 @@ export function toDatetimeLocalValue(date: string): string {
 
 export function formatFechaRelativa(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date
-  if (isToday(d)) return 'Hoy'
-  if (isTomorrow(d)) return 'Mañana'
+  const dISO = d.toISOString().slice(0, 10)
+  const hoy = hoyChile()
+  if (dISO === hoy) return 'Hoy'
+  if (dISO === sumarDiasISO(hoy, 1)) return 'Mañana'
   return formatDistanceToNow(d, { addSuffix: true, locale: es })
 }
 
 export function estaVencido(date: Date | string): boolean {
   const d = typeof date === 'string' ? new Date(date) : date
-  return isPast(d) && !isToday(d)
+  return d.toISOString().slice(0, 10) < hoyChile()
 }
 
 export function esCritico(date: Date | string): boolean {
@@ -158,7 +194,7 @@ export type UrgenciaTarea = 'roja' | 'amarilla' | 'verde' | null
 export function urgenciaTarea(fecha: string | null | undefined): UrgenciaTarea {
   if (!fecha) return null
   const d = new Date(fecha)
-  if (isToday(d) || isPast(d)) return 'roja'
+  if (d.toISOString().slice(0, 10) <= hoyChile()) return 'roja'
   if (d <= addDays(new Date(), 2)) return 'amarilla'
   return 'verde'
 }

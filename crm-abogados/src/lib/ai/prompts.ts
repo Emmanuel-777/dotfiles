@@ -1,5 +1,5 @@
 import type { Causa, Cliente, Actuacion, Plazo, Tarea } from '@/lib/schema'
-import { formatFechaCorta } from '@/lib/utils'
+import { formatFechaCorta, formatFechaHoraChile } from '@/lib/utils'
 
 interface CausaContextData {
   causa: Causa
@@ -41,7 +41,7 @@ export function buildCausaContext({ causa, cliente, actuaciones, plazos, tareas 
   if (tareasAct.length) {
     lineas.push('\nTAREAS ACTIVAS:')
     for (const t of tareasAct) {
-      lineas.push(`- [${t.prioridad}] ${t.titulo}${t.fechaVencimiento ? ` (vence ${formatFechaCorta(t.fechaVencimiento)})` : ''}`)
+      lineas.push(`- [${t.prioridad}] ${t.titulo}${t.fechaVencimiento ? ` (vence ${formatFechaHoraChile(t.fechaVencimiento)})` : ''}`)
     }
   }
 

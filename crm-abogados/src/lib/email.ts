@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { formatFechaCorta } from './utils'
+import { formatFechaHoraChile } from './utils'
 
 export function getResend() {
   return new Resend(process.env.RESEND_API_KEY)
@@ -212,7 +212,7 @@ export function buildTareasPendientesEmail({
   const tareasHtml = tareas.slice(0, 10).map(t => `
     <div style="padding:12px 18px;border-bottom:1px solid #e2e8f0;">
       <div style="font-weight:600;font-size:14px;color:#1e293b;">${t.titulo}</div>
-      ${t.fechaVencimiento ? `<div style="font-size:12px;color:#64748b;margin-top:2px;">📅 Vence ${formatFechaCorta(t.fechaVencimiento)}</div>` : ''}
+      ${t.fechaVencimiento ? `<div style="font-size:12px;color:#64748b;margin-top:2px;">📅 Vence ${formatFechaHoraChile(t.fechaVencimiento)}</div>` : ''}
     </div>`).join('')
 
   const restantes = tareas.length > 10

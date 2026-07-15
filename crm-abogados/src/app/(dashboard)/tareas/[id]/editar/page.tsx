@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Plus, Trash2, ClipboardList } from 'lucide-react'
 import { toast } from 'sonner'
-import { toDatetimeLocalValue, formatFechaCorta } from '@/lib/utils'
+import { toDatetimeLocalValue, formatFechaHoraChile } from '@/lib/utils'
 
 type Gestion = { id: string; fecha: string; descripcion: string }
 
@@ -174,7 +174,7 @@ function EditarTareaForm() {
               <div key={g.id} className="px-6 py-3 flex items-start justify-between gap-4">
                 <div>
                   <p className="text-sm text-gray-800">{g.descripcion}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{formatFechaCorta(g.fecha)}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{formatFechaHoraChile(g.fecha)}</p>
                 </div>
                 <button
                   onClick={() => eliminarGestion(g.id)}

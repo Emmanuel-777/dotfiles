@@ -1,7 +1,7 @@
 import { db, initDB } from '@/lib/db'
 import { tareas, causas, clientes } from '@/lib/schema'
 import {
-  formatFechaCorta,
+  formatFechaHoraChile,
   formatFechaRelativa,
   ESTADOS_TAREA,
   PRIORIDADES_TAREA,
@@ -184,7 +184,7 @@ export default async function TareasPage() {
                             {urgencia === 'amarilla' && <Clock className="h-3.5 w-3.5" />}
                             {formatFechaRelativa(tarea.fechaVencimiento)}
                           </div>
-                          <p className="text-xs opacity-75">{formatFechaCorta(tarea.fechaVencimiento)}</p>
+                          <p className="text-xs opacity-75">{formatFechaHoraChile(tarea.fechaVencimiento)}</p>
                         </div>
                       ) : (
                         <p className="text-xs text-gray-400">Sin fecha límite</p>
@@ -226,7 +226,7 @@ export default async function TareasPage() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span className={`badge ${estadoT?.color}`}>{estadoT?.label}</span>
                       {tarea.fechaVencimiento && (
-                        <span className="text-xs text-gray-400">{formatFechaCorta(tarea.fechaVencimiento)}</span>
+                        <span className="text-xs text-gray-400">{formatFechaHoraChile(tarea.fechaVencimiento)}</span>
                       )}
                     </div>
                   </div>
