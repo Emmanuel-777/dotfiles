@@ -3,14 +3,15 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Calculator } from 'lucide-react'
 import { toast } from 'sonner'
+import { calcularFechaPlazo, regimenSugerido, REGIMENES_PLAZO, type RegimenPlazo } from '@/lib/feriados'
 
 function NuevoPlazoForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
-  const [causas, setCausas] = useState<{ id: string; rol: string; cliente: { nombre: string } }[]>([])
+  const [causas, setCausas] = useState<{ id: string; rol: string; tipoCausa: string; cliente: { nombre: string } }[]>([])
   const [form, setForm] = useState({
     titulo: '',
     fecha: '',
@@ -19,9 +20,28 @@ function NuevoPlazoForm() {
     causaId: searchParams.get('causaId') || '',
   })
 
+  const [calc, setCalc] = useState({ fechaInicio: '', dias: '', regimen: '' as RegimenPlazo | '' })
+  const [resultado, setResultado] = useState<string | null>(null)
+
   useEffect(() => {
     fetch('/api/causas').then((r) => r.json()).then(setCausas)
   }, [])
+
+  useEffect(() => {
+    if (!form.causaId || calc.regimen) return
+    const causa = causas.find((c) => c.id === form.causaId)
+    if (!causa) return
+    const sugerido = regimenSugerido(causa.tipoCausa)
+    if (sugerido) setCalc((prev) => ({ ...prev, regimen: sugerido }))
+  }, [form.causaId, causas, calc.regimen])
+
+  const calcularFecha = () => {
+    if (!calc.fechaInicio || !calc.dias || !calc.regimen) return
+    const fechaISO = calcularFechaPlazo(calc.fechaInicio, parseInt(calc.dias, 10), calc.regimen)
+    setResultado(fechaISO)
+    const hora = form.fecha.includes('T') ? form.fecha.split('T')[1] : '09:00'
+    setForm((prev) => ({ ...prev, fecha: `${fechaISO}T${hora}` }))
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -68,6 +88,78 @@ function NuevoPlazoForm() {
           />
         </div>
 
+        <div>
+          <label className="label">Causa *</label>
+          <select name="causaId" value={form.causaId} onChange={handleChange} required className="input">
+            <option value="">Seleccionar causa...</option>
+            {causas.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.rol} – {c.cliente?.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 space-y-3">
+          <p className="text-sm font-semibold text-blue-900 flex items-center gap-1.5">
+            <Calculator className="h-4 w-4" />
+            Calculadora de plazo (opcional)
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label text-xs">Fecha de inicio</label>
+              <input
+                type="date"
+                value={calc.fechaInicio}
+                onChange={(e) => setCalc((p) => ({ ...p, fechaInicio: e.target.value }))}
+                className="input"
+              />
+            </div>
+            <div>
+              <label className="label text-xs">Días</label>
+              <input
+                type="number"
+                min="1"
+                value={calc.dias}
+                onChange={(e) => setCalc((p) => ({ ...p, dias: e.target.value }))}
+                className="input"
+                placeholder="Ej: 10"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="label text-xs">Régimen de cómputo</label>
+            <select
+              value={calc.regimen}
+              onChange={(e) => setCalc((p) => ({ ...p, regimen: e.target.value as RegimenPlazo }))}
+              className="input"
+            >
+              <option value="">Selecciona el régimen...</option>
+              {REGIMENES_PLAZO.map((r) => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
+            {calc.regimen && (
+              <p className="text-xs text-blue-700 mt-1">
+                {REGIMENES_PLAZO.find((r) => r.value === calc.regimen)?.detalle}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={calcularFecha}
+            disabled={!calc.fechaInicio || !calc.dias || !calc.regimen}
+            className="btn-secondary text-sm"
+          >
+            Calcular y completar fecha
+          </button>
+          {resultado && (
+            <p className="text-xs text-blue-800 bg-blue-100 rounded px-2 py-1.5">
+              Fecha sugerida: <strong>{resultado}</strong> — verifica este cálculo, especialmente si tu procedimiento tiene reglas especiales. No reemplaza tu criterio profesional.
+            </p>
+          )}
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Fecha *</label>
@@ -90,18 +182,6 @@ function NuevoPlazoForm() {
               <option value="OTRO">Otro</option>
             </select>
           </div>
-        </div>
-
-        <div>
-          <label className="label">Causa *</label>
-          <select name="causaId" value={form.causaId} onChange={handleChange} required className="input">
-            <option value="">Seleccionar causa...</option>
-            {causas.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.rol} – {c.cliente?.nombre}
-              </option>
-            ))}
-          </select>
         </div>
 
         <div>
