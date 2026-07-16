@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Upload, X, FileText } from 'lucide-react'
-import { TIPOS_CAUSA, TRIBUNALES_CHILE, tribunalesPorTipo } from '@/lib/utils'
+import { TIPOS_CAUSA } from '@/lib/utils'
+import TribunalSelect from '@/components/TribunalSelect'
 import { toast } from 'sonner'
 
 const TIPOS_DOC = ['PODER', 'ESCRITO', 'RESOLUCION', 'CONTRATO', 'OTRO']
@@ -76,8 +77,6 @@ function NuevaCausaForm() {
     if (fileRef.current) fileRef.current.value = ''
   }
 
-  const tribunalesFiltrados = tribunalesPorTipo(form.tipoCausa, TRIBUNALES_CHILE)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -145,21 +144,11 @@ function NuevaCausaForm() {
 
           <div className="col-span-2">
             <label className="label">Tribunal *</label>
-            <input
-              name="tribunal"
+            <TribunalSelect
               value={form.tribunal}
-              onChange={handleChange}
-              required
-              list="tribunales-list"
-              className="input"
-              placeholder={`Buscar tribunal ${form.tipoCausa !== 'Otro' ? `(${tribunalesFiltrados.length} disponibles)` : ''}...`}
+              onChange={(v) => setForm((prev) => ({ ...prev, tribunal: v }))}
+              tipoCausa={form.tipoCausa}
             />
-            <datalist id="tribunales-list">
-              {tribunalesFiltrados.map((t) => <option key={t} value={t} />)}
-            </datalist>
-            {tribunalesFiltrados.length === 0 && form.tribunal === '' && (
-              <p className="text-xs text-amber-600 mt-1">No hay tribunales predefinidos para este tipo — escribe el nombre completo.</p>
-            )}
           </div>
 
           <div className="col-span-2">

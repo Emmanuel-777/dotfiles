@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
-import { TIPOS_CAUSA, TRIBUNALES_CHILE } from '@/lib/utils'
+import { TIPOS_CAUSA } from '@/lib/utils'
+import TribunalSelect from '@/components/TribunalSelect'
 import { toast } from 'sonner'
 
 export default function EditarCausaPage({ params }: { params: { id: string } }) {
@@ -124,18 +125,11 @@ export default function EditarCausaPage({ params }: { params: { id: string } }) 
 
           <div className="col-span-2">
             <label className="label">Tribunal *</label>
-            <input
-              name="tribunal"
+            <TribunalSelect
               value={form.tribunal}
-              onChange={handleChange}
-              required
-              list="tribunales-list"
-              className="input"
-              placeholder="Buscar tribunal..."
+              onChange={(v) => setForm((prev) => ({ ...prev, tribunal: v }))}
+              tipoCausa={form.tipoCausa}
             />
-            <datalist id="tribunales-list">
-              {TRIBUNALES_CHILE.map((t) => <option key={t} value={t} />)}
-            </datalist>
           </div>
 
           <div className="col-span-2">
