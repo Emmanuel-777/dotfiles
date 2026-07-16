@@ -4,7 +4,8 @@ import { citas, clientes, causas, prospectos } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
-import { getResend, buildCitaConfirmationEmail } from '@/lib/email'
+import { getResend, buildCitaConfirmationEmail, buildCitaHoyAbogadoEmail } from '@/lib/email'
+import { hoyChile } from '@/lib/utils'
 import { clerkClient } from '@clerk/nextjs/server'
 
 const TIPO_LABELS: Record<string, string> = {
@@ -69,17 +70,18 @@ export async function POST(req: NextRequest) {
 
   await db.insert(citas).values(nueva)
 
-  // Correo de confirmación al cliente/prospecto — best effort, no bloquea la creación
+  // Correos — best effort, no bloquean la creación de la cita
   try {
     const contacto = nueva.clienteId
       ? (await db.select({ nombre: clientes.nombre, email: clientes.email }).from(clientes).where(eq(clientes.id, nueva.clienteId)).limit(1))[0]
       : (await db.select({ nombre: prospectos.nombre, email: prospectos.email }).from(prospectos).where(eq(prospectos.id, nueva.prospectoId!)).limit(1))[0]
 
-    if (contacto?.email) {
-      const client = await clerkClient()
-      const user = await client.users.getUser(userId)
-      const abogadoNombre = user.firstName ?? 'tu abogado/a'
+    const client = await clerkClient()
+    const user = await client.users.getUser(userId)
+    const abogadoNombre = user.firstName ?? 'tu abogado/a'
+    const resend = getResend()
 
+    if (contacto?.email) {
       const html = buildCitaConfirmationEmail({
         contactoNombre: contacto.nombre,
         abogadoNombre,
@@ -91,11 +93,32 @@ export async function POST(req: NextRequest) {
         linkReunion: nueva.linkReunion,
       })
 
-      const resend = getResend()
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: contacto.email,
         subject: `Confirmación de cita — ${nueva.titulo}`,
+        html,
+      })
+    }
+
+    // Si la cita es para hoy, el resumen matutino y el recordatorio nocturno
+    // ya no la van a alcanzar avisar — se notifica al abogado de inmediato.
+    const abogadoEmail = user.emailAddresses[0]?.emailAddress
+    if (abogadoEmail && nueva.fecha === hoyChile()) {
+      const html = buildCitaHoyAbogadoEmail({
+        userName: abogadoNombre,
+        contactoNombre: contacto?.nombre ?? 'Contacto sin nombre',
+        titulo: nueva.titulo,
+        horaInicio: nueva.horaInicio,
+        horaFin: nueva.horaFin,
+        tipoLabel: TIPO_LABELS[nueva.tipo] ?? nueva.tipo,
+        linkReunion: nueva.linkReunion,
+      })
+
+      await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
+        to: abogadoEmail,
+        subject: `Cita agendada para hoy — ${nueva.titulo}`,
         html,
       })
     }

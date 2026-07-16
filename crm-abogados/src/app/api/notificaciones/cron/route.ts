@@ -1,6 +1,6 @@
 import { db, initDB } from '@/lib/db'
 import { plazos, tareas, citas, clientes, causas, honorarios, prospectos } from '@/lib/schema'
-import { eq, and, gte, lte, lt, ne, or } from 'drizzle-orm'
+import { eq, and, gte, lte, lt, ne, or, isNotNull } from 'drizzle-orm'
 import { getResend, buildNotificationEmail } from '@/lib/email'
 import { formatFechaHoraChile, hoyChile, sumarDiasISO } from '@/lib/utils'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -18,15 +18,19 @@ export async function GET(request: Request) {
   const hoy = hoyChile()
   const mañana = sumarDiasISO(hoy, 1)
   const en3dias = sumarDiasISO(hoy, 3)
+  // Ventana de 90 días para prescripción penal (Ley 21.719, Arts. 24-25) —
+  // requiere mucha más anticipación que un plazo procesal común.
+  const en90dias = sumarDiasISO(hoy, 90)
   // Límites superiores inclusivos: los campos en la base son ISO con hora
   // (ej. "2026-07-17T00:00:00.000Z"), así que compararlos como string contra
   // una fecha "pelada" (ej. "2026-07-17") los excluye por error — un
   // vencimiento justo el último día del rango nunca hacía match.
   const mañanaFin = `${mañana}T23:59:59.999Z`
   const en3diasFin = `${en3dias}T23:59:59.999Z`
+  const en90diasFin = `${en90dias}T23:59:59.999Z`
 
   // Obtener todos los userIds con ítems pendientes
-  const [plazosRows, tareasRows, citasRows, honorariosRows] = await Promise.all([
+  const [plazosRows, tareasRows, citasRows, honorariosVencidosUserRows, honorariosProximosUserRows, causasPenalesUserRows] = await Promise.all([
     db.select({ userId: plazos.userId }).from(plazos)
       .where(and(eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy), lte(plazos.fecha, en3diasFin))),
     db.select({ userId: tareas.userId }).from(tareas)
@@ -35,11 +39,15 @@ export async function GET(request: Request) {
       .where(and(or(eq(citas.estado, 'PENDIENTE'), eq(citas.estado, 'CONFIRMADA')), gte(citas.fecha, hoy), lte(citas.fecha, mañanaFin))),
     db.select({ userId: honorarios.userId }).from(honorarios)
       .where(and(or(eq(honorarios.estado, 'PENDIENTE'), eq(honorarios.estado, 'PARCIAL')), lt(honorarios.fechaVence, hoy))),
+    db.select({ userId: honorarios.userId }).from(honorarios)
+      .where(and(or(eq(honorarios.estado, 'PENDIENTE'), eq(honorarios.estado, 'PARCIAL')), gte(honorarios.fechaVence, hoy), lte(honorarios.fechaVence, en3diasFin))),
+    db.select({ userId: causas.userId }).from(causas)
+      .where(and(eq(causas.tipoCausa, 'Penal'), isNotNull(causas.fechaPrescripcion), gte(causas.fechaPrescripcion, hoy), lte(causas.fechaPrescripcion, en90diasFin))),
   ])
 
   const seen = new Set<string>()
   const userIds: string[] = []
-  for (const r of [...plazosRows, ...tareasRows, ...citasRows, ...honorariosRows]) {
+  for (const r of [...plazosRows, ...tareasRows, ...citasRows, ...honorariosVencidosUserRows, ...honorariosProximosUserRows, ...causasPenalesUserRows]) {
     if (r.userId && !seen.has(r.userId)) { seen.add(r.userId); userIds.push(r.userId) }
   }
 
@@ -105,7 +113,34 @@ export async function GET(request: Request) {
       ))
       .orderBy(honorarios.fechaVence)
 
-    const totalItems = citasHoyRows.length + citasMañanaRows.length + plazosProximosRows.length + tareasProximasRows.length + honorariosVencidosRows.length
+    // Honorarios por cobrar próximos a vencer (hoy → 3 días)
+    const honorariosProximosRows = await db
+      .select({ descripcion: honorarios.descripcion, monto: honorarios.monto, moneda: honorarios.moneda, fechaVence: honorarios.fechaVence, clienteNombre: clientes.nombre })
+      .from(honorarios)
+      .leftJoin(clientes, eq(honorarios.clienteId, clientes.id))
+      .where(and(
+        eq(honorarios.userId, userId),
+        or(eq(honorarios.estado, 'PENDIENTE'), eq(honorarios.estado, 'PARCIAL')),
+        gte(honorarios.fechaVence, hoy),
+        lte(honorarios.fechaVence, en3diasFin),
+      ))
+      .orderBy(honorarios.fechaVence)
+
+    // Causas penales próximas a prescribir (hoy → 90 días)
+    const causasPenalesRows = await db
+      .select({ rol: causas.rol, fechaPrescripcion: causas.fechaPrescripcion })
+      .from(causas)
+      .where(and(
+        eq(causas.userId, userId),
+        eq(causas.tipoCausa, 'Penal'),
+        isNotNull(causas.fechaPrescripcion),
+        gte(causas.fechaPrescripcion, hoy),
+        lte(causas.fechaPrescripcion, en90diasFin),
+      ))
+      .orderBy(causas.fechaPrescripcion)
+
+    const totalItems = citasHoyRows.length + citasMañanaRows.length + plazosProximosRows.length + tareasProximasRows.length
+      + honorariosVencidosRows.length + honorariosProximosRows.length + causasPenalesRows.length
     if (totalItems === 0) continue
 
     const html = buildNotificationEmail({
@@ -119,6 +154,16 @@ export async function GET(request: Request) {
         monto: new Intl.NumberFormat('es-CL', { style: 'currency', currency: h.moneda ?? 'CLP', minimumFractionDigits: 0 }).format(h.monto),
         cliente: h.clienteNombre,
         fechaVence: h.fechaVence!.split('T')[0],
+      })),
+      honorariosProximos: honorariosProximosRows.map(h => ({
+        descripcion: h.descripcion,
+        monto: new Intl.NumberFormat('es-CL', { style: 'currency', currency: h.moneda ?? 'CLP', minimumFractionDigits: 0 }).format(h.monto),
+        cliente: h.clienteNombre,
+        fechaVence: h.fechaVence!.split('T')[0],
+      })),
+      causasPenalesProximas: causasPenalesRows.map(c => ({
+        rol: c.rol,
+        fechaPrescripcion: c.fechaPrescripcion!.split('T')[0],
       })),
     })
 

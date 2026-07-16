@@ -29,6 +29,11 @@ interface HonorarioItem {
   fechaVence: string
 }
 
+interface CausaPenalItem {
+  rol: string
+  fechaPrescripcion: string
+}
+
 export function buildCitaConfirmationEmail({
   contactoNombre,
   abogadoNombre,
@@ -91,6 +96,69 @@ export function buildCitaConfirmationEmail({
       <p style="margin:0;font-size:13px;color:#64748b;">
         Si necesitas reagendar o cancelar, por favor contáctanos respondiendo este correo.
       </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+      <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+        LexCRM · Gestión Legal ·
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+}
+
+export function buildCitaHoyAbogadoEmail({
+  userName,
+  contactoNombre,
+  titulo,
+  horaInicio,
+  horaFin,
+  tipoLabel,
+  linkReunion,
+}: {
+  userName: string
+  contactoNombre: string
+  titulo: string
+  horaInicio: string
+  horaFin?: string | null
+  tipoLabel: string
+  linkReunion?: string | null
+}): string {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#14254c,#1a3060);padding:28px 32px;">
+      <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Cita agendada para hoy</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;">
+        Hola ${userName}, se agendó una cita para <strong>hoy</strong>:
+      </p>
+
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">👤 ${contactoNombre}</p>
+      </div>
+
+      ${linkReunion ? `
+      <div style="margin-bottom:20px;text-align:center;">
+        <a href="${linkReunion}"
+           style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
+          Unirse a la reunión
+        </a>
+      </div>` : ''}
     </div>
 
     <!-- Footer -->
@@ -269,6 +337,8 @@ export function buildNotificationEmail({
   plazosProximos,
   tareasProximas,
   honorariosVencidos = [],
+  honorariosProximos = [],
+  causasPenalesProximas = [],
 }: {
   userName: string
   citasHoy: CitaItem[]
@@ -276,6 +346,8 @@ export function buildNotificationEmail({
   plazosProximos: PlazoItem[]
   tareasProximas: TareaItem[]
   honorariosVencidos?: HonorarioItem[]
+  honorariosProximos?: HonorarioItem[]
+  causasPenalesProximas?: CausaPenalItem[]
 }): string {
   const section = (titulo: string, color: string, items: string[]) =>
     items.length === 0 ? '' : `
@@ -291,8 +363,11 @@ export function buildNotificationEmail({
   const plazosHtml = plazosProximos.map(p => `📅 <strong>${p.fecha}</strong> — ${p.titulo}${p.rol ? ` <span style="color:#64748b;">[${p.rol}]</span>` : ''}`)
   const tareasHtml = tareasProximas.map(t => `✅ <strong>${t.fecha}</strong> — ${t.titulo}`)
   const honorariosHtml = honorariosVencidos.map(h => `💸 <strong>${h.monto}</strong> — ${h.descripcion}${h.cliente ? ` <span style="color:#64748b;">(${h.cliente})</span>` : ''} · vencido el ${h.fechaVence}`)
+  const honorariosProximosHtml = honorariosProximos.map(h => `💰 <strong>${h.monto}</strong> — ${h.descripcion}${h.cliente ? ` <span style="color:#64748b;">(${h.cliente})</span>` : ''} · vence el ${h.fechaVence}`)
+  const causasPenalesHtml = causasPenalesProximas.map(c => `⚠️ <strong>${c.rol}</strong> — prescribe el ${c.fechaPrescripcion}`)
 
-  const totalItems = citasHoy.length + citasMañana.length + plazosProximos.length + tareasProximas.length + honorariosVencidos.length
+  const totalItems = citasHoy.length + citasMañana.length + plazosProximos.length + tareasProximas.length
+    + honorariosVencidos.length + honorariosProximos.length + causasPenalesProximas.length
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -314,11 +389,13 @@ export function buildNotificationEmail({
         Tienes <strong>${totalItems} ${totalItems === 1 ? 'ítem' : 'ítems'}</strong> para revisar hoy:
       </p>
 
+      ${section('Causas penales próximas a prescribir', '#b91c1c', causasPenalesHtml)}
       ${section('Citas de hoy', '#2563eb', citasHoyHtml)}
       ${section('Citas de mañana', '#7c3aed', citasMañanaHtml)}
       ${section('Plazos próximos', '#dc2626', plazosHtml)}
       ${section('Tareas próximas', '#d97706', tareasHtml)}
       ${section('Honorarios vencidos sin pagar', '#b91c1c', honorariosHtml)}
+      ${section('Honorarios próximos a vencer', '#d97706', honorariosProximosHtml)}
 
       <div style="margin-top:24px;text-align:center;">
         <a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.lexcrm.site'}/dashboard"
