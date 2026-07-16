@@ -54,7 +54,9 @@ export default function NuevaActuacionPage() {
           ...form,
           causaId,
           compromiso: tieneCompromiso ? form.compromiso : null,
-          fechaRecordatorio: tieneCompromiso ? form.fechaRecordatorio : null,
+          fechaRecordatorio: tieneCompromiso && form.fechaRecordatorio
+            ? new Date(form.fechaRecordatorio).toISOString()
+            : null,
         }),
       })
       if (!res.ok) throw new Error(await res.text())
@@ -150,10 +152,10 @@ export default function NuevaActuacionPage() {
                 />
               </div>
               <div>
-                <label className="label">Fecha del recordatorio</label>
+                <label className="label">Fecha y hora del recordatorio</label>
                 <input
                   name="fechaRecordatorio"
-                  type="date"
+                  type="datetime-local"
                   value={form.fechaRecordatorio}
                   onChange={handleChange}
                   className="input"

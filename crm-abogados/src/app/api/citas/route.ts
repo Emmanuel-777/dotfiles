@@ -4,8 +4,8 @@ import { citas, clientes, causas, prospectos } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
-import { getResend, buildCitaConfirmationEmail, buildCitaHoyAbogadoEmail } from '@/lib/email'
-import { hoyChile } from '@/lib/utils'
+import { getResend, buildCitaConfirmationEmail, buildCitaAbogadoConfirmEmail } from '@/lib/email'
+import { buildICS, buildGoogleCalendarLink } from '@/lib/calendario'
 import { clerkClient } from '@clerk/nextjs/server'
 
 const TIPO_LABELS: Record<string, string> = {
@@ -76,10 +76,33 @@ export async function POST(req: NextRequest) {
       ? (await db.select({ nombre: clientes.nombre, email: clientes.email }).from(clientes).where(eq(clientes.id, nueva.clienteId)).limit(1))[0]
       : (await db.select({ nombre: prospectos.nombre, email: prospectos.email }).from(prospectos).where(eq(prospectos.id, nueva.prospectoId!)).limit(1))[0]
 
+    const causa = nueva.causaId
+      ? (await db.select({ rol: causas.rol }).from(causas).where(eq(causas.id, nueva.causaId)).limit(1))[0]
+      : null
+
     const client = await clerkClient()
     const user = await client.users.getUser(userId)
     const abogadoNombre = user.firstName ?? 'tu abogado/a'
     const resend = getResend()
+    const tipoLabel = TIPO_LABELS[nueva.tipo] ?? nueva.tipo
+
+    const ics = buildICS({
+      titulo: nueva.titulo,
+      descripcion: nueva.descripcion ?? undefined,
+      fecha: nueva.fecha,
+      horaInicio: nueva.horaInicio,
+      horaFin: nueva.horaFin,
+      ubicacion: tipoLabel,
+    })
+    const googleCalendarLink = buildGoogleCalendarLink({
+      titulo: nueva.titulo,
+      descripcion: nueva.descripcion ?? undefined,
+      fecha: nueva.fecha,
+      horaInicio: nueva.horaInicio,
+      horaFin: nueva.horaFin,
+      ubicacion: tipoLabel,
+    })
+    const icsAttachment = { filename: 'cita.ics', content: Buffer.from(ics).toString('base64') }
 
     if (contacto?.email) {
       const html = buildCitaConfirmationEmail({
@@ -89,8 +112,9 @@ export async function POST(req: NextRequest) {
         fecha: nueva.fecha,
         horaInicio: nueva.horaInicio,
         horaFin: nueva.horaFin,
-        tipoLabel: TIPO_LABELS[nueva.tipo] ?? nueva.tipo,
+        tipoLabel,
         linkReunion: nueva.linkReunion,
+        googleCalendarLink,
       })
 
       await resend.emails.send({
@@ -98,28 +122,31 @@ export async function POST(req: NextRequest) {
         to: contacto.email,
         subject: `Confirmación de cita — ${nueva.titulo}`,
         html,
+        attachments: [icsAttachment],
       })
     }
 
-    // Si la cita es para hoy, el resumen matutino y el recordatorio nocturno
-    // ya no la van a alcanzar avisar — se notifica al abogado de inmediato.
     const abogadoEmail = user.emailAddresses[0]?.emailAddress
-    if (abogadoEmail && nueva.fecha === hoyChile()) {
-      const html = buildCitaHoyAbogadoEmail({
+    if (abogadoEmail) {
+      const html = buildCitaAbogadoConfirmEmail({
         userName: abogadoNombre,
         contactoNombre: contacto?.nombre ?? 'Contacto sin nombre',
         titulo: nueva.titulo,
+        fecha: nueva.fecha,
         horaInicio: nueva.horaInicio,
         horaFin: nueva.horaFin,
-        tipoLabel: TIPO_LABELS[nueva.tipo] ?? nueva.tipo,
+        tipoLabel,
         linkReunion: nueva.linkReunion,
+        causaRol: causa?.rol,
+        googleCalendarLink,
       })
 
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: abogadoEmail,
-        subject: `Cita agendada para hoy — ${nueva.titulo}`,
+        subject: `Cita agendada — ${nueva.titulo}`,
         html,
+        attachments: [icsAttachment],
       })
     }
   } catch (err) {

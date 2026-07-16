@@ -81,7 +81,7 @@ export default async function DashboardPage() {
         eq(actuaciones.userId, userId),
         isNotNull(actuaciones.compromiso),
         isNotNull(actuaciones.fechaRecordatorio),
-        lte(actuaciones.fechaRecordatorio, hoyFecha),
+        lte(actuaciones.fechaRecordatorio, `${hoyFecha}T23:59:59.999Z`),
         eq(actuaciones.recordatorioEnviado, 0),
       ))
       .orderBy(asc(actuaciones.fechaRecordatorio))
@@ -410,7 +410,7 @@ export default async function DashboardPage() {
                         <span className="text-xs font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{causa.rol}</span>
                       )}
                       {act.fechaRecordatorio && (
-                        <span className="text-xs text-amber-700 font-medium">· {formatFechaCorta(act.fechaRecordatorio)}</span>
+                        <span className="text-xs text-amber-700 font-medium">· {formatFechaHoraChile(act.fechaRecordatorio)}</span>
                       )}
                     </div>
                     <p className="text-sm text-amber-800 mt-1">{act.compromiso}</p>

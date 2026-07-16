@@ -34,6 +34,17 @@ interface CausaPenalItem {
   fechaPrescripcion: string
 }
 
+function calendarButtonHtml(googleCalendarLink: string): string {
+  return `
+      <div style="margin-bottom:20px;text-align:center;">
+        <a href="${googleCalendarLink}" target="_blank"
+           style="display:inline-block;background:#fff;color:#2563eb;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;border:1.5px solid #2563eb;">
+          📅 Agregar a Google Calendar
+        </a>
+        <p style="margin:8px 0 0;font-size:11px;color:#94a3b8;">También adjuntamos un archivo .ics — ábrelo para agregar la cita a Outlook, Apple Calendar u otro.</p>
+      </div>`
+}
+
 export function buildCitaConfirmationEmail({
   contactoNombre,
   abogadoNombre,
@@ -43,6 +54,7 @@ export function buildCitaConfirmationEmail({
   horaFin,
   tipoLabel,
   linkReunion,
+  googleCalendarLink,
 }: {
   contactoNombre: string
   abogadoNombre: string
@@ -52,6 +64,7 @@ export function buildCitaConfirmationEmail({
   horaFin?: string | null
   tipoLabel: string
   linkReunion?: string | null
+  googleCalendarLink: string
 }): string {
   const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-CL', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
@@ -93,6 +106,8 @@ export function buildCitaConfirmationEmail({
         <p style="margin:10px 0 0;font-size:12px;color:#94a3b8;word-break:break-all;">${linkReunion}</p>
       </div>` : ''}
 
+      ${calendarButtonHtml(googleCalendarLink)}
+
       <p style="margin:0;font-size:13px;color:#64748b;">
         Si necesitas reagendar o cancelar, por favor contáctanos respondiendo este correo.
       </p>
@@ -110,23 +125,33 @@ export function buildCitaConfirmationEmail({
 </html>`
 }
 
-export function buildCitaHoyAbogadoEmail({
+export function buildCitaAbogadoConfirmEmail({
   userName,
   contactoNombre,
   titulo,
+  fecha,
   horaInicio,
   horaFin,
   tipoLabel,
   linkReunion,
+  causaRol,
+  googleCalendarLink,
 }: {
   userName: string
   contactoNombre: string
   titulo: string
+  fecha: string
   horaInicio: string
   horaFin?: string | null
   tipoLabel: string
   linkReunion?: string | null
+  causaRol?: string | null
+  googleCalendarLink: string
 }): string {
+  const fechaFormateada = new Date(fecha + 'T00:00:00').toLocaleDateString('es-CL', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  })
+
   return `<!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -136,20 +161,87 @@ export function buildCitaHoyAbogadoEmail({
     <!-- Header -->
     <div style="background:linear-gradient(135deg,#14254c,#1a3060);padding:28px 32px;">
       <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
-      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Cita agendada para hoy</p>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Cita agendada</p>
     </div>
 
     <!-- Body -->
     <div style="padding:28px 32px;">
       <p style="margin:0 0 20px;font-size:15px;color:#334155;">
-        Hola ${userName}, se agendó una cita para <strong>hoy</strong>:
+        Hola ${userName}, has agendado una cita con <strong>${contactoNombre}</strong>${causaRol ? ` — causa <strong>${causaRol}</strong>` : ''}:
+      </p>
+
+      <div style="background:#f8fafc;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;text-transform:capitalize;">📅 ${fechaFormateada}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
+      </div>
+
+      ${linkReunion ? `
+      <div style="margin-bottom:20px;text-align:center;">
+        <a href="${linkReunion}"
+           style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
+          Unirse a la reunión
+        </a>
+      </div>` : ''}
+
+      ${calendarButtonHtml(googleCalendarLink)}
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+      <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+        LexCRM · Gestión Legal ·
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+}
+
+export function buildCitaRecordatorioProximoEmail({
+  userName,
+  contactoNombre,
+  titulo,
+  horaInicio,
+  horaFin,
+  tipoLabel,
+  linkReunion,
+  minutosRestantes,
+}: {
+  userName: string
+  contactoNombre: string
+  titulo: string
+  horaInicio: string
+  horaFin?: string | null
+  tipoLabel: string
+  linkReunion?: string | null
+  minutosRestantes: 60 | 30
+}): string {
+  const texto = minutosRestantes === 60 ? '1 hora' : '30 minutos'
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#b45309,#d97706);padding:28px 32px;">
+      <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#fde68a;">CRM</span></span>
+      <p style="margin:8px 0 0;color:#fef3c7;font-size:13px;">Tu cita es en ${texto}</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;">
+        Hola ${userName}, tu cita con <strong>${contactoNombre}</strong> es en <strong>${texto}</strong>:
       </p>
 
       <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
         <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
         <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
-        <p style="margin:0;font-size:14px;color:#334155;">👤 ${contactoNombre}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
       </div>
 
       ${linkReunion ? `

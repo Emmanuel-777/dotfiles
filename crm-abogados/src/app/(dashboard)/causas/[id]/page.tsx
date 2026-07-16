@@ -253,7 +253,7 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                               <Bell className="h-3 w-3" />
                               Compromiso del cliente
                               {act.fechaRecordatorio && (
-                                <span className="ml-1 text-amber-600">· {formatFechaCorta(act.fechaRecordatorio)}</span>
+                                <span className="ml-1 text-amber-600">· {formatFechaHoraChile(act.fechaRecordatorio)}</span>
                               )}
                             </p>
                             <p className="text-xs text-amber-800">{act.compromiso}</p>

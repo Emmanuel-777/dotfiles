@@ -19,15 +19,17 @@ function mensajeCobro(params: {
   clienteNombre: string
   descripcion: string
   monto: string
+  causaRol?: string | null
   perfil: { banco: string | null; tipoCuenta: string | null; numeroCuenta: string | null; titularNombre: string | null; titularRut: string | null } | null
 }): string {
-  const { clienteNombre, descripcion, monto, perfil } = params
+  const { clienteNombre, descripcion, monto, causaRol, perfil } = params
   const lineas = [
     `Estimado/a ${clienteNombre},`,
     ``,
     `Le escribo para recordarle el siguiente honorario pendiente de pago:`,
     ``,
     `📌 ${descripcion}`,
+    causaRol ? `⚖️ Causa: ${causaRol}` : '',
     `💰 Monto: ${monto}`,
   ]
 
@@ -44,8 +46,28 @@ function mensajeCobro(params: {
     )
   }
 
-  lineas.push(``, `Quedo atento a su comprobante. ¡Gracias!`)
-  return lineas.filter((l) => l !== undefined).join('\n')
+  lineas.push(``, `Le agradecería enviarme su compromiso de pago. ¡Gracias!`)
+  return lineas.filter((l) => l !== '').join('\n')
+}
+
+function mensajeComprobante(clienteNombre: string, descripcion: string): string {
+  return [
+    `Estimado/a ${clienteNombre},`,
+    ``,
+    `Para dejar registrado su pago correspondiente a "${descripcion}", ¿podría enviarnos el comprobante de la transferencia?`,
+    ``,
+    `Muchas gracias.`,
+  ].join('\n')
+}
+
+function mensajeConfirmacionPago(clienteNombre: string, descripcion: string, monto: string): string {
+  return [
+    `Estimado/a ${clienteNombre},`,
+    ``,
+    `Le confirmamos que su pago de ${monto} correspondiente a "${descripcion}" quedó registrado correctamente en su carpeta.`,
+    ``,
+    `Muchas gracias.`,
+  ].join('\n')
 }
 
 export default async function HonorariosPage() {
@@ -170,10 +192,17 @@ export default async function HonorariosPage() {
             {rows.map(({ honorario: h, cliente, causa }) => {
               const estadoInfo = ESTADOS_HONORARIO[h.estado as keyof typeof ESTADOS_HONORARIO]
               const porCobrar = h.estado === 'PENDIENTE' || h.estado === 'PARCIAL'
-              const waUrl = porCobrar && cliente?.celular
-                ? `https://wa.me/${formatPhoneWhatsApp(cliente.celular)}?text=${encodeURIComponent(
-                    mensajeCobro({ clienteNombre: cliente.nombre, descripcion: h.descripcion, monto: formatMonto(h.monto, h.moneda), perfil }),
+              const tieneCelular = !!cliente?.celular
+              const waCobrarUrl = porCobrar && tieneCelular
+                ? `https://wa.me/${formatPhoneWhatsApp(cliente!.celular!)}?text=${encodeURIComponent(
+                    mensajeCobro({ clienteNombre: cliente!.nombre, descripcion: h.descripcion, monto: formatMonto(h.monto, h.moneda), causaRol: causa?.rol, perfil }),
                   )}`
+                : null
+              const waComprobanteUrl = h.estado !== 'ANULADO' && tieneCelular
+                ? `https://wa.me/${formatPhoneWhatsApp(cliente!.celular!)}?text=${encodeURIComponent(mensajeComprobante(cliente!.nombre, h.descripcion))}`
+                : null
+              const waConfirmarUrl = h.estado === 'PAGADO' && tieneCelular
+                ? `https://wa.me/${formatPhoneWhatsApp(cliente!.celular!)}?text=${encodeURIComponent(mensajeConfirmacionPago(cliente!.nombre, h.descripcion, formatMonto(h.monto, h.moneda)))}`
                 : null
               return (
                 <tr key={h.id} className="hover:bg-gray-50 transition-colors">
@@ -196,9 +225,9 @@ export default async function HonorariosPage() {
                         <Pencil className="h-3.5 w-3.5" />
                         Editar
                       </Link>
-                      {waUrl && (
+                      {waCobrarUrl && (
                         <a
-                          href={waUrl}
+                          href={waCobrarUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs text-green-700 hover:text-green-800 font-medium"
@@ -206,6 +235,30 @@ export default async function HonorariosPage() {
                         >
                           <MessageCircle className="h-3.5 w-3.5" />
                           Cobrar
+                        </a>
+                      )}
+                      {waConfirmarUrl && (
+                        <a
+                          href={waConfirmarUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-medium"
+                          title="Enviar confirmación de pago por WhatsApp"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          Confirmar
+                        </a>
+                      )}
+                      {waComprobanteUrl && (
+                        <a
+                          href={waComprobanteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 font-medium"
+                          title="Solicitar comprobante de pago por WhatsApp"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          Comprobante
                         </a>
                       )}
                     </div>

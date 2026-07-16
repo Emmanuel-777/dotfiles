@@ -1,0 +1,17 @@
+name: Recordatorio de citas (1h / 30min)
+
+# Vercel Hobby solo permite crons diarios — este workflow reemplaza un cron
+# de Vercel más frecuente, llamando al endpoint del CRM cada 15 minutos.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  llamar-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar /api/notificaciones/citas-recordatorio-proximo
+        run: |
+          curl -sS -f -X GET "https://app.lexcrm.site/api/notificaciones/citas-recordatorio-proximo" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"

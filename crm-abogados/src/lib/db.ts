@@ -97,6 +97,16 @@ export async function initDB() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS cuotas_honorario (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL DEFAULT '',
+      honorario_id TEXT NOT NULL REFERENCES honorarios(id) ON DELETE CASCADE,
+      monto REAL NOT NULL,
+      fecha_pago TEXT NOT NULL,
+      tarea_id TEXT,
+      pagada INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS tareas (
       id TEXT PRIMARY KEY,
       titulo TEXT NOT NULL,
@@ -228,6 +238,9 @@ export async function initDB() {
     // Documento adjunto opcional por registro de la Bitácora de Asesoría
     `ALTER TABLE asesorias ADD COLUMN archivo_url TEXT`,
     `ALTER TABLE asesorias ADD COLUMN archivo_nombre TEXT`,
+    // Recordatorio de cita al abogado 1h y 30min antes de la hora agendada
+    `ALTER TABLE citas ADD COLUMN recordatorio_1h_enviado INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE citas ADD COLUMN recordatorio_30min_enviado INTEGER NOT NULL DEFAULT 0`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

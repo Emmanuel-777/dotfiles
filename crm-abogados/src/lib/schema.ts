@@ -105,6 +105,17 @@ export const honorarios = sqliteTable('honorarios', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+export const cuotasHonorario = sqliteTable('cuotas_honorario', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().default(''),
+  honorarioId: text('honorario_id').notNull().references(() => honorarios.id),
+  monto: real('monto').notNull(),
+  fechaPago: text('fecha_pago').notNull(),
+  tareaId: text('tarea_id'),
+  pagada: integer('pagada').notNull().default(0),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export const tareas = sqliteTable('tareas', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().default(''),
@@ -151,6 +162,8 @@ export const citas = sqliteTable('citas', {
   estado: text('estado').notNull().default('PENDIENTE'),
   notas: text('notas'),
   recordatorioCitaEnviado: integer('recordatorio_cita_enviado').notNull().default(0),
+  recordatorio1hEnviado: integer('recordatorio_1h_enviado').notNull().default(0),
+  recordatorio30minEnviado: integer('recordatorio_30min_enviado').notNull().default(0),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 })

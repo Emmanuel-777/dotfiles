@@ -30,9 +30,15 @@ export default function ReminderButtons({
   const [enviado, setEnviado] = useState(recordatorioEnviado === 1)
   const [marking, setMarking] = useState(false)
 
-  const fechaTexto = fechaRecordatorio
-    ? new Date(fechaRecordatorio + 'T00:00:00').toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })
-    : ''
+  const fechaTexto = (() => {
+    if (!fechaRecordatorio) return ''
+    const d = new Date(fechaRecordatorio)
+    const fecha = d.toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })
+    const tieneHora = d.getHours() !== 0 || d.getMinutes() !== 0
+    if (!tieneHora) return fecha
+    const hora = d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: false })
+    return `${fecha}, ${hora} hrs`
+  })()
 
   const mensaje = [
     `Estimado/a ${clienteNombre},`,
