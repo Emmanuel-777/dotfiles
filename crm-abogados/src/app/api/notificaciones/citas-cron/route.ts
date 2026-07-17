@@ -90,12 +90,13 @@ export async function GET(request: Request) {
     })
 
     try {
-      await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: userEmail,
         subject: `⏰ Mañana tienes ${rows.length} ${rows.length === 1 ? 'cita' : 'citas'} — LexCRM`,
         html,
       })
+      if (error) throw new Error(JSON.stringify(error))
 
       // Marcar como notificadas para no reenviar
       for (const row of rows) {

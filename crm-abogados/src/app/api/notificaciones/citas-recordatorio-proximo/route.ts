@@ -84,12 +84,13 @@ export async function GET(request: Request) {
         minutosRestantes: minutosRestantesTipo,
       })
 
-      await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: abogado.email,
         subject: `⏰ Tu cita "${cita.titulo}" es en ${minutosRestantesTipo === 60 ? '1 hora' : '30 minutos'}`,
         html,
       })
+      if (error) throw new Error(JSON.stringify(error))
 
       await db.update(citas)
         .set(necesita1h ? { recordatorio1hEnviado: 1 } : { recordatorio30minEnviado: 1 })

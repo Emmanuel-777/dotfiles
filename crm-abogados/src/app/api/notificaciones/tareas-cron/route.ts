@@ -52,12 +52,13 @@ export async function GET(request: Request) {
     const html = buildTareasPendientesEmail({ userName, tareas: rows })
 
     try {
-      await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: userEmail,
         subject: `📋 Tienes ${rows.length} ${rows.length === 1 ? 'tarea pendiente' : 'tareas pendientes'} — LexCRM`,
         html,
       })
+      if (error) throw new Error(JSON.stringify(error))
       enviados++
     } catch (e) {
       console.error(`Error enviando tareas pendientes a ${userEmail}:`, e)

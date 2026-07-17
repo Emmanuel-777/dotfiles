@@ -39,12 +39,13 @@ export async function POST(request: Request) {
   if (debeAvisar) {
     try {
       const resend = getResend()
-      await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: 'contacto@lexcrm.site',
         subject: `🔔 ${email} quiere acceder a LexCRM`,
         html: buildSolicitudAccesoEmail({ email, intentos }),
       })
+      if (error) throw new Error(JSON.stringify(error))
       enviado = true
     } catch (e) {
       console.error(`Error enviando aviso de solicitud de acceso para ${email}:`, e)

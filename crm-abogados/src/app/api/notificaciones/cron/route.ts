@@ -167,14 +167,18 @@ export async function GET(request: Request) {
       })),
     })
 
-    await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
-      to: userEmail,
-      subject: `📋 LexCRM — ${totalItems} ${totalItems === 1 ? 'ítem pendiente' : 'ítems pendientes'} para hoy`,
-      html,
-    })
-
-    enviados++
+    try {
+      const { error } = await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
+        to: userEmail,
+        subject: `📋 LexCRM — ${totalItems} ${totalItems === 1 ? 'ítem pendiente' : 'ítems pendientes'} para hoy`,
+        html,
+      })
+      if (error) throw new Error(JSON.stringify(error))
+      enviados++
+    } catch (e) {
+      console.error(`Error enviando resumen diario a ${userEmail}:`, e)
+    }
   }
 
   return Response.json({ ok: true, enviados, usuarios: userIds.length })

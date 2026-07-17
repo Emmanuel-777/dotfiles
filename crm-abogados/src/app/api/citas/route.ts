@@ -117,13 +117,14 @@ export async function POST(req: NextRequest) {
         googleCalendarLink,
       })
 
-      await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: contacto.email,
         subject: `Confirmación de cita — ${nueva.titulo}`,
         html,
         attachments: [icsAttachment],
       })
+      if (error) console.error('Error enviando confirmación de cita al cliente:', error)
     }
 
     const abogadoEmail = user.emailAddresses[0]?.emailAddress
@@ -141,13 +142,14 @@ export async function POST(req: NextRequest) {
         googleCalendarLink,
       })
 
-      await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'LexCRM <onboarding@resend.dev>',
         to: abogadoEmail,
         subject: `Cita agendada — ${nueva.titulo}`,
         html,
         attachments: [icsAttachment],
       })
+      if (error) console.error('Error enviando confirmación de cita al abogado:', error)
     }
   } catch (err) {
     console.error('Error enviando correo de confirmación de cita:', err)
