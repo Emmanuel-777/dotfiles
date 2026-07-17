@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/notificaciones/cron',
   '/api/notificaciones/citas-cron',
   '/api/notificaciones/tareas-cron',
+  '/api/notificaciones/citas-recordatorio-proximo',
   '/api/acceso/solicitud',
   '/no-autorizado',
 ])
