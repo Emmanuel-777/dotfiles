@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
-import { ShieldCheck, Save, Loader2, AlertTriangle, Landmark } from 'lucide-react'
+import { ShieldCheck, Save, Loader2, AlertTriangle, Landmark, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { FormField, SelectField } from '@/components/FormField'
 
@@ -195,6 +195,26 @@ export default function PerfilPage() {
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {saving ? 'Guardando…' : 'Guardar datos'}
         </button>
+      </div>
+
+      <div className="card p-6 mt-6 space-y-3">
+        <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+          <Download className="h-4 w-4 text-blue-500" />
+          <h2 className="text-sm font-semibold text-gray-900">Respaldo de mis datos</h2>
+        </div>
+        <p className="text-sm text-gray-500">
+          Descarga un archivo con todos tus clientes, causas, tareas, honorarios, citas y demás información — útil como respaldo o si algún día necesitas migrar a otro sistema.
+        </p>
+        <p className="text-xs text-gray-400">
+          Las causas Penales quedan excluidas de este respaldo masivo (Ley 21.719). Puedes exportar una causa Penal específica desde la ficha de ese cliente.
+        </p>
+        <a
+          href="/api/exportar-todo"
+          className="btn-secondary inline-flex items-center gap-1.5"
+        >
+          <Download className="h-4 w-4" />
+          Exportar todo mi estudio
+        </a>
       </div>
     </div>
   )
