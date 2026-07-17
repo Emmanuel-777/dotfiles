@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, Save, Eye, EyeOff, Plus, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function NuevaTareaPage() {
@@ -29,6 +29,10 @@ export default function NuevaTareaPage() {
     contrasena: '',
   })
 
+  const [mostrarModalCliente, setMostrarModalCliente] = useState(false)
+  const [guardandoCliente, setGuardandoCliente] = useState(false)
+  const [nuevoCliente, setNuevoCliente] = useState({ tipo: 'PERSONA_NATURAL', nombre: '', rut: '', email: '', celular: '' })
+
   useEffect(() => {
     fetch('/api/clientes').then((r) => r.json()).then((data) => {
       if (Array.isArray(data)) setClientes(data)
@@ -49,6 +53,30 @@ export default function NuevaTareaPage() {
       [name]: value,
       ...(name === 'clienteId' ? { causaId: '' } : {}),
     }))
+  }
+
+  const crearClienteRapido = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!nuevoCliente.rut.trim() || !nuevoCliente.nombre.trim()) return
+    setGuardandoCliente(true)
+    try {
+      const res = await fetch('/api/clientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nuevoCliente),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      const creado = await res.json()
+      setClientes((prev) => [...prev, { id: creado.id, nombre: nuevoCliente.nombre, rut: nuevoCliente.rut }])
+      setForm((prev) => ({ ...prev, clienteId: creado.id }))
+      setMostrarModalCliente(false)
+      setNuevoCliente({ tipo: 'PERSONA_NATURAL', nombre: '', rut: '', email: '', celular: '' })
+      toast.success('Cliente creado y seleccionado')
+    } catch {
+      toast.error('Error al crear el cliente — revisa que el RUT no esté repetido')
+    } finally {
+      setGuardandoCliente(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -127,7 +155,16 @@ export default function NuevaTareaPage() {
           </div>
 
           <div className="col-span-2">
-            <label className="label">Cliente *</label>
+            <div className="flex items-center justify-between">
+              <label className="label">Cliente *</label>
+              <button
+                type="button"
+                onClick={() => setMostrarModalCliente(true)}
+                className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 mb-1.5"
+              >
+                <Plus className="h-3 w-3" /> Agregar cliente
+              </button>
+            </div>
             <select name="clienteId" value={form.clienteId} onChange={handleChange} required className="input">
               <option value="">Seleccionar cliente...</option>
               {clientes.map((c) => (
@@ -226,6 +263,84 @@ export default function NuevaTareaPage() {
           <Link href="/tareas" className="btn-secondary">Cancelar</Link>
         </div>
       </form>
+
+      {mostrarModalCliente && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4"
+          onClick={() => setMostrarModalCliente(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-xl bg-white shadow-2xl ring-1 ring-black/5 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Agregar cliente</h2>
+              <button type="button" onClick={() => setMostrarModalCliente(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <form onSubmit={crearClienteRapido} className="space-y-4">
+              <div>
+                <label className="label">Tipo de cliente</label>
+                <select
+                  value={nuevoCliente.tipo}
+                  onChange={(e) => setNuevoCliente((p) => ({ ...p, tipo: e.target.value }))}
+                  className="input"
+                >
+                  <option value="PERSONA_NATURAL">Persona Natural</option>
+                  <option value="PERSONA_JURIDICA">Persona Jurídica</option>
+                </select>
+              </div>
+              <div>
+                <label className="label">{nuevoCliente.tipo === 'PERSONA_JURIDICA' ? 'Razón social' : 'Nombre completo'} *</label>
+                <input
+                  value={nuevoCliente.nombre}
+                  onChange={(e) => setNuevoCliente((p) => ({ ...p, nombre: e.target.value }))}
+                  required
+                  className="input"
+                  placeholder={nuevoCliente.tipo === 'PERSONA_JURIDICA' ? 'Empresa S.A.' : 'Juan Pérez Muñoz'}
+                />
+              </div>
+              <div>
+                <label className="label">RUT *</label>
+                <input
+                  value={nuevoCliente.rut}
+                  onChange={(e) => setNuevoCliente((p) => ({ ...p, rut: e.target.value }))}
+                  required
+                  className="input"
+                  placeholder="12345678-9"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Email</label>
+                  <input
+                    type="email"
+                    value={nuevoCliente.email}
+                    onChange={(e) => setNuevoCliente((p) => ({ ...p, email: e.target.value }))}
+                    className="input"
+                  />
+                </div>
+                <div>
+                  <label className="label">Celular</label>
+                  <input
+                    value={nuevoCliente.celular}
+                    onChange={(e) => setNuevoCliente((p) => ({ ...p, celular: e.target.value }))}
+                    className="input"
+                    placeholder="+56 9 1234 5678"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="submit" disabled={guardandoCliente} className="btn-primary flex-1 justify-center">
+                  {guardandoCliente ? 'Guardando...' : 'Crear y seleccionar'}
+                </button>
+                <button type="button" onClick={() => setMostrarModalCliente(false)} className="btn-secondary">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
