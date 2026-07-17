@@ -1,7 +1,7 @@
 # LexCRM — Manual de Usuario
 ## Guía para abogados
 
-> Versión 2.1 · Julio 2026 · Sistema de gestión legal para abogados en Chile
+> Versión 2.2 · Julio 2026 · Sistema de gestión legal para abogados en Chile
 >
 > **Nota:** este archivo es la referencia de texto rápida. El documento oficial para entregar a clientes es `MANUAL_USUARIO.pdf` (diseñado para A4), generado a partir de `MANUAL_USUARIO.html`.
 
@@ -39,6 +39,8 @@ Estos datos son para que te lleguen los pagos que correspondan por citas u otros
 
 Editable en cualquier momento desde "Mi Perfil" en el menú lateral.
 
+**Respaldo de mis datos:** desde "Mi Perfil" → "Exportar todo mi estudio" descargas en un solo archivo todos tus clientes, prospectos, causas, actuaciones, asesorías, plazos, documentos, honorarios, cuotas, tareas y citas — útil como respaldo o para migrar a otro sistema. Las causas Penales quedan excluidas de esta exportación masiva (Ley N° 21.719); para respaldar una causa Penal puntual, usa la exportación individual desde la ficha del cliente.
+
 ---
 
 ## Dashboard — pantalla principal
@@ -68,13 +70,15 @@ Menú: Dashboard, Embudo, Clientes, Causas, Tareas, Citas, Agenda y Plazos, Docu
 
 **Bitácora de Asesoría:** dentro de la ficha de cada cliente, un registro de las sesiones de asesoría que le das (independiente de sus causas). Cada entrada tiene fecha, tipo de consulta, notas y un documento adjunto opcional. Se puede editar o eliminar en cualquier momento desde "Editar" en la propia entrada.
 
+**Reporte y Carátula:** desde la ficha del cliente, botón "Reporte" genera un informe de gestiones imprimible (causas, actuaciones, tareas, honorarios) y "Carátula" arma la carátula de un escrito judicial. Ambos documentos llevan en el encabezado tu nombre real (el de tu cuenta), no un nombre de estudio genérico.
+
 ---
 
 ## Causas
 
 **Agregar:** Causas → Nueva causa → Cliente, ROL/RIT, Tribunal, Tipo (Civil, Laboral, Familia, Penal, Comercial, Tributario, Administrativo, Constitucional, Otro), Fecha de ingreso, Estado inicial (En Trámite / Suspendida / Terminada / Archivada).
 
-Dentro de cada causa: editar, plazos/audiencias, tareas, actuaciones (con compromisos y recordatorios al cliente), documentos, honorarios, Asistente IA.
+Dentro de cada causa: editar, plazos/audiencias, tareas, actuaciones (con compromisos y recordatorios al cliente, con fecha **y hora**), documentos, honorarios, Asistente IA.
 
 **Exportar listado:** Excel desde Causas — las causas Penales quedan excluidas por disposición legal.
 
@@ -100,7 +104,16 @@ No limita el trabajo normal con la causa — solo restringe descargas masivas.
 
 **Marcar pagado:** entra al honorario → cambia estado → fecha de pago → guardar.
 
-**Cobrar por WhatsApp:** en un honorario Pendiente o Parcial con el cliente con celular registrado, aparece un link "Cobrar" que abre WhatsApp con un mensaje prellenado — incluye el monto y, si ya completaste tus datos bancarios en Mi Perfil, también los datos de transferencia.
+**Pagos parciales por cuotas:** al poner un honorario en estado Parcial, aparece la sección "Cuotas y fechas de pago" — agrega cada cuota con su monto y fecha; cada una crea automáticamente una tarea de recordatorio de cobro. Las cuotas ya ingresadas se pueden marcar como pagadas, **editar** (monto y fecha, con el ícono de lápiz) o eliminar en cualquier momento.
+
+**Botones de WhatsApp:** según el estado del honorario (y que el cliente tenga celular registrado):
+- **Cobrar** (Pendiente/Parcial) — mensaje con el saldo pendiente real (no el monto total si ya hay cuotas pagadas) y tus datos bancarios si Mi Perfil está completo.
+- **Comprobante** (cualquier estado salvo Anulado) — pide al cliente el comprobante de la transferencia.
+- **Confirmar** (Pagado) — confirma que el pago quedó registrado en su carpeta.
+
+**Tarjeta "Por cobrar":** en la parte superior de Honorarios, esta tarjeta es clickeable — al pincharla filtra la tabla mostrando solo quién tiene saldo pendiente, ordenado de mayor a menor deuda, con el saldo real (no el monto del contrato completo).
+
+**Proyección de ingresos por mes:** tabla que agrupa lo esperado, cobrado y pendiente por mes — cada cuota se ubica en el mes en que vence (no todo el contrato en un solo mes), útil para proyectar ingresos y decidir si conviene aceptar pagos parciales. Cierra con una fila de **Consolidado general**. Cada mes de esta tabla es clickeable y filtra el detalle de abajo (combinable con "Por cobrar").
 
 ---
 
@@ -108,7 +121,11 @@ No limita el trabajo normal con la causa — solo restringe descargas masivas.
 
 **Agendar:** título, modalidad (Presencial, Google Meet, Zoom, Telefónica — botón "Crear sala" para Meet/Zoom), fecha/hora, cliente o prospecto (obligatorio) + causa (opcional), gratuita o valor.
 
-Envío automático de correo de confirmación y recordatorio la noche anterior.
+**Confirmaciones y recordatorios automáticos por correo:**
+- Al agendar, el **cliente o prospecto** recibe confirmación con opción de agregar la cita a Google Calendar o a su calendario (archivo .ics adjunto).
+- Al agendar, **tú (el abogado)** también recibes un correo de confirmación con la misma opción de calendario.
+- La noche anterior, recibes un resumen si tienes citas para el día siguiente.
+- **1 hora y 30 minutos antes** de la cita, recibes un recordatorio automático — sin importar el estado (Pendiente o Confirmada).
 
 **Estados:** Pendiente → Confirmada → Completada, o Cancelada.
 
@@ -134,7 +151,7 @@ Listado central con acceso directo a la causa y descarga.
 
 ## Tareas
 
-**Agregar:** título, descripción, fecha y hora límite, prioridad (Baja/Media/Alta/Urgente), cliente o causa.
+**Agregar:** título, descripción, fecha y hora límite, prioridad (Baja/Media/Alta/Urgente), cliente o causa. Si el cliente no existe todavía, el botón **"+ Agregar cliente"** junto al selector abre un formulario rápido (tipo, nombre, RUT, email, celular) sin salir de la pantalla — al guardarlo queda seleccionado automáticamente en la tarea.
 
 **Derivar a tercero:** casilla "Derivar a tercero" → nombre/correo del tercero + credenciales de portal opcionales (sistema/usuario/contraseña) — se guardan **cifradas**.
 
@@ -176,6 +193,8 @@ Dentro de cada causa, panel lateral derecho:
 ## Exportar o eliminar tus datos
 
 **Exportar datos de un cliente:** ficha del cliente → "Exportar todos los datos" → descarga causas, actuaciones, plazos, documentos, honorarios, tareas y citas completas.
+
+**Exportar todo tu estudio de una vez:** "Mi Perfil" → "Exportar todo mi estudio" → descarga en un solo archivo todos tus clientes, prospectos, causas, tareas, honorarios y citas. Las causas Penales quedan excluidas de esta exportación masiva (Ley N° 21.719) — para ellas usa la exportación individual del cliente.
 
 **Eliminar cliente:** Editar cliente → Eliminar cliente — borrado permanente e irreversible de todo lo asociado.
 
