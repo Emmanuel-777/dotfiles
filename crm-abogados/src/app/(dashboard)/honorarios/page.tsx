@@ -70,9 +70,10 @@ function mensajeConfirmacionPago(clienteNombre: string, descripcion: string, mon
   ].join('\n')
 }
 
-export default async function HonorariosPage() {
+export default async function HonorariosPage({ searchParams }: { searchParams: { filtro?: string } }) {
   await initDB()
   const userId = await requireUserId()
+  const soloPorCobrar = searchParams.filtro === 'por-cobrar'
   const rows = await db
     .select({ honorario: honorarios, cliente: clientes, causa: causas })
     .from(honorarios)
@@ -107,6 +108,17 @@ export default async function HonorariosPage() {
     },
     { pendiente: 0, pagado: 0, total: 0 },
   )
+
+  // Filas a mostrar en la tabla — si viene el filtro "por cobrar", solo las
+  // que aún tienen saldo pendiente, ordenadas de mayor a menor deuda (para
+  // ver primero quién debe más).
+  const rowsConPendiente = rows.map((r) => ({
+    ...r,
+    pendienteRow: splitHonorarioCobrado(r.honorario, todasCuotas.filter((c) => c.honorarioId === r.honorario.id)).pendiente,
+  }))
+  const rowsMostradas = soloPorCobrar
+    ? rowsConPendiente.filter((r) => r.pendienteRow > 0).sort((a, b) => b.pendienteRow - a.pendienteRow)
+    : rowsConPendiente
 
   // Base para tasa de cobro: todo lo emitido (excluye anulados)
   const emitidoBase = rows.filter((r) => r.honorario.estado !== 'ANULADO').reduce((s, r) => s + r.honorario.monto, 0)
@@ -145,7 +157,9 @@ export default async function HonorariosPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Honorarios</h1>
-          <p className="text-gray-500 text-sm mt-1">{rows.length} registros</p>
+          <p className="text-gray-500 text-sm mt-1">
+            {soloPorCobrar ? `${rowsMostradas.length} con saldo pendiente` : `${rows.length} registros`}
+          </p>
         </div>
         <Link href="/honorarios/nuevo" className="btn-primary">
           <Plus className="h-4 w-4" />
@@ -153,15 +167,30 @@ export default async function HonorariosPage() {
         </Link>
       </div>
 
+      {soloPorCobrar && (
+        <div className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
+          <p className="text-sm text-amber-800">
+            Mostrando solo honorarios con saldo pendiente, ordenados de mayor a menor deuda.
+          </p>
+          <Link href="/honorarios" className="text-sm font-medium text-amber-700 hover:text-amber-900 underline">
+            Ver todos
+          </Link>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="card p-5 border-l-4 border-emerald-400">
           <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Total cobrado</p>
           <p className="text-2xl font-bold text-emerald-700 mt-1">{formatMonto(totales.pagado)}</p>
         </div>
-        <div className="card p-5 border-l-4 border-amber-400">
+        <Link
+          href="/honorarios?filtro=por-cobrar"
+          className="card p-5 border-l-4 border-amber-400 hover:bg-amber-50/50 transition-colors cursor-pointer"
+        >
           <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Por cobrar</p>
           <p className="text-2xl font-bold text-amber-700 mt-1">{formatMonto(totales.pendiente)}</p>
-        </div>
+          <p className="text-xs text-amber-600 mt-1">Ver quién debe →</p>
+        </Link>
         <div className="card p-5 border-l-4 border-blue-400">
           <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Total emitido</p>
           <p className="text-2xl font-bold text-blue-700 mt-1">{formatMonto(totales.total)}</p>
@@ -199,9 +228,16 @@ export default async function HonorariosPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {rows.map(({ honorario: h, cliente, causa }) => {
+            {rowsMostradas.length === 0 && (
+              <tr>
+                <td colSpan={8} className="table-cell text-center text-gray-400 py-8">
+                  Nadie tiene saldo pendiente 🎉
+                </td>
+              </tr>
+            )}
+            {rowsMostradas.map(({ honorario: h, cliente, causa, pendienteRow }) => {
               const estadoInfo = ESTADOS_HONORARIO[h.estado as keyof typeof ESTADOS_HONORARIO]
-              const { pendiente: montoPendiente } = splitHonorarioCobrado(h, todasCuotas.filter((c) => c.honorarioId === h.id))
+              const montoPendiente = pendienteRow
               const porCobrar = h.estado === 'PENDIENTE' || h.estado === 'PARCIAL'
               const tieneCelular = !!cliente?.celular
               const waCobrarUrl = porCobrar && tieneCelular
@@ -226,7 +262,12 @@ export default async function HonorariosPage() {
                   <td className="table-cell font-mono text-xs text-gray-500">{causa?.rol || '—'}</td>
                   <td className="table-cell"><span className="badge bg-gray-100 text-gray-700">{h.tipo}</span></td>
                   <td className="table-cell text-gray-600 text-sm">{formatFechaCorta(h.fechaEmision)}</td>
-                  <td className="table-cell text-right font-semibold text-gray-900">{formatMonto(h.monto)}</td>
+                  <td className="table-cell text-right font-semibold text-gray-900">
+                    {soloPorCobrar ? formatMonto(montoPendiente) : formatMonto(h.monto)}
+                    {soloPorCobrar && h.estado === 'PARCIAL' && (
+                      <p className="text-xs text-gray-400 font-normal">de {formatMonto(h.monto)}</p>
+                    )}
+                  </td>
                   <td className="table-cell text-center">
                     <span className={`badge ${estadoInfo?.color}`}>{estadoInfo?.label}</span>
                   </td>
