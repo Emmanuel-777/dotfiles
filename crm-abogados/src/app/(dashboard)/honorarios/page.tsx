@@ -70,10 +70,11 @@ function mensajeConfirmacionPago(clienteNombre: string, descripcion: string, mon
   ].join('\n')
 }
 
-export default async function HonorariosPage({ searchParams }: { searchParams: { filtro?: string } }) {
+export default async function HonorariosPage({ searchParams }: { searchParams: { filtro?: string; mes?: string } }) {
   await initDB()
   const userId = await requireUserId()
   const soloPorCobrar = searchParams.filtro === 'por-cobrar'
+  const mesFiltro = searchParams.mes
   const rows = await db
     .select({ honorario: honorarios, cliente: clientes, causa: causas })
     .from(honorarios)
@@ -109,17 +110,6 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
     { pendiente: 0, pagado: 0, total: 0 },
   )
 
-  // Filas a mostrar en la tabla — si viene el filtro "por cobrar", solo las
-  // que aún tienen saldo pendiente, ordenadas de mayor a menor deuda (para
-  // ver primero quién debe más).
-  const rowsConPendiente = rows.map((r) => ({
-    ...r,
-    pendienteRow: splitHonorarioCobrado(r.honorario, todasCuotas.filter((c) => c.honorarioId === r.honorario.id)).pendiente,
-  }))
-  const rowsMostradas = soloPorCobrar
-    ? rowsConPendiente.filter((r) => r.pendienteRow > 0).sort((a, b) => b.pendienteRow - a.pendienteRow)
-    : rowsConPendiente
-
   // Base para tasa de cobro: todo lo emitido (excluye anulados)
   const emitidoBase = rows.filter((r) => r.honorario.estado !== 'ANULADO').reduce((s, r) => s + r.honorario.monto, 0)
   const tasaCobro = emitidoBase > 0 ? Math.round((totales.pagado / emitidoBase) * 100) : 0
@@ -139,17 +129,18 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
     return texto.charAt(0).toUpperCase() + texto.slice(1)
   }
 
-  const lineasProyeccion: { mes: string; monto: number; cobrado: number; pendiente: number }[] = []
+  const lineasProyeccion: { mes: string; honorarioId: string; monto: number; cobrado: number; pendiente: number }[] = []
   for (const { honorario: h } of rows) {
     if (h.estado === 'ANULADO') continue
     const cuotasDelHonorario = todasCuotas.filter((c) => c.honorarioId === h.id)
     if (h.estado === 'PARCIAL' && cuotasDelHonorario.length > 0) {
       for (const c of cuotasDelHonorario) {
-        lineasProyeccion.push({ mes: claveMes(c.fechaPago), monto: c.monto, cobrado: c.pagada ? c.monto : 0, pendiente: c.pagada ? 0 : c.monto })
+        lineasProyeccion.push({ mes: claveMes(c.fechaPago), honorarioId: h.id, monto: c.monto, cobrado: c.pagada ? c.monto : 0, pendiente: c.pagada ? 0 : c.monto })
       }
     } else {
       lineasProyeccion.push({
         mes: claveMes(h.fechaVence ?? h.fechaEmision),
+        honorarioId: h.id,
         monto: h.monto,
         cobrado: h.estado === 'PAGADO' ? h.monto : 0,
         pendiente: h.estado === 'PAGADO' ? 0 : h.monto,
@@ -158,18 +149,37 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
   }
 
   const mesesMap = new Map<string, { esperado: number; cobrado: number; pendiente: number }>()
+  const honorarioIdsPorMes = new Map<string, Set<string>>()
   for (const l of lineasProyeccion) {
     const actual = mesesMap.get(l.mes) ?? { esperado: 0, cobrado: 0, pendiente: 0 }
     actual.esperado += l.monto
     actual.cobrado += l.cobrado
     actual.pendiente += l.pendiente
     mesesMap.set(l.mes, actual)
+
+    const set = honorarioIdsPorMes.get(l.mes) ?? new Set<string>()
+    set.add(l.honorarioId)
+    honorarioIdsPorMes.set(l.mes, set)
   }
   const mesesOrdenados = Array.from(mesesMap.entries()).sort(([a], [b]) => a.localeCompare(b))
   const consolidadoGeneral = lineasProyeccion.reduce(
     (acc, l) => ({ esperado: acc.esperado + l.monto, cobrado: acc.cobrado + l.cobrado, pendiente: acc.pendiente + l.pendiente }),
     { esperado: 0, cobrado: 0, pendiente: 0 },
   )
+  const honorarioIdsDelMesFiltrado = mesFiltro ? honorarioIdsPorMes.get(mesFiltro) : undefined
+
+  // Filas a mostrar en la tabla — si viene el filtro "por cobrar", solo las
+  // que aún tienen saldo pendiente; si viene un mes, solo las que tienen
+  // actividad (honorario o alguna cuota) venciendo ese mes. Ambos filtros
+  // se pueden combinar. Con "por cobrar" activo, ordena de mayor a menor
+  // deuda para ver primero quién debe más.
+  const rowsConPendiente = rows.map((r) => ({
+    ...r,
+    pendienteRow: splitHonorarioCobrado(r.honorario, todasCuotas.filter((c) => c.honorarioId === r.honorario.id)).pendiente,
+  }))
+  let rowsMostradas = rowsConPendiente
+  if (honorarioIdsDelMesFiltrado) rowsMostradas = rowsMostradas.filter((r) => honorarioIdsDelMesFiltrado.has(r.honorario.id))
+  if (soloPorCobrar) rowsMostradas = rowsMostradas.filter((r) => r.pendienteRow > 0).sort((a, b) => b.pendienteRow - a.pendienteRow)
 
   // Buckets de los últimos 6 meses
   const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -205,7 +215,7 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Honorarios</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {soloPorCobrar ? `${rowsMostradas.length} con saldo pendiente` : `${rows.length} registros`}
+            {soloPorCobrar || mesFiltro ? `${rowsMostradas.length} de ${rows.length} registros` : `${rows.length} registros`}
           </p>
         </div>
         <Link href="/honorarios/nuevo" className="btn-primary">
@@ -214,10 +224,12 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
         </Link>
       </div>
 
-      {soloPorCobrar && (
+      {(soloPorCobrar || mesFiltro) && (
         <div className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
           <p className="text-sm text-amber-800">
-            Mostrando solo honorarios con saldo pendiente, ordenados de mayor a menor deuda.
+            {mesFiltro && soloPorCobrar && `Mostrando honorarios con saldo pendiente que vencen en ${labelMes(mesFiltro)}, ordenados de mayor a menor deuda.`}
+            {mesFiltro && !soloPorCobrar && `Mostrando honorarios con actividad en ${labelMes(mesFiltro)}.`}
+            {!mesFiltro && soloPorCobrar && 'Mostrando solo honorarios con saldo pendiente, ordenados de mayor a menor deuda.'}
           </p>
           <Link href="/honorarios" className="text-sm font-medium text-amber-700 hover:text-amber-900 underline">
             Ver todos
@@ -278,8 +290,12 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {mesesOrdenados.map(([clave, m]) => (
-                  <tr key={clave}>
-                    <td className="py-2 pr-4 text-gray-800">{labelMes(clave)}</td>
+                  <tr key={clave} className={clave === mesFiltro ? 'bg-amber-50' : ''}>
+                    <td className="py-2 pr-4">
+                      <Link href={`/honorarios?mes=${clave}`} className="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+                        {labelMes(clave)}
+                      </Link>
+                    </td>
                     <td className="py-2 pr-4 text-right text-gray-900 font-medium">{formatMonto(m.esperado)}</td>
                     <td className="py-2 pr-4 text-right text-emerald-700">{formatMonto(m.cobrado)}</td>
                     <td className="py-2 text-right text-amber-700">{formatMonto(m.pendiente)}</td>
@@ -317,7 +333,7 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
             {rowsMostradas.length === 0 && (
               <tr>
                 <td colSpan={8} className="table-cell text-center text-gray-400 py-8">
-                  Nadie tiene saldo pendiente 🎉
+                  {soloPorCobrar ? 'Nadie tiene saldo pendiente 🎉' : 'Sin honorarios para este filtro'}
                 </td>
               </tr>
             )}

@@ -14,7 +14,7 @@ Módulos disponibles:
 - Honorarios: cobros en pesos chilenos con estados Pendiente, Parcial, Pagado o Anulado.
   - Un honorario "Parcial" admite cuotas (monto + fecha de pago cada una); cada cuota crea automáticamente una tarea de recordatorio, y se puede marcar pagada, editar o eliminar desde "Editar" del honorario.
   - La tarjeta "Por cobrar" de la página de Honorarios es clickeable: al pincharla filtra la tabla mostrando solo quién tiene saldo pendiente, ordenado de mayor a menor deuda.
-  - Hay una tabla de "Proyección de ingresos por mes" (agrupa lo esperado/cobrado/pendiente por mes, repartiendo cada cuota en el mes en que vence) con una fila de "Consolidado general" al final — esta tabla es solo de lectura, no tiene un filtro clickeable por mes individual.
+  - Hay una tabla de "Proyección de ingresos por mes" (agrupa lo esperado/cobrado/pendiente por mes, repartiendo cada cuota en el mes en que vence) con una fila de "Consolidado general" al final. Cada mes de esa tabla es clickeable y filtra la tabla de honorarios de abajo a solo los que tienen actividad ese mes (se puede combinar con el filtro "Por cobrar").
   - Botones de WhatsApp por honorario: "Cobrar" (envía el saldo pendiente real y datos bancarios si el perfil está completo), "Comprobante" (pide comprobante de pago), "Confirmar" (confirma pago recibido, solo si está Pagado) — requieren que el cliente tenga celular registrado.
 - Agenda y Plazos: plazos procesales y vencimientos de causas, con calculadora de plazos por días hábiles/corridos según la materia
 - Tareas: pendientes con fecha límite y prioridad; se les puede registrar gestiones/seguimiento
