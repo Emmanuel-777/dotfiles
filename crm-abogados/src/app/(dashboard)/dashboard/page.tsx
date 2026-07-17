@@ -1,13 +1,13 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, plazos, honorarios, tareas, actuaciones } from '@/lib/schema'
+import { clientes, causas, plazos, honorarios, cuotasHonorario, tareas, actuaciones } from '@/lib/schema'
 import {
   formatMonto, formatFechaCorta, formatFechaHoraChile, formatFechaRelativa,
   estaVencido, esCritico, esCriticoPrescripcion, ESTADOS_CAUSA, ESTADOS_TAREA, PRIORIDADES_TAREA,
-  urgenciaTarea, URGENCIA_CLASES, hoyChile,
+  urgenciaTarea, URGENCIA_CLASES, hoyChile, splitHonorarioCobrado,
 } from '@/lib/utils'
 import Link from 'next/link'
 import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingUp, CheckCircle, ListTodo, UserCheck, Bell, UserPlus, FilePlus, CalendarPlus, Receipt, ArrowRight } from 'lucide-react'
-import { eq, gte, lte, lt, count, sum, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
+import { eq, gte, lte, lt, count, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
 import ReminderButtons from '@/components/ReminderButtons'
 import EmptyState from '@/components/EmptyState'
 import { requireUserId } from '@/lib/auth'
@@ -39,6 +39,7 @@ export default async function DashboardPage() {
     causasActivasRows,
     plazosProximosRows,
     honorariosPendientes,
+    cuotasPendientesRows,
     tareasActivasRows,
     ultimasCausas,
     proximosPlazos,
@@ -52,7 +53,8 @@ export default async function DashboardPage() {
     db.select({ count: count() }).from(causas).where(eq(causas.userId, userId)),
     db.select({ count: count() }).from(causas).where(and(eq(causas.userId, userId), eq(causas.estado, 'EN_TRAMITE'))),
     db.select({ count: count() }).from(plazos).where(and(eq(plazos.userId, userId), eq(plazos.estado, 'PENDIENTE'), gte(plazos.fecha, hoy))),
-    db.select({ total: sum(honorarios.monto) }).from(honorarios).where(and(eq(honorarios.userId, userId), inArray(honorarios.estado, ['PENDIENTE', 'PARCIAL']))),
+    db.select({ id: honorarios.id, monto: honorarios.monto, estado: honorarios.estado }).from(honorarios).where(and(eq(honorarios.userId, userId), inArray(honorarios.estado, ['PENDIENTE', 'PARCIAL']))),
+    db.select().from(cuotasHonorario).where(eq(cuotasHonorario.userId, userId)),
     db.select({ count: count() }).from(tareas).where(and(eq(tareas.userId, userId), ne(tareas.estado, 'COMPLETADA'), ne(tareas.estado, 'CANCELADA'))),
     db.select({ causa: causas, cliente: clientes })
       .from(causas)
@@ -101,7 +103,10 @@ export default async function DashboardPage() {
   const totalCausas = totalCausasRows[0]?.count ?? 0
   const causasActivas = causasActivasRows[0]?.count ?? 0
   const plazosProximos = plazosProximosRows[0]?.count ?? 0
-  const montoPendiente = Number(honorariosPendientes[0]?.total ?? 0)
+  const montoPendiente = honorariosPendientes.reduce(
+    (s, h) => s + splitHonorarioCobrado(h, cuotasPendientesRows.filter((c) => c.honorarioId === h.id)).pendiente,
+    0,
+  )
   const tareasActivas = tareasActivasRows[0]?.count ?? 0
 
   const causasPenalesProximas = causasPenalesRows

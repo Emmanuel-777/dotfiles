@@ -1,9 +1,9 @@
 import { db, initDB } from '@/lib/db'
-import { honorarios, clientes, causas, perfilAbogado } from '@/lib/schema'
+import { honorarios, clientes, causas, perfilAbogado, cuotasHonorario } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import Link from 'next/link'
 import { Plus, DollarSign, TrendingUp, Pencil, MessageCircle } from 'lucide-react'
-import { formatMonto, formatFechaCorta, formatPhoneWhatsApp, ESTADOS_HONORARIO } from '@/lib/utils'
+import { formatMonto, formatFechaCorta, formatPhoneWhatsApp, ESTADOS_HONORARIO, splitHonorarioCobrado } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 import { decrypt, looksEncrypted } from '@/lib/crypto'
 import MonthlyBarChart, { type MonthBucket } from '@/components/MonthlyBarChart'
@@ -81,6 +81,11 @@ export default async function HonorariosPage() {
     .where(eq(honorarios.userId, userId))
     .orderBy(desc(honorarios.createdAt))
 
+  const honorarioIds = rows.map((r) => r.honorario.id)
+  const todasCuotas = honorarioIds.length > 0
+    ? await db.select().from(cuotasHonorario).where(eq(cuotasHonorario.userId, userId))
+    : []
+
   const [perfilRow] = await db.select().from(perfilAbogado).where(eq(perfilAbogado.userId, userId))
   const perfil = perfilRow
     ? {
@@ -92,11 +97,16 @@ export default async function HonorariosPage() {
       }
     : null
 
-  const totales = {
-    pendiente: rows.filter((r) => r.honorario.estado === 'PENDIENTE' || r.honorario.estado === 'PARCIAL').reduce((s, r) => s + r.honorario.monto, 0),
-    pagado: rows.filter((r) => r.honorario.estado === 'PAGADO').reduce((s, r) => s + r.honorario.monto, 0),
-    total: rows.reduce((s, r) => s + r.honorario.monto, 0),
-  }
+  const totales = rows.reduce(
+    (acc, r) => {
+      const { cobrado, pendiente } = splitHonorarioCobrado(r.honorario, todasCuotas.filter((c) => c.honorarioId === r.honorario.id))
+      acc.pagado += cobrado
+      acc.pendiente += pendiente
+      acc.total += r.honorario.monto
+      return acc
+    },
+    { pendiente: 0, pagado: 0, total: 0 },
+  )
 
   // Base para tasa de cobro: todo lo emitido (excluye anulados)
   const emitidoBase = rows.filter((r) => r.honorario.estado !== 'ANULADO').reduce((s, r) => s + r.honorario.monto, 0)
@@ -191,11 +201,12 @@ export default async function HonorariosPage() {
           <tbody className="divide-y divide-gray-100">
             {rows.map(({ honorario: h, cliente, causa }) => {
               const estadoInfo = ESTADOS_HONORARIO[h.estado as keyof typeof ESTADOS_HONORARIO]
+              const { pendiente: montoPendiente } = splitHonorarioCobrado(h, todasCuotas.filter((c) => c.honorarioId === h.id))
               const porCobrar = h.estado === 'PENDIENTE' || h.estado === 'PARCIAL'
               const tieneCelular = !!cliente?.celular
               const waCobrarUrl = porCobrar && tieneCelular
                 ? `https://wa.me/${formatPhoneWhatsApp(cliente!.celular!)}?text=${encodeURIComponent(
-                    mensajeCobro({ clienteNombre: cliente!.nombre, descripcion: h.descripcion, monto: formatMonto(h.monto, h.moneda), causaRol: causa?.rol, perfil }),
+                    mensajeCobro({ clienteNombre: cliente!.nombre, descripcion: h.descripcion, monto: formatMonto(montoPendiente, h.moneda), causaRol: causa?.rol, perfil }),
                   )}`
                 : null
               const waComprobanteUrl = h.estado !== 'ANULADO' && tieneCelular

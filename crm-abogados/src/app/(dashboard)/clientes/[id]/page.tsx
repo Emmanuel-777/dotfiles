@@ -1,10 +1,10 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, honorarios, tareas, asesorias } from '@/lib/schema'
-import { eq, and, asc, desc } from 'drizzle-orm'
+import { clientes, causas, honorarios, cuotasHonorario, tareas, asesorias } from '@/lib/schema'
+import { eq, and, asc, desc, inArray } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download, NotebookPen } from 'lucide-react'
-import { formatMonto, formatFechaCorta, formatFechaHoraChile, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES } from '@/lib/utils'
+import { formatMonto, formatFechaCorta, formatFechaHoraChile, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES, splitHonorarioCobrado } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -22,8 +22,18 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
     db.select().from(asesorias).where(and(eq(asesorias.clienteId, params.id), eq(asesorias.userId, userId))).orderBy(desc(asesorias.fecha)),
   ])
 
-  const totalPagado = clienteHonorarios.filter((h) => h.estado === 'PAGADO').reduce((s, h) => s + h.monto, 0)
-  const totalPendiente = clienteHonorarios.filter((h) => h.estado === 'PENDIENTE' || h.estado === 'PARCIAL').reduce((s, h) => s + h.monto, 0)
+  const honorarioIds = clienteHonorarios.map((h) => h.id)
+  const cuotasCliente = honorarioIds.length > 0
+    ? await db.select().from(cuotasHonorario).where(and(eq(cuotasHonorario.userId, userId), inArray(cuotasHonorario.honorarioId, honorarioIds)))
+    : []
+
+  let totalPagado = 0
+  let totalPendiente = 0
+  for (const h of clienteHonorarios) {
+    const { cobrado, pendiente } = splitHonorarioCobrado(h, cuotasCliente.filter((c) => c.honorarioId === h.id))
+    totalPagado += cobrado
+    totalPendiente += pendiente
+  }
 
   return (
     <div className="p-4 lg:p-8">

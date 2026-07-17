@@ -27,6 +27,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Calcula lo realmente cobrado/pendiente de un honorario. Un honorario
+ * "PARCIAL" no debe contar como 100% pendiente si ya tiene cuotas pagadas —
+ * se resta lo que sus cuotas marcadas como pagadas ya cubrieron. Sin cuotas
+ * registradas para un PARCIAL, se asume nada cobrado (comportamiento previo).
+ */
+export function splitHonorarioCobrado(
+  honorario: { estado: string; monto: number },
+  cuotas: { monto: number; pagada: number }[],
+): { cobrado: number; pendiente: number } {
+  if (honorario.estado === 'ANULADO') return { cobrado: 0, pendiente: 0 }
+  if (honorario.estado === 'PAGADO') return { cobrado: honorario.monto, pendiente: 0 }
+  if (honorario.estado === 'PARCIAL' && cuotas.length > 0) {
+    const cobrado = cuotas.filter((c) => c.pagada === 1).reduce((s, c) => s + c.monto, 0)
+    return { cobrado, pendiente: Math.max(honorario.monto - cobrado, 0) }
+  }
+  return { cobrado: 0, pendiente: honorario.monto }
+}
+
 export function formatRut(rut: string): string {
   const clean = rut.replace(/[^0-9kK]/g, '').toUpperCase()
   if (clean.length < 2) return clean
