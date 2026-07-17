@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
 import { ArrowLeft, Printer, Scale } from 'lucide-react'
 
@@ -41,6 +42,8 @@ interface Cliente {
 export default function CaratulaPage() {
   const params = useParams()
   const clienteId = params.id as string
+  const { user } = useUser()
+  const nombreAbogadoSesion = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || 'Abogado/a'
 
   const [cliente, setCliente] = useState<Cliente | null>(null)
   const [causas, setCausas] = useState<Causa[]>([])
@@ -199,7 +202,7 @@ export default function CaratulaPage() {
                 <Scale className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="font-bold text-gray-900 text-sm tracking-wide">ESTUDIO JURÍDICO</p>
+                <p className="font-bold text-gray-900 text-sm tracking-wide">{nombreAbogadoSesion}</p>
                 <p className="text-xs text-gray-500">LexCRM · Gestión Legal</p>
               </div>
             </div>

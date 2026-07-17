@@ -10,6 +10,7 @@ import {
 } from '@/lib/utils'
 import PrintButton from '@/components/PrintButton'
 import { requireUserId } from '@/lib/auth'
+import { clerkClient } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +32,10 @@ const TIPO_COLORS: Record<string, string> = {
 export default async function ReporteClientePage({ params }: { params: { id: string } }) {
   await initDB()
   const userId = await requireUserId()
+
+  const client = await clerkClient()
+  const abogado = await client.users.getUser(userId)
+  const nombreAbogado = `${abogado.firstName ?? ''} ${abogado.lastName ?? ''}`.trim() || 'Abogado/a'
 
   const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, params.id), eq(clientes.userId, userId)))
   if (!cliente) notFound()
@@ -83,7 +88,7 @@ export default async function ReporteClientePage({ params }: { params: { id: str
               <Scale className="h-6 w-6 text-white" />
             </div>
             <div>
-              <p className="font-bold text-gray-900 text-base">ESTUDIO JURÍDICO</p>
+              <p className="font-bold text-gray-900 text-base">{nombreAbogado}</p>
               <p className="text-xs text-gray-500">LexCRM · Gestión Legal</p>
             </div>
           </div>
