@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Plus, Trash2, CheckCircle2, Circle } from 'lucide-react'
+import { ArrowLeft, Save, Plus, Trash2, CheckCircle2, Circle, Pencil, X, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { formatMonto, formatFechaCorta } from '@/lib/utils'
 
@@ -31,6 +31,9 @@ function EditarHonorarioForm() {
   const [cuotas, setCuotas] = useState<Cuota[]>([])
   const [nuevaCuota, setNuevaCuota] = useState({ monto: '', fechaPago: '' })
   const [guardandoCuota, setGuardandoCuota] = useState(false)
+  const [editandoCuota, setEditandoCuota] = useState<string | null>(null)
+  const [edicionCuota, setEdicionCuota] = useState({ monto: '', fechaPago: '' })
+  const [guardandoEdicion, setGuardandoEdicion] = useState(false)
 
   const cargarCuotas = () => {
     fetch(`/api/cuotas-honorario?honorarioId=${id}`).then((r) => r.json()).then((data) => {
@@ -93,6 +96,31 @@ function EditarHonorarioForm() {
   const eliminarCuota = async (cuotaId: string) => {
     setCuotas((prev) => prev.filter((c) => c.id !== cuotaId))
     await fetch(`/api/cuotas-honorario/${cuotaId}`, { method: 'DELETE' })
+  }
+
+  const iniciarEdicionCuota = (c: Cuota) => {
+    setEditandoCuota(c.id)
+    setEdicionCuota({ monto: String(c.monto), fechaPago: c.fechaPago.slice(0, 10) })
+  }
+
+  const guardarEdicionCuota = async (cuotaId: string) => {
+    if (!edicionCuota.monto || !edicionCuota.fechaPago) return
+    setGuardandoEdicion(true)
+    try {
+      const res = await fetch(`/api/cuotas-honorario/${cuotaId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monto: parseFloat(edicionCuota.monto), fechaPago: edicionCuota.fechaPago }),
+      })
+      if (!res.ok) throw new Error()
+      setEditandoCuota(null)
+      cargarCuotas()
+      toast.success('Cuota actualizada')
+    } catch {
+      toast.error('Error al actualizar la cuota')
+    } finally {
+      setGuardandoEdicion(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -180,17 +208,52 @@ function EditarHonorarioForm() {
             {cuotas.length > 0 && (
               <div className="divide-y divide-gray-100 border border-gray-100 rounded-lg overflow-hidden">
                 {cuotas.map((c) => (
-                  <div key={c.id} className="flex items-center justify-between px-3 py-2 text-sm">
-                    <button type="button" onClick={() => togglePagada(c)} className="flex items-center gap-2 text-left">
-                      {c.pagada ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <Circle className="h-4 w-4 text-gray-300" />}
-                      <span className={c.pagada ? 'line-through text-gray-400' : 'text-gray-800'}>
-                        {formatMonto(c.monto)} — {formatFechaCorta(c.fechaPago)}
-                      </span>
-                    </button>
-                    <button type="button" onClick={() => eliminarCuota(c.id)} className="text-gray-300 hover:text-red-500">
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                  editandoCuota === c.id ? (
+                    <div key={c.id} className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50/50">
+                      <input
+                        type="number"
+                        min="0"
+                        value={edicionCuota.monto}
+                        onChange={(e) => setEdicionCuota((p) => ({ ...p, monto: e.target.value }))}
+                        className="input flex-1"
+                        placeholder="Monto"
+                      />
+                      <input
+                        type="date"
+                        value={edicionCuota.fechaPago}
+                        onChange={(e) => setEdicionCuota((p) => ({ ...p, fechaPago: e.target.value }))}
+                        className="input flex-1"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => guardarEdicionCuota(c.id)}
+                        disabled={guardandoEdicion}
+                        className="text-green-600 hover:text-green-700 flex-shrink-0"
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                      <button type="button" onClick={() => setEditandoCuota(null)} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div key={c.id} className="flex items-center justify-between px-3 py-2 text-sm">
+                      <button type="button" onClick={() => togglePagada(c)} className="flex items-center gap-2 text-left">
+                        {c.pagada ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <Circle className="h-4 w-4 text-gray-300" />}
+                        <span className={c.pagada ? 'line-through text-gray-400' : 'text-gray-800'}>
+                          {formatMonto(c.monto)} — {formatFechaCorta(c.fechaPago)}
+                        </span>
+                      </button>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button type="button" onClick={() => iniciarEdicionCuota(c)} className="text-gray-300 hover:text-blue-500">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <button type="button" onClick={() => eliminarCuota(c.id)} className="text-gray-300 hover:text-red-500">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )
                 ))}
               </div>
             )}

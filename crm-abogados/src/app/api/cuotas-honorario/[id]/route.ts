@@ -23,6 +23,16 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
   }
 
+  if ('monto' in body || 'fechaPago' in body) {
+    const updates: { monto?: number; fechaPago?: string } = {}
+    if ('monto' in body) updates.monto = Number(body.monto)
+    if ('fechaPago' in body) updates.fechaPago = body.fechaPago
+    await db.update(cuotasHonorario).set(updates).where(eq(cuotasHonorario.id, params.id))
+    if (cuota.tareaId && updates.fechaPago) {
+      await db.update(tareas).set({ fechaVencimiento: new Date(updates.fechaPago).toISOString() }).where(eq(tareas.id, cuota.tareaId))
+    }
+  }
+
   return NextResponse.json({ ok: true })
 }
 
