@@ -124,6 +124,53 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
   const emitidoBase = rows.filter((r) => r.honorario.estado !== 'ANULADO').reduce((s, r) => s + r.honorario.monto, 0)
   const tasaCobro = emitidoBase > 0 ? Math.round((totales.pagado / emitidoBase) * 100) : 0
 
+  // Proyección de ingresos por mes: cada honorario PARCIAL se reparte en el
+  // mes de vencimiento de CADA una de sus cuotas (no todo en un solo mes),
+  // para que se vea el efecto real de aceptar pagos parciales sobre el flujo
+  // de caja mensual. Honorarios sin cuotas usan su fecha de vencimiento
+  // (o emisión si no tiene). Anulados quedan fuera por completo.
+  function claveMes(fecha: string): string {
+    const d = new Date(fecha.length === 10 ? fecha + 'T00:00:00' : fecha)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+  }
+  function labelMes(clave: string): string {
+    const [y, m] = clave.split('-').map(Number)
+    const texto = new Date(y, m - 1, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })
+    return texto.charAt(0).toUpperCase() + texto.slice(1)
+  }
+
+  const lineasProyeccion: { mes: string; monto: number; cobrado: number; pendiente: number }[] = []
+  for (const { honorario: h } of rows) {
+    if (h.estado === 'ANULADO') continue
+    const cuotasDelHonorario = todasCuotas.filter((c) => c.honorarioId === h.id)
+    if (h.estado === 'PARCIAL' && cuotasDelHonorario.length > 0) {
+      for (const c of cuotasDelHonorario) {
+        lineasProyeccion.push({ mes: claveMes(c.fechaPago), monto: c.monto, cobrado: c.pagada ? c.monto : 0, pendiente: c.pagada ? 0 : c.monto })
+      }
+    } else {
+      lineasProyeccion.push({
+        mes: claveMes(h.fechaVence ?? h.fechaEmision),
+        monto: h.monto,
+        cobrado: h.estado === 'PAGADO' ? h.monto : 0,
+        pendiente: h.estado === 'PAGADO' ? 0 : h.monto,
+      })
+    }
+  }
+
+  const mesesMap = new Map<string, { esperado: number; cobrado: number; pendiente: number }>()
+  for (const l of lineasProyeccion) {
+    const actual = mesesMap.get(l.mes) ?? { esperado: 0, cobrado: 0, pendiente: 0 }
+    actual.esperado += l.monto
+    actual.cobrado += l.cobrado
+    actual.pendiente += l.pendiente
+    mesesMap.set(l.mes, actual)
+  }
+  const mesesOrdenados = Array.from(mesesMap.entries()).sort(([a], [b]) => a.localeCompare(b))
+  const consolidadoGeneral = lineasProyeccion.reduce(
+    (acc, l) => ({ esperado: acc.esperado + l.monto, cobrado: acc.cobrado + l.cobrado, pendiente: acc.pendiente + l.pendiente }),
+    { esperado: 0, cobrado: 0, pendiente: 0 },
+  )
+
   // Buckets de los últimos 6 meses
   const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
   const ahora = new Date()
@@ -210,6 +257,45 @@ export default async function HonorariosPage({ searchParams }: { searchParams: {
         <div className="card p-6 mb-6">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">Honorarios por mes — últimos 6 meses</h2>
           <MonthlyBarChart data={buckets} />
+        </div>
+      )}
+
+      {mesesOrdenados.length > 0 && (
+        <div className="card p-6 mb-6">
+          <h2 className="text-sm font-semibold text-gray-700">Proyección de ingresos por mes</h2>
+          <p className="text-xs text-gray-400 mt-0.5 mb-4">
+            Cada cuota se ubica en el mes en que vence — así se ve el efecto real de aceptar pagos parciales sobre el flujo de caja.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
+                  <th className="py-2 pr-4">Mes</th>
+                  <th className="py-2 pr-4 text-right">Esperado</th>
+                  <th className="py-2 pr-4 text-right">Cobrado</th>
+                  <th className="py-2 text-right">Pendiente</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {mesesOrdenados.map(([clave, m]) => (
+                  <tr key={clave}>
+                    <td className="py-2 pr-4 text-gray-800">{labelMes(clave)}</td>
+                    <td className="py-2 pr-4 text-right text-gray-900 font-medium">{formatMonto(m.esperado)}</td>
+                    <td className="py-2 pr-4 text-right text-emerald-700">{formatMonto(m.cobrado)}</td>
+                    <td className="py-2 text-right text-amber-700">{formatMonto(m.pendiente)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-gray-300">
+                  <td className="py-3 pr-4 font-bold text-gray-900">Consolidado general</td>
+                  <td className="py-3 pr-4 text-right font-bold text-gray-900">{formatMonto(consolidadoGeneral.esperado)}</td>
+                  <td className="py-3 pr-4 text-right font-bold text-emerald-700">{formatMonto(consolidadoGeneral.cobrado)}</td>
+                  <td className="py-3 text-right font-bold text-amber-700">{formatMonto(consolidadoGeneral.pendiente)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
       )}
 
