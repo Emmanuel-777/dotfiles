@@ -32,15 +32,16 @@
 
 | Tarea | Responsable | Estado | Notas |
 |---|---|---|---|
-| Diseño de logo/isotipo | Emmanuel | ⏳ | Usar prompt de brief gráfico (sección 2) |
-| Manual básico de marca (borrador) | Emmanuel | ⏳ | |
+| Diseño de logo/isotipo | Emmanuel | ⏳ | Usar prompt de brief gráfico (sección 2) — aún no iniciado |
+| Manual básico de marca (borrador) | Emmanuel | ⏳ | Aún no iniciado |
 | Guion Reel 1 | Emmanuel | ✅ | Hook: "Fui oficial de la PDI. Hoy preparo a quienes quieren serlo." |
 | Grabación Reel 1 | Yocelyn | ⏳ | |
 | Copy de post de presentación | Emmanuel | ✅ | Ver sección 4 del documento base |
 | Publicación post de presentación + Reel 1 | Ambos | ⏳ | Fijar (pin) el Reel en el perfil |
-| Piezas 1-3 del grid de arranque | Emmanuel | ⏳ | |
+| 9 piezas del grid — borrador diseñado | Emmanuel | ✅ | En Claude Design (`Yocelyn Cea IG Post.dc.html`), sistema de color aplicado |
+| Revisión/aprobación de las 9 piezas del grid | Yocelyn | ⏳ | Elegir variantes o pedir ajustes antes de exportar |
 
-**Próximo hito:** cuenta nueva activa y publicando (primer Reel + primeras piezas del grid).
+**Próximo hito:** cuenta nueva activa y publicando (primer Reel + grid aprobado por Yocelyn).
 
 ---
 
