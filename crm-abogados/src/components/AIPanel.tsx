@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock } from 'lucide-react'
+import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock, MessageCircle, Mail } from 'lucide-react'
 import { toast } from 'sonner'
+import { formatPhoneWhatsApp } from '@/lib/utils'
 
 type Modo = 'resumen' | 'borrador'
 
@@ -12,9 +13,12 @@ interface AIPanelProps {
   causaRol?: string
   causaTribunal?: string
   plan: 'basico' | 'pro'
+  clienteNombre?: string
+  clienteCelular?: string | null
+  clienteEmail?: string | null
 }
 
-export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal, plan }: AIPanelProps) {
+export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal, plan, clienteNombre, clienteCelular, clienteEmail }: AIPanelProps) {
   const [modo, setModo] = useState<Modo>('resumen')
   const [loading, setLoading] = useState(false)
   const [resultado, setResultado] = useState('')
@@ -56,6 +60,21 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
       toast.error('No se pudo copiar')
     }
   }
+
+  const asuntoEnvio = modo === 'resumen'
+    ? `Resumen de la causa${causaRol ? ` ${causaRol}` : ''}`
+    : `Borrador — ${tipo}${causaRol ? ` (causa ${causaRol})` : ''}`
+
+  const mensajeEnvio = clienteNombre
+    ? `Estimado/a ${clienteNombre},\n\n${resultado}`
+    : resultado
+
+  const waUrl = resultado && clienteCelular
+    ? `https://wa.me/${formatPhoneWhatsApp(clienteCelular)}?text=${encodeURIComponent(mensajeEnvio)}`
+    : null
+  const mailUrl = resultado && clienteEmail
+    ? `mailto:${clienteEmail}?subject=${encodeURIComponent(asuntoEnvio)}&body=${encodeURIComponent(mensajeEnvio)}`
+    : null
 
   if (plan !== 'pro') {
     return (
@@ -204,6 +223,32 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
             <p className="mt-2 text-[11px] text-gray-400">
               Contenido generado por IA. Revísalo antes de usarlo o presentarlo.
             </p>
+
+            {(waUrl || mailUrl) && (
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] text-gray-400">Enviar al cliente:</span>
+                {waUrl && (
+                  <a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-2 py-1 rounded-full transition-colors"
+                  >
+                    <MessageCircle className="h-3 w-3" />
+                    WhatsApp
+                  </a>
+                )}
+                {mailUrl && (
+                  <a
+                    href={mailUrl}
+                    className="flex items-center gap-1 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-full transition-colors"
+                  >
+                    <Mail className="h-3 w-3" />
+                    Email
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
