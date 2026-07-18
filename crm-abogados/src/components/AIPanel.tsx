@@ -1,11 +1,87 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock, MessageCircle, Mail } from 'lucide-react'
 import { toast } from 'sonner'
 import { formatPhoneWhatsApp } from '@/lib/utils'
 
 type Modo = 'resumen' | 'borrador'
+
+/** Convierte **negrita** dentro de una línea a <strong>, sin librerías externas. */
+function renderInline(texto: string): ReactNode {
+  const partes = texto.split(/(\*\*[^*]+\*\*)/g)
+  return partes.map((parte, i) =>
+    parte.startsWith('**') && parte.endsWith('**')
+      ? <strong key={i} className="text-gray-900">{parte.slice(2, -2)}</strong>
+      : parte
+  )
+}
+
+/** Renderizador liviano del subconjunto de Markdown que devuelve la IA: encabezados #/##/###, negrita, listas con - o números. */
+function renderMarkdown(texto: string): ReactNode[] {
+  const lineas = texto.split('\n')
+  const bloques: ReactNode[] = []
+  let listaItems: string[] = []
+  let listaOrdenada = false
+
+  const flushLista = () => {
+    if (listaItems.length === 0) return
+    const items = listaItems
+    if (listaOrdenada) {
+      bloques.push(
+        <ol key={bloques.length} className="list-decimal pl-5 space-y-1 mb-2">
+          {items.map((it, i) => <li key={i}>{renderInline(it)}</li>)}
+        </ol>
+      )
+    } else {
+      bloques.push(
+        <ul key={bloques.length} className="list-disc pl-5 space-y-1 mb-2">
+          {items.map((it, i) => <li key={i}>{renderInline(it)}</li>)}
+        </ul>
+      )
+    }
+    listaItems = []
+  }
+
+  for (const linea of lineas) {
+    const trimmed = linea.trim()
+    if (!trimmed) { flushLista(); continue }
+
+    const headerMatch = trimmed.match(/^(#{1,3})\s+(.*)/)
+    if (headerMatch) {
+      flushLista()
+      const nivel = headerMatch[1].length
+      const clase = nivel === 1
+        ? 'text-[13px] font-bold text-gray-900 mt-3 mb-1 first:mt-0'
+        : nivel === 2
+        ? 'text-[12.5px] font-bold text-gray-900 mt-3 mb-1 first:mt-0'
+        : 'text-[12px] font-semibold text-gray-800 mt-2 mb-1 first:mt-0'
+      bloques.push(<p key={bloques.length} className={clase}>{renderInline(headerMatch[2])}</p>)
+      continue
+    }
+
+    const bulletMatch = trimmed.match(/^[-*]\s+(.*)/)
+    if (bulletMatch) {
+      if (listaOrdenada) flushLista()
+      listaOrdenada = false
+      listaItems.push(bulletMatch[1])
+      continue
+    }
+
+    const numMatch = trimmed.match(/^\d+[.)]\s+(.*)/)
+    if (numMatch) {
+      if (!listaOrdenada) flushLista()
+      listaOrdenada = true
+      listaItems.push(numMatch[1])
+      continue
+    }
+
+    flushLista()
+    bloques.push(<p key={bloques.length} className="mb-2 last:mb-0">{renderInline(trimmed)}</p>)
+  }
+  flushLista()
+  return bloques
+}
 
 interface AIPanelProps {
   causaId: string
@@ -217,8 +293,8 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
                 {copiado ? 'Copiado' : 'Copiar'}
               </button>
             </div>
-            <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">{resultado}</p>
+            <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm leading-relaxed text-gray-800">
+              {renderMarkdown(resultado)}
             </div>
             <p className="mt-2 text-[11px] text-gray-400">
               Contenido generado por IA. Revísalo antes de usarlo o presentarlo.
