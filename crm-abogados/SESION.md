@@ -21,6 +21,39 @@ despliega automáticamente en **Vercel**.
 
 ---
 
+## 💳 Datos de facturación — cobro de suscripciones a abogados
+
+Cuenta para recibir el pago mensual de los clientes (abogados) de LexCRM. Distinta de los datos bancarios que cada abogado carga en su propio "Mi Perfil" (esos son para que ELLOS cobren a SUS clientes).
+
+- **Razón social:** Soluciones Con IA SpA
+- **RUT:** 78.464.829-K
+- **Banco:** BCI
+- **Tipo de cuenta:** Cuenta Corriente en pesos
+- **N° de cuenta:** 69584832
+- **Correo para comprobantes:** contacto@lexcrm.site
+
+**Precios:** Plan Básico $25.000/mes · Plan Pro $45.000/mes. Cobro mensual por transferencia, sin pasarela de pago.
+
+**Mensaje tipo para recordar el pago:**
+```
+Hola [nombre],
+
+Te recuerdo que la mensualidad de LexCRM vence el día [X] de cada mes. Puedes realizar la transferencia a:
+
+Soluciones Con IA SpA
+RUT: 78.464.829-K
+Banco BCI
+Cuenta Corriente en pesos
+N° de cuenta: 69584832
+Correo para el comprobante: contacto@lexcrm.site
+
+Monto: $25.000 (Plan Básico) / $45.000 (Plan Pro)
+
+Cualquier duda, escríbeme por este mismo medio. ¡Gracias por confiar en LexCRM!
+```
+
+---
+
 ## ✅ Completado
 
 ### Base (sesiones previas)
