@@ -32,8 +32,8 @@
 
 | Tarea | Responsable | Estado | Notas |
 |---|---|---|---|
-| Diseño de logo/isotipo | Emmanuel | ⏳ | Usar prompt de brief gráfico (sección 2) — aún no iniciado |
-| Manual básico de marca (borrador) | Emmanuel | ⏳ | Aún no iniciado |
+| Diseño de logo/isotipo | Emmanuel | ✅ | Monograma "YC" + rama de olivo + wordmark, entregado por Yocelyn en 3 versiones (lineal, sólida, ornamental) |
+| Manual básico de marca (borrador) | Emmanuel | ✅ | `Manual_Basico_Marca_Yocelyn_Cea.docx` |
 | Guion Reel 1 | Emmanuel | ✅ | Hook: "Fui oficial de la PDI. Hoy preparo a quienes quieren serlo." |
 | Grabación Reel 1 | Yocelyn | ⏳ | |
 | Copy de post de presentación | Emmanuel | ✅ | Ver sección 4 del documento base |
