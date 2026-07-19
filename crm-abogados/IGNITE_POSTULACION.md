@@ -7,42 +7,45 @@
 
 **Qué es:** SaaS B2B — CRM especializado para abogados chilenos.
 
-**URL actual (producción):** `dotfiles-iota.vercel.app`  
-**Stack:** Next.js 14 App Router · Drizzle ORM · Turso (SQLite) · Clerk (auth) · Claude Haiku (IA) · Vercel  
+**URL actual (producción):** landing en `lexcrm.site`, app en `app.lexcrm.site`
+**Stack:** Next.js 14 App Router · Drizzle ORM · Turso (SQLite) · Clerk (auth) · Claude (Anthropic, resumen/borrador de escritos) · Resend (email) · Vercel
 **Repositorio:** `github.com/Emmanuel-777/dotfiles` (carpeta `crm-abogados/`)
 
-**Módulos ya construidos:**
+**Módulos construidos (estado real, jul-2026):**
 - Dashboard con semáforo de alertas (vencidos / críticos / hoy)
-- Clientes (ficha, RUT, tipo persona natural/jurídica)
-- Causas (ROL/RIT, tribunal, tipo, estado, plazos, actuaciones)
-- Agenda y Plazos
-- Tareas (con delegación a terceros)
-- Citas (presencial / videollamada, cobro por consulta)
-- Honorarios (honorario / boleta / factura / saldo)
-- Documentos
-- Embudo de ventas (prospectos / etapas / conversión a cliente)
-- Asistente virtual IA (chat flotante, usa Claude Haiku)
-- Exportar causas a Excel (CSV UTF-8 con BOM)
-- Búsqueda global (clientes, causas, citas)
-- Sidebar responsive (drawer en móvil)
+- Clientes (ficha, RUT, tipo persona natural/jurídica), Bitácora de Asesoría, exportación individual y masiva de datos (Ley 21.719, excluye causas Penales)
+- Causas (ROL/RIT, tribunal, tipo, estado, actuaciones con compromisos y hora), tratamiento especial de causas Penales (alerta de prescripción a 90 días, auditoría de accesos)
+- Agenda y Plazos, con calculadora de plazos por días hábiles/corridos según materia (CPC, CPP, Ley 19.968, Ley 19.880)
+- Tareas (con delegación a terceros, credenciales de portal cifradas, creación de cliente sin salir del formulario)
+- Citas (presencial / Meet / Zoom / telefónica): confirmación al cliente y al abogado con Google Calendar/.ics, recordatorio 1h y 30min antes
+- Honorarios: estados con pagos parciales por cuotas (cada cuota crea su tarea de cobro), cobro/comprobante/confirmación por WhatsApp, proyección de ingresos por mes con filtro clickeable
+- Documentos, Embudo de ventas (prospectos / etapas / conversión a cliente)
+- Asistente virtual IA (chat de ayuda) + Asistente IA por causa (resumen ejecutivo y borrador de escritos con contexto real de la causa, envío directo por WhatsApp/correo) — exclusivo Plan Pro
+- Cifrado reforzado (AES-256-GCM) de credenciales de portal y datos bancarios
+- Exportar causas a Excel (CSV UTF-8 con BOM), búsqueda global (⌘K)
+- Responsive / instalable como PWA desde el navegador móvil
+- Monitoreo de disponibilidad (uptime) activo
 
 **Planes de precio definidos:**
 | Plan | Precio/mes |
 |---|---|
 | Básico | $25.000 CLP |
 | Pro | $45.000 CLP |
-| Firma | $90.000 CLP |
 
-Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones con IA SpA (Banco BCI) — sin pasarela de pago automatizada por ahora.
+(Plan "Firma" queda oculto en la landing por ahora, pendiente de definir alcance).
+
+Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones Con IA SpA (Banco BCI) — sin pasarela de pago automatizada por ahora.
 
 **Diferenciadores clave para el pitch:**
 - Único CRM vertical para el mercado legal chileno
-- IA integrada (asistente virtual Claude Haiku)
+- IA integrada con contexto real de cada causa (no un chat genérico aparte) — resumen ejecutivo y borrador de escritos con estructura procesal chilena
 - Multi-tenant (cada usuario ve solo sus datos)
 - Semáforo visual de plazos vencidos / críticos
+- Calculadora de plazos legales por días hábiles según materia — no existe en ningún competidor conocido
 - Precio en CLP, pago por transferencia bancaria directa (sin Stripe, sin dólares, sin comisión de pasarela)
-- Funciona en móvil (responsive)
+- Funciona en móvil (responsive/PWA)
 - 7 días de prueba gratuita
+- Cumplimiento activo de la Ley 21.719 (protección de datos personales) desde el diseño, no como parche
 
 ---
 
@@ -73,16 +76,18 @@ Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones con 
 ## 3. Tareas pendientes antes de postular
 
 ### Legales (urgente)
-- [ ] Constituir **SPA** (Sociedad por Acciones) — recomendado sobre LTDA por flexibilidad
-- [ ] **Inicio de actividades en SII** con giro: *"Desarrollo y venta de software"* (código 6201)
-- [ ] Abrir cuenta bancaria empresarial (BCI, Banco Estado o similar)
-- [ ] Registrar dominio propio (ej: `lexcrm.cl`)
+- [x] Constituir **SPA** — Soluciones Con IA SpA, RUT 78.464.829-K
+- [x] **Inicio de actividades en SII**
+- [x] Abrir cuenta bancaria empresarial — BCI, Cuenta Corriente
+- [x] Registrar dominio propio — `lexcrm.site` (landing) + `app.lexcrm.site` (CRM)
 
 ### Comerciales (para tener tracción al momento de postular)
-- [ ] Conseguir **mínimo 3 clientes pagando** y documentarlos
-- [ ] Calcular **MRR** (ingresos mensuales recurrentes) al momento de postular
+- [x] Conseguir **mínimo 3 clientes pagando** — ✅ 3 clientes, todos en **Plan Pro** ($45.000 c/u)
+- [x] Calcular **MRR** — **$135.000 CLP/mes** (al 19-jul-2026)
 - [ ] Registrar tasa de conversión del período de prueba
 - [ ] Testimonios o cartas de intención de abogados / estudios jurídicos
+
+> Nota: tracción muy reciente (clientes pagando hace menos de 1 mes) — aún no hay dato de retención/renovación que mostrar. Es un punto a fortalecer antes de postular, o a mencionar honestamente como "tracción temprana validada" en el pitch.
 
 ### Pitch Deck (10-12 slides)
 - [ ] Slide 1 — Portada: logo LexCRM + tagline
@@ -124,14 +129,16 @@ Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones con 
 
 ## 5. Features de roadmap para mencionar en el pitch
 
-Estas funcionalidades aún no están desarrolladas pero son viables y aumentan el puntaje de "escalabilidad":
+Ya construido (ya no es roadmap, es tracción de producto): recordatorios automáticos por email de plazos/citas, reportes PDF de estado de causa para el cliente (Reporte + Carátula), respaldo/exportación de datos.
+
+Pendientes, viables y aumentan el puntaje de "escalabilidad":
 
 1. **Búsqueda de jurisprudencia con IA** — integración con buscador del Poder Judicial (juris.pjud.cl) + síntesis Claude
-2. **App móvil nativa** — React Native o PWA avanzada
+2. **App móvil nativa** — React Native (hoy es PWA instalable, no nativa)
 3. **Facturación electrónica SII** — integración con API del SII para emitir boletas/facturas desde el CRM
-4. **Multi-usuario por estudio** — roles (socio, asociado, administrativo)
-5. **Recordatorios automáticos por email/WhatsApp** — plazos y citas
-6. **Reportes para clientes** — PDF de estado de causa para enviar al cliente
+4. **Multi-usuario por estudio** — roles (socio, asociado, administrativo) — hoy cada cuenta es independiente
+5. **Recordatorios automáticos por WhatsApp** (hoy solo por email)
+6. **Flujos de trabajo personalizables por materia** — plantillas de etapas según tipo de causa
 
 ---
 
