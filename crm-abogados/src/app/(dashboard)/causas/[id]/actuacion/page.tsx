@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, ClipboardList } from 'lucide-react'
 import { toast } from 'sonner'
+import AsesoriaArchivo from '@/components/AsesoriaArchivo'
 
 const TIPOS = [
   'Presentación de escrito',
@@ -30,6 +31,7 @@ export default function NuevaActuacionPage() {
 
   const [loading, setLoading] = useState(false)
   const [tieneCompromiso, setTieneCompromiso] = useState(false)
+  const [archivo, setArchivo] = useState<{ url: string; nombre: string } | null>(null)
   const [form, setForm] = useState({
     fecha: new Date().toISOString().split('T')[0],
     tipo: 'Presentación de escrito',
@@ -53,6 +55,8 @@ export default function NuevaActuacionPage() {
         body: JSON.stringify({
           ...form,
           causaId,
+          archivoUrl: archivo?.url,
+          archivoNombre: archivo?.nombre,
           compromiso: tieneCompromiso ? form.compromiso : null,
           fechaRecordatorio: tieneCompromiso && form.fechaRecordatorio
             ? new Date(form.fechaRecordatorio).toISOString()
@@ -122,6 +126,8 @@ export default function NuevaActuacionPage() {
             placeholder="Ej: Ingresado con número 45123, audiencia fijada para el 15 de julio..."
           />
         </div>
+
+        <AsesoriaArchivo onChange={setArchivo} />
 
         {/* Compromiso del cliente */}
         <div className="border-t border-gray-100 pt-4">

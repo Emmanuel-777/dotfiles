@@ -48,6 +48,8 @@ export async function POST(req: NextRequest) {
     compromiso: body.compromiso || null,
     fechaRecordatorio: body.fechaRecordatorio || null,
     recordatorioEnviado: 0,
+    archivoUrl: body.archivoUrl || null,
+    archivoNombre: body.archivoNombre || null,
     causaId,
     createdAt: now,
   })

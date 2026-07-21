@@ -58,6 +58,8 @@ export async function initDB() {
       tipo TEXT NOT NULL DEFAULT 'OTRO',
       descripcion TEXT NOT NULL,
       resultado TEXT,
+      archivo_url TEXT,
+      archivo_nombre TEXT,
       causa_id TEXT NOT NULL REFERENCES causas(id) ON DELETE CASCADE,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
@@ -241,6 +243,9 @@ export async function initDB() {
     // Recordatorio de cita al abogado 1h y 30min antes de la hora agendada
     `ALTER TABLE citas ADD COLUMN recordatorio_1h_enviado INTEGER NOT NULL DEFAULT 0`,
     `ALTER TABLE citas ADD COLUMN recordatorio_30min_enviado INTEGER NOT NULL DEFAULT 0`,
+    // Documento adjunto opcional por actuación/gestión
+    `ALTER TABLE actuaciones ADD COLUMN archivo_url TEXT`,
+    `ALTER TABLE actuaciones ADD COLUMN archivo_nombre TEXT`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

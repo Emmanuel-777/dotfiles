@@ -1,9 +1,9 @@
 import { db, initDB } from '@/lib/db'
-import { clientes, causas, honorarios, cuotasHonorario, tareas, asesorias } from '@/lib/schema'
+import { clientes, causas, honorarios, cuotasHonorario, tareas, asesorias, actuaciones } from '@/lib/schema'
 import { eq, and, asc, desc, inArray } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download, NotebookPen } from 'lucide-react'
+import { ArrowLeft, User, Building2, Phone, Mail, MapPin, Briefcase, DollarSign, Plus, FileText, ListTodo, AlertTriangle, Clock, Download, NotebookPen, ClipboardList } from 'lucide-react'
 import { formatMonto, formatFechaCorta, formatFechaHoraChile, ESTADOS_CAUSA, ESTADOS_HONORARIO, ESTADOS_TAREA, PRIORIDADES_TAREA, urgenciaTarea, URGENCIA_CLASES, splitHonorarioCobrado } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
 
@@ -21,6 +21,14 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
     db.select().from(tareas).where(and(eq(tareas.clienteId, params.id), eq(tareas.userId, userId))).orderBy(asc(tareas.fechaVencimiento)),
     db.select().from(asesorias).where(and(eq(asesorias.clienteId, params.id), eq(asesorias.userId, userId))).orderBy(desc(asesorias.fecha)),
   ])
+
+  // Actuaciones de todas las causas del cliente
+  const causaIdsCliente = clienteCausas.map((c) => c.id)
+  const clienteActuaciones = causaIdsCliente.length > 0
+    ? await db.select().from(actuaciones)
+        .where(and(eq(actuaciones.userId, userId), inArray(actuaciones.causaId, causaIdsCliente)))
+        .orderBy(desc(actuaciones.fecha))
+    : []
 
   const honorarioIds = clienteHonorarios.map((h) => h.id)
   const cuotasCliente = honorarioIds.length > 0
@@ -211,6 +219,50 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
                     </div>
                   </div>
                   <span className={`badge flex-shrink-0 ml-3 ${estadoT?.color}`}>{estadoT?.label}</span>
+                </div>
+              )
+            })
+          )}
+        </div>
+      </div>
+
+      {/* Actuaciones (gestiones de las causas del cliente) */}
+      <div className="card mt-6">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <ClipboardList className="h-4 w-4 text-blue-500" />
+            Actuaciones ({clienteActuaciones.length})
+          </h2>
+          <Link href={`/clientes/${cliente.id}/actuacion/nueva`} className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1">
+            <Plus className="h-3 w-3" /> Agregar
+          </Link>
+        </div>
+        <div className="divide-y divide-gray-50">
+          {clienteActuaciones.length === 0 ? (
+            <p className="px-6 py-6 text-center text-sm text-gray-400">Sin actuaciones registradas</p>
+          ) : (
+            clienteActuaciones.map((a) => {
+              const causa = clienteCausas.find((c) => c.id === a.causaId)
+              return (
+                <div key={a.id} className="px-6 py-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="badge bg-blue-50 text-blue-700 text-[10px]">{a.tipo}</span>
+                    <span className="text-xs text-gray-400">{formatFechaCorta(a.fecha)}</span>
+                    {causa && (
+                      <Link href={`/causas/${causa.id}`} className="text-xs font-mono text-blue-600 hover:text-blue-700">{causa.rol}</Link>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-700 mt-1">{a.descripcion}</p>
+                  {a.resultado && <p className="text-xs text-gray-500 mt-0.5">{a.resultado}</p>}
+                  {a.archivoUrl && (
+                    <a
+                      href={`/api/actuaciones/download?url=${encodeURIComponent(a.archivoUrl)}`}
+                      className="mt-1 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                    >
+                      <Download className="h-3 w-3" />
+                      {a.archivoNombre || 'Descargar'}
+                    </a>
+                  )}
                 </div>
               )
             })

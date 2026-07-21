@@ -247,6 +247,15 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                         {act.resultado && (
                           <p className="text-xs text-green-700 bg-green-50 rounded px-2 py-0.5 mt-1 inline-block">{act.resultado}</p>
                         )}
+                        {act.archivoUrl && (
+                          <a
+                            href={`/api/actuaciones/download?url=${encodeURIComponent(act.archivoUrl)}`}
+                            className="mt-1 flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                          >
+                            <Download className="h-3 w-3" />
+                            {act.archivoNombre || 'Descargar documento'}
+                          </a>
+                        )}
                         {act.compromiso && (
                           <div className="mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                             <p className="text-xs font-semibold text-amber-700 flex items-center gap-1 mb-0.5">

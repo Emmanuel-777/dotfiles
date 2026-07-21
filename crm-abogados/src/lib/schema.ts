@@ -46,6 +46,8 @@ export const actuaciones = sqliteTable('actuaciones', {
   compromiso: text('compromiso'),
   fechaRecordatorio: text('fecha_recordatorio'),
   recordatorioEnviado: integer('recordatorio_enviado').notNull().default(0),
+  archivoUrl: text('archivo_url'),
+  archivoNombre: text('archivo_nombre'),
   causaId: text('causa_id').notNull().references(() => causas.id),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 })
