@@ -256,14 +256,25 @@ function NuevaCausaForm() {
           <div className="sm:col-span-2 pt-2 border-t border-gray-100">
             <label className="label">Documento adjunto (opcional)</label>
             {!file ? (
-              <label className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
-                <Upload className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500">Subir patrocinio, poder u otro documento</p>
-                  <p className="text-xs text-gray-400">PDF, DOC, DOCX, JPG, PNG — máx. {MAX_MB} MB</p>
+              <>
+                {/* Aviso siempre visible: la función de IA existe, aunque aún no haya archivo */}
+                <div className="mb-2 flex items-start gap-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2.5">
+                  <Sparkles className="h-4 w-4 flex-shrink-0 text-violet-500 mt-0.5" />
+                  <p className="text-[11px] leading-relaxed text-violet-800">
+                    <strong>Autocompletar con IA (Plan Pro):</strong> sube aquí la demanda, resolución o escrito
+                    (PDF, foto o Word) y la IA propondrá el tribunal, ROL, materia y carátula.
+                    El botón para hacerlo aparece apenas adjuntes el documento.
+                  </p>
                 </div>
-                <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFile} className="sr-only" />
-              </label>
+                <label className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                  <Upload className="h-5 w-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Subir demanda, resolución, poder u otro documento</p>
+                    <p className="text-xs text-gray-400">PDF, DOC, DOCX, JPG, PNG — máx. {MAX_MB} MB</p>
+                  </div>
+                  <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFile} className="sr-only" />
+                </label>
+              </>
             ) : (
               <div className="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-center gap-2">
