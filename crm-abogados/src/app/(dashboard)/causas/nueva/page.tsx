@@ -301,8 +301,10 @@ function NuevaCausaForm() {
                           ? <><Loader2 className="h-4 w-4 animate-spin" />Leyendo documento…</>
                           : <><Sparkles className="h-4 w-4" />Autocompletar campos con IA</>}
                       </button>
-                      <p className="mt-1.5 text-[11px] text-gray-400">
-                        La IA lee el documento y propone tribunal, ROL, materia y carátula. Revisa siempre antes de guardar.
+                      <p className="mt-1.5 text-[11px] text-gray-400 leading-relaxed">
+                        La IA lee el documento y propone tribunal, ROL, materia y carátula — revísalos antes de guardar.
+                        El archivo se envía de forma segura a nuestro proveedor de IA solo para leerlo; no se almacena en ese proceso.
+                        El documento que adjuntes a la causa sí se guarda normalmente.
                       </p>
                     </div>
                   ) : (
