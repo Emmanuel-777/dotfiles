@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
-import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock, MessageCircle, Mail } from 'lucide-react'
+import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock, MessageCircle, Mail, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { formatPhoneWhatsApp } from '@/lib/utils'
 
@@ -115,9 +115,26 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error al generar')
-      setResultado(data.texto)
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Error al generar')
+      }
+      if (!res.body) {
+        // Fallback sin streaming (por si un proxy no lo soporta)
+        setResultado(await res.text())
+      } else {
+        const reader = res.body.getReader()
+        const decoder = new TextDecoder()
+        let acumulado = ''
+        for (;;) {
+          const { done, value } = await reader.read()
+          if (done) break
+          acumulado += decoder.decode(value, { stream: true })
+          setResultado(acumulado)
+        }
+        acumulado += decoder.decode()
+        setResultado(acumulado)
+      }
       toast.success(modo === 'resumen' ? 'Resumen generado' : 'Borrador generado')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Error al generar con IA')
@@ -293,14 +310,26 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
                 {copiado ? 'Copiado' : 'Copiar'}
               </button>
             </div>
+            {modo === 'borrador' && (
+              <div className="mb-2 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
+                <AlertTriangle className="h-4 w-4 flex-shrink-0 text-amber-500 mt-0.5" />
+                <p className="text-[11px] leading-relaxed text-amber-800">
+                  <strong>Borrador de apoyo generado por IA.</strong> Revísalo íntegramente, verifica
+                  las citas legales, los datos de las partes y los plazos, y complétalo antes de
+                  presentarlo ante el tribunal. La responsabilidad del escrito es siempre del abogado.
+                </p>
+              </div>
+            )}
             <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm leading-relaxed text-gray-800">
               {renderMarkdown(resultado)}
             </div>
-            <p className="mt-2 text-[11px] text-gray-400">
-              Contenido generado por IA. Revísalo antes de usarlo o presentarlo.
-            </p>
+            {modo === 'resumen' && (
+              <p className="mt-2 text-[11px] text-gray-400">
+                Contenido generado por IA. Revísalo antes de usarlo o presentarlo.
+              </p>
+            )}
 
-            {(waUrl || mailUrl) && (
+            {!loading && (waUrl || mailUrl) && (
               <div className="mt-3 flex items-center gap-2 flex-wrap">
                 <span className="text-[11px] text-gray-400">Enviar al cliente:</span>
                 {waUrl && (

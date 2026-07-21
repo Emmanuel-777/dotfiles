@@ -23,6 +23,12 @@ export interface AIProvider {
   isConfigured(): boolean
   /** Genera una respuesta de texto a partir de los parámetros */
   complete(params: AICompletionParams): Promise<string>
+  /**
+   * Igual que complete() pero entrega el texto en streaming (token a token).
+   * Los errores previos al stream (config, credenciales, límite) se lanzan
+   * como AIError antes de devolver el stream, para poder mapearlos a HTTP.
+   */
+  stream(params: AICompletionParams): Promise<ReadableStream<Uint8Array>>
 }
 
 /** Error de dominio para fallos controlados de IA (se mapea a HTTP) */

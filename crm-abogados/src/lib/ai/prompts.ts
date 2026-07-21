@@ -56,7 +56,13 @@ Estructura la respuesta en estas secciones con encabezados:
 2. Últimas actuaciones relevantes
 3. Próximos hitos y plazos
 4. Acciones recomendadas
-No inventes hechos que no estén en el contexto. Si falta información, indícalo.`
+
+REGLA DE TRAZABILIDAD (obligatoria): cada afirmación sobre un hecho procesal debe
+respaldarse citando entre paréntesis la fecha de la actuación, plazo o audiencia que la sustenta,
+usando el formato (actuación del DD-MM-AAAA), (plazo del DD-MM-AAAA) o (audiencia del DD-MM-AAAA),
+tomando la fecha exacta del contexto entregado. Así el abogado puede verificar cada dato de un vistazo.
+No inventes hechos, fechas ni actuaciones que no consten en el contexto: si un dato falta, dilo
+explícitamente en lugar de suponerlo.`
 
 export function resumenPrompt(contexto: string): string {
   return `Redacta un resumen ejecutivo del estado de la siguiente causa, listo para compartir con el cliente o el equipo:\n\n${contexto}`

@@ -24,12 +24,18 @@ export async function POST(req: Request) {
   if (!contexto) return NextResponse.json({ error: 'Causa no encontrada' }, { status: 404 })
 
   try {
-    const texto = await getAIProvider().complete({
+    const stream = await getAIProvider().stream({
       system: RESUMEN_SYSTEM,
       prompt: resumenPrompt(contexto),
       maxTokens: 1200,
     })
-    return NextResponse.json({ texto })
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-Accel-Buffering': 'no',
+      },
+    })
   } catch (e) {
     if (e instanceof AIError) return NextResponse.json({ error: e.message }, { status: e.status })
     return NextResponse.json({ error: 'Error inesperado al generar el resumen' }, { status: 500 })

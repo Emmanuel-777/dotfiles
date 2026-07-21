@@ -25,12 +25,18 @@ export async function POST(req: Request) {
   if (!contexto) return NextResponse.json({ error: 'Causa no encontrada' }, { status: 404 })
 
   try {
-    const texto = await getAIProvider().complete({
+    const stream = await getAIProvider().stream({
       system: BORRADOR_SYSTEM,
       prompt: borradorPrompt(contexto, tipo, instrucciones || ''),
       maxTokens: 2000,
     })
-    return NextResponse.json({ texto })
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-Accel-Buffering': 'no',
+      },
+    })
   } catch (e) {
     if (e instanceof AIError) return NextResponse.json({ error: e.message }, { status: e.status })
     return NextResponse.json({ error: 'Error inesperado al generar el borrador' }, { status: 500 })

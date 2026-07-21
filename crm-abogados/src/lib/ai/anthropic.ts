@@ -62,4 +62,80 @@ export class AnthropicProvider implements AIProvider {
     if (!text) throw new AIError('La IA no devolvió contenido.', 502)
     return text
   }
+
+  async stream({ system, prompt, maxTokens = 1500, temperature = 0.4 }: AICompletionParams): Promise<ReadableStream<Uint8Array>> {
+    if (!this.apiKey) {
+      throw new AIError('La IA no está configurada. Falta la variable ANTHROPIC_API_KEY.', 503)
+    }
+
+    let res: Response
+    try {
+      res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': this.apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          max_tokens: maxTokens,
+          temperature,
+          system,
+          stream: true,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      })
+    } catch {
+      throw new AIError('No se pudo conectar con el servicio de IA.', 502)
+    }
+
+    // Errores antes de comenzar el stream: se mapean a HTTP en la ruta.
+    if (!res.ok || !res.body) {
+      const detail = await res.text().catch(() => '')
+      if (res.status === 401) throw new AIError('La API key de IA es inválida.', 502)
+      if (res.status === 429) throw new AIError('Límite de uso de IA alcanzado. Intenta más tarde.', 429)
+      throw new AIError(`Error del servicio de IA (${res.status}). ${detail.slice(0, 200)}`, 502)
+    }
+
+    const upstream = res.body
+    const encoder = new TextEncoder()
+    const decoder = new TextDecoder()
+
+    // Reempaqueta el SSE de Anthropic en un stream de texto plano (solo los deltas de texto).
+    return new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const reader = upstream.getReader()
+        let buffer = ''
+        try {
+          for (;;) {
+            const { done, value } = await reader.read()
+            if (done) break
+            buffer += decoder.decode(value, { stream: true })
+            const lineas = buffer.split('\n')
+            buffer = lineas.pop() ?? ''
+            for (const linea of lineas) {
+              const t = linea.trim()
+              if (!t.startsWith('data:')) continue
+              const payload = t.slice(5).trim()
+              if (!payload || payload === '[DONE]') continue
+              try {
+                const evt = JSON.parse(payload)
+                if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta' && evt.delta.text) {
+                  controller.enqueue(encoder.encode(evt.delta.text))
+                }
+              } catch {
+                // línea no-JSON (ping, comentario): se ignora
+              }
+            }
+          }
+        } catch {
+          // corte de conexión con el proveedor: cerramos lo generado hasta aquí
+        } finally {
+          controller.close()
+          reader.releaseLock()
+        }
+      },
+    })
+  }
 }
