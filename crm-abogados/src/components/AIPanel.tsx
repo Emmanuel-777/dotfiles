@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
-import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock, MessageCircle, Mail, AlertTriangle } from 'lucide-react'
+import { Sparkles, FileText, Loader2, Copy, Check, ClipboardList, Scale, Lock, MessageCircle, Mail, AlertTriangle, Pencil, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { formatPhoneWhatsApp } from '@/lib/utils'
 
@@ -83,6 +83,34 @@ function renderMarkdown(texto: string): ReactNode[] {
   return bloques
 }
 
+/**
+ * Convierte el Markdown que devuelve la IA a texto limpio, listo para copiar o
+ * enviar (sin **, ##, >, ni tablas con |). Así lo que sale de LexCRM se ve como
+ * un texto normal, no como "formato de chat".
+ */
+function markdownToPlainText(md: string): string {
+  const out: string[] = []
+  for (const linea of md.split('\n')) {
+    let t = linea
+    // Fila separadora de tabla: |---|---|  → se descarta
+    if (/^\s*\|?(\s*:?-{2,}:?\s*\|)+\s*$/.test(t)) continue
+    // Fila de tabla: | a | b |  → "a — b"
+    if (/^\s*\|.*\|\s*$/.test(t)) {
+      const celdas = t.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim()).filter(Boolean)
+      t = celdas.join(' — ')
+    }
+    t = t.replace(/^\s{0,3}#{1,6}\s+/, '')       // encabezados
+    t = t.replace(/^\s{0,3}>\s?/, '')             // citas
+    t = t.replace(/^(\s*)[-*]\s+/, '$1• ')        // viñetas
+    t = t.replace(/\*\*([^*]+)\*\*/g, '$1')       // negrita
+    t = t.replace(/__([^_]+)__/g, '$1')           // negrita alterna
+    t = t.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // enlaces → texto
+    t = t.replace(/`([^`]+)`/g, '$1')             // código en línea
+    out.push(t)
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim()
+}
+
 interface AIPanelProps {
   causaId: string
   tiposEscrito: string[]
@@ -99,6 +127,10 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
   const [loading, setLoading] = useState(false)
   const [resultado, setResultado] = useState('')
   const [copiado, setCopiado] = useState(false)
+  const [editando, setEditando] = useState(false)
+  const [borradorEdit, setBorradorEdit] = useState('')
+  // Versión editada por el usuario (texto limpio). Si es null, se usa el resultado de la IA.
+  const [textoFinal, setTextoFinal] = useState<string | null>(null)
 
   const [tipo, setTipo] = useState(tiposEscrito[0] ?? '')
   const [instrucciones, setInstrucciones] = useState('')
@@ -107,6 +139,8 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
     setLoading(true)
     setResultado('')
     setCopiado(false)
+    setEditando(false)
+    setTextoFinal(null)
     try {
       const endpoint = modo === 'resumen' ? '/api/ai/resumen' : '/api/ai/borrador'
       const body = modo === 'resumen' ? { causaId } : { causaId, tipo, instrucciones }
@@ -143,9 +177,24 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
     }
   }
 
+  // Texto limpio para copiar/enviar: la versión editada por el usuario, o el
+  // resultado de la IA convertido a texto plano (sin símbolos de Markdown).
+  const salida = textoFinal ?? markdownToPlainText(resultado)
+
+  const iniciarEdicion = () => {
+    setBorradorEdit(salida)
+    setEditando(true)
+  }
+  const guardarEdicion = () => {
+    setTextoFinal(borradorEdit)
+    setEditando(false)
+    toast.success('Resumen actualizado')
+  }
+  const cancelarEdicion = () => setEditando(false)
+
   const copiar = async () => {
     try {
-      await navigator.clipboard.writeText(resultado)
+      await navigator.clipboard.writeText(salida)
       setCopiado(true)
       toast.success('Copiado al portapapeles')
       setTimeout(() => setCopiado(false), 2000)
@@ -159,8 +208,8 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
     : `Borrador — ${tipo}${causaRol ? ` (causa ${causaRol})` : ''}`
 
   const mensajeEnvio = clienteNombre
-    ? `Estimado/a ${clienteNombre},\n\n${resultado}`
-    : resultado
+    ? `Estimado/a ${clienteNombre},\n\n${salida}`
+    : salida
 
   const waUrl = resultado && clienteCelular
     ? `https://wa.me/${formatPhoneWhatsApp(clienteCelular)}?text=${encodeURIComponent(mensajeEnvio)}`
@@ -301,14 +350,27 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
         {resultado && (
           <div className="mt-4">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">Resultado</span>
-              <button
-                onClick={copiar}
-                className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                {copiado ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
-                {copiado ? 'Copiado' : 'Copiar'}
-              </button>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                {editando ? 'Editar resultado' : 'Resultado'}
+              </span>
+              {!editando && !loading && (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={iniciarEdicion}
+                    className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Editar
+                  </button>
+                  <button
+                    onClick={copiar}
+                    className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    {copiado ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiado ? 'Copiado' : 'Copiar'}
+                  </button>
+                </div>
+              )}
             </div>
             {modo === 'borrador' && (
               <div className="mb-2 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
@@ -320,16 +382,44 @@ export default function AIPanel({ causaId, tiposEscrito, causaRol, causaTribunal
                 </p>
               </div>
             )}
-            <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm leading-relaxed text-gray-800">
-              {renderMarkdown(resultado)}
-            </div>
-            {modo === 'resumen' && (
+            {editando ? (
+              <div>
+                <textarea
+                  value={borradorEdit}
+                  onChange={(e) => setBorradorEdit(e.target.value)}
+                  rows={14}
+                  autoFocus
+                  className="input w-full resize-y text-sm leading-relaxed"
+                />
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    onClick={guardarEdicion}
+                    className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-violet-700"
+                  >
+                    <Check className="h-3.5 w-3.5" />Guardar cambios
+                  </button>
+                  <button
+                    onClick={cancelarEdicion}
+                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                  >
+                    <X className="h-3.5 w-3.5" />Cancelar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm leading-relaxed text-gray-800">
+                {textoFinal !== null
+                  ? <p className="whitespace-pre-wrap">{textoFinal}</p>
+                  : renderMarkdown(resultado)}
+              </div>
+            )}
+            {modo === 'resumen' && !editando && (
               <p className="mt-2 text-[11px] text-gray-400">
-                Contenido generado por IA. Revísalo antes de usarlo o presentarlo.
+                Contenido generado por IA. Revísalo o edítalo antes de usarlo o presentarlo.
               </p>
             )}
 
-            {!loading && (waUrl || mailUrl) && (
+            {!loading && !editando && (waUrl || mailUrl) && (
               <div className="mt-3 flex items-center gap-2 flex-wrap">
                 <span className="text-[11px] text-gray-400">Enviar al cliente:</span>
                 {waUrl && (

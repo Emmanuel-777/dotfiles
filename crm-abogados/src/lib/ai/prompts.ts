@@ -57,6 +57,9 @@ Estructura la respuesta en estas secciones con encabezados:
 3. Próximos hitos y plazos
 4. Acciones recomendadas
 
+FORMATO: usa un formato simple y legible — encabezados cortos y listas con guiones.
+No uses tablas, ni recuadros, ni exceso de negritas o símbolos.
+
 REGLA DE TRAZABILIDAD (obligatoria): cada afirmación sobre un hecho procesal debe
 respaldarse citando entre paréntesis la fecha de la actuación, plazo o audiencia que la sustenta,
 usando el formato (actuación del DD-MM-AAAA), (plazo del DD-MM-AAAA) o (audiencia del DD-MM-AAAA),
