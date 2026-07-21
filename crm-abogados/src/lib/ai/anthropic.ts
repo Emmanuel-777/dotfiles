@@ -22,10 +22,23 @@ export class AnthropicProvider implements AIProvider {
     return Boolean(this.apiKey)
   }
 
-  async complete({ system, prompt, maxTokens = 1500, temperature = 0.4 }: AICompletionParams): Promise<string> {
+  async complete({ system, prompt, maxTokens = 1500, temperature = 0.4, attachments }: AICompletionParams): Promise<string> {
     if (!this.apiKey) {
       throw new AIError('La IA no está configurada. Falta la variable ANTHROPIC_API_KEY.', 503)
     }
+
+    // Si hay adjuntos (PDF/imagen), el contenido es una lista de bloques con el
+    // documento primero y el texto después; si no, es texto plano.
+    const content = attachments && attachments.length
+      ? [
+          ...attachments.map((a) =>
+            a.kind === 'document'
+              ? { type: 'document', source: { type: 'base64', media_type: a.mediaType, data: a.dataBase64 } }
+              : { type: 'image', source: { type: 'base64', media_type: a.mediaType, data: a.dataBase64 } },
+          ),
+          { type: 'text', text: prompt },
+        ]
+      : prompt
 
     let res: Response
     try {
@@ -41,7 +54,7 @@ export class AnthropicProvider implements AIProvider {
           max_tokens: maxTokens,
           temperature,
           system,
-          messages: [{ role: 'user', content: prompt }],
+          messages: [{ role: 'user', content }],
         }),
       })
     } catch {

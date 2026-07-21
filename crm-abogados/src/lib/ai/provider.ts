@@ -5,6 +5,16 @@
  * implementar esta interfaz y registrarlo en `getAIProvider()`.
  */
 
+/** Adjunto (PDF o imagen) que la IA lee de forma nativa junto al prompt. */
+export interface AIAttachment {
+  /** 'document' para PDF, 'image' para JPG/PNG */
+  kind: 'document' | 'image'
+  /** MIME real: application/pdf, image/jpeg, image/png */
+  mediaType: string
+  /** Contenido del archivo en base64 (sin encabezado data:) */
+  dataBase64: string
+}
+
 export interface AICompletionParams {
   /** Instrucciones de sistema (rol, tono, restricciones) */
   system: string
@@ -14,6 +24,8 @@ export interface AICompletionParams {
   maxTokens?: number
   /** Creatividad 0–1 (default según proveedor) */
   temperature?: number
+  /** Documentos/imágenes que la IA debe leer junto al prompt (solo `complete`) */
+  attachments?: AIAttachment[]
 }
 
 export interface AIProvider {

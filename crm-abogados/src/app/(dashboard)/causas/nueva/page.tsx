@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Upload, X, FileText } from 'lucide-react'
+import { ArrowLeft, Save, Upload, X, FileText, Sparkles, Loader2 } from 'lucide-react'
 import { TIPOS_CAUSA } from '@/lib/utils'
 import TribunalSelect from '@/components/TribunalSelect'
 import { toast } from 'sonner'
@@ -15,6 +15,9 @@ const TIPO_DOC_LABELS: Record<string, string> = {
 }
 const ACCEPTED = '.pdf,.doc,.docx,.jpg,.jpeg,.png'
 const MAX_MB = 10
+// Tipos que la IA puede leer de forma nativa (PDF e imágenes) y tope de tamaño para hacerlo.
+const EXTRACT_TYPES = ['application/pdf', 'image/jpeg', 'image/png']
+const EXTRACT_MAX_BYTES = 4 * 1024 * 1024
 
 function NuevaCausaForm() {
   const router = useRouter()
@@ -25,6 +28,7 @@ function NuevaCausaForm() {
   const [file, setFile] = useState<File | null>(null)
   const [docNombre, setDocNombre] = useState('')
   const [docTipo, setDocTipo] = useState('PODER')
+  const [extrayendo, setExtrayendo] = useState(false)
   const [form, setForm] = useState({
     rol: '',
     tribunal: '',
@@ -75,6 +79,45 @@ function NuevaCausaForm() {
     setDocNombre('')
     setDocTipo('PODER')
     if (fileRef.current) fileRef.current.value = ''
+  }
+
+  const autocompletar = async () => {
+    if (!file) return
+    setExtrayendo(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/ai/extraer', { method: 'POST', body: fd })
+      const data = await res.json().catch(() => ({}))
+      if (res.status === 403) {
+        toast.error('La lectura de documentos con IA es parte del plan Pro.')
+        return
+      }
+      if (!res.ok) throw new Error(data.error || 'No se pudo leer el documento')
+
+      const campos: Record<string, unknown> = data.campos || {}
+      const limpio = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : null)
+      let completados = 0
+      setForm((prev) => {
+        const next = { ...prev }
+        const tipo = limpio(campos.tipoCausa)
+        if (tipo && (TIPOS_CAUSA as readonly string[]).includes(tipo)) { next.tipoCausa = tipo; completados++ }
+        for (const k of ['rol', 'tribunal', 'materia', 'contraparte', 'abogadoResponsable', 'descripcion'] as const) {
+          const v = limpio(campos[k])
+          if (v) { next[k] = v; completados++ }
+        }
+        const fecha = limpio(campos.fechaIngreso)
+        if (fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) { next.fechaIngreso = fecha; completados++ }
+        return next
+      })
+
+      if (completados > 0) toast.success('Campos completados desde el documento. Revísalos antes de guardar.')
+      else toast.info('No se encontraron datos reconocibles en el documento.')
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'No se pudo leer el documento')
+    } finally {
+      setExtrayendo(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -238,6 +281,31 @@ function NuevaCausaForm() {
                     </select>
                   </div>
                 </div>
+
+                {/* Autocompletar con IA desde el mismo documento */}
+                {EXTRACT_TYPES.includes(file.type) && (
+                  file.size <= EXTRACT_MAX_BYTES ? (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={autocompletar}
+                        disabled={extrayendo}
+                        className="flex w-full items-center justify-center gap-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 disabled:opacity-60"
+                      >
+                        {extrayendo
+                          ? <><Loader2 className="h-4 w-4 animate-spin" />Leyendo documento…</>
+                          : <><Sparkles className="h-4 w-4" />Autocompletar campos con IA</>}
+                      </button>
+                      <p className="mt-1.5 text-[11px] text-gray-400">
+                        La IA lee el documento y propone tribunal, ROL, materia y carátula. Revisa siempre antes de guardar.
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-amber-600">
+                      Para autocompletar con IA, el documento debe pesar máximo 4 MB.
+                    </p>
+                  )
+                )}
               </div>
             )}
           </div>

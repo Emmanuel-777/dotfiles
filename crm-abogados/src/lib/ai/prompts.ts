@@ -83,6 +83,53 @@ ${instrucciones ? `Instrucciones específicas del abogado:\n${instrucciones}\n\n
 ${contexto}`
 }
 
+// ————————————————————————————————————————————————————————————
+// Extracción de datos desde un documento (demanda, resolución, escrito)
+// ————————————————————————————————————————————————————————————
+
+export const EXTRAER_SYSTEM = `Eres un asistente jurídico que lee documentos judiciales chilenos
+(demandas, resoluciones, escritos, notificaciones) y extrae sus datos de identificación.
+Devuelves SIEMPRE y ÚNICAMENTE un objeto JSON válido, sin texto adicional, sin explicaciones
+y sin envolverlo en bloques de código. Si un dato no aparece en el documento, usa null.
+No inventes datos que no consten en el documento.`
+
+/** Construye el prompt de extracción con la lista de tipos de causa válidos. */
+export function extraerPrompt(tiposCausa: readonly string[]): string {
+  return `Extrae del documento adjunto los siguientes campos y devuélvelos como JSON con EXACTAMENTE estas claves:
+
+{
+  "rol": "ROL o RIT de la causa (ej: C-1234-2024, RIT 567-2024), o null",
+  "tribunal": "nombre completo del tribunal tal como aparece, o null",
+  "tipoCausa": "uno de: ${tiposCausa.join(', ')} — el que corresponda, o null",
+  "materia": "materia o naturaleza del asunto (ej: Cobro de pesos, Despido injustificado), o null",
+  "contraparte": "carátula de la causa en formato 'X con Y' (ej: Pérez con García), o null",
+  "abogadoResponsable": "nombre del abogado patrocinante o apoderado si aparece, o null",
+  "fechaIngreso": "fecha de ingreso o de la resolución en formato AAAA-MM-DD, o null",
+  "descripcion": "una frase breve (máx 200 caracteres) resumiendo de qué trata el documento, o null"
+}
+
+Reglas:
+- Responde solo el JSON, nada más.
+- Usa null (no cadenas vacías) para lo que no encuentres.
+- Para "tipoCausa" elige exactamente uno de los valores de la lista; si no puedes determinarlo, usa null.`
+}
+
+/**
+ * Parsea la respuesta de la IA a un objeto de campos, tolerando que venga
+ * envuelta en ```json o con texto alrededor. Devuelve {} si no logra parsear.
+ */
+export function parseExtraccion(texto: string): Record<string, string | null> {
+  const inicio = texto.indexOf('{')
+  const fin = texto.lastIndexOf('}')
+  if (inicio === -1 || fin === -1 || fin < inicio) return {}
+  try {
+    const obj = JSON.parse(texto.slice(inicio, fin + 1))
+    return obj && typeof obj === 'object' ? obj : {}
+  } catch {
+    return {}
+  }
+}
+
 export const TIPOS_ESCRITO = [
   'Escrito de téngase presente',
   'Solicitud de copias',
