@@ -34,14 +34,13 @@
 |---|---|---|---|
 | Diseño de logo/isotipo | Emmanuel | ✅ | Monograma "YC" + rama de olivo + wordmark, entregado por Yocelyn en 3 versiones (lineal, sólida, ornamental) |
 | Manual básico de marca (borrador) | Emmanuel | ✅ | `Manual_Basico_Marca_Yocelyn_Cea.docx` |
-| Guion Reel 1 | Emmanuel | ✅ | Hook: "Fui oficial de la PDI. Hoy preparo a quienes quieren serlo." |
-| Grabación Reel 1 | Yocelyn | ⏳ | |
+| Guion Reel 1 (2:00, hablado a cámara) | Emmanuel | ✅ | `Guion_Reel1_Yocelyn_Cea.pdf` — pendiente confirmar si se grabó como video o se reemplazó por la pieza de cita estática |
 | Copy de post de presentación | Emmanuel | ✅ | Ver sección 4 del documento base |
-| Publicación post de presentación + Reel 1 | Ambos | ⏳ | Fijar (pin) el Reel en el perfil |
 | 9 piezas del grid — borrador diseñado | Emmanuel | ✅ | En Claude Design (`Yocelyn Cea IG Post.dc.html`), sistema de color aplicado |
-| Revisión/aprobación de las 9 piezas del grid | Yocelyn | ⏳ | Elegir variantes o pedir ajustes antes de exportar |
+| Publicación grid: 5 de 9 piezas en línea | Yocelyn | 🔄 | Publicadas: certificados/logros, educativo postulación (Reel), invitación a seguir, **testimonial 100% (pieza 4)**, **cita "Fui oficial de la PDI" (pieza 6)** |
+| Cuenta activa y creciendo | Yocelyn | ✅ | 127 seguidores (desde 114), 5 publicaciones, 1 Reel con reproducciones |
 
-**Próximo hito:** cuenta nueva activa y publicando (primer Reel + grid aprobado por Yocelyn).
+**Próximo hito:** completar las 4 piezas restantes del grid (5, 7, 8, 9) y confirmar si el Reel 1 hablado (2:00) se grabó o si el hook quedó cubierto por la pieza estática de cita.
 
 ---
 
@@ -49,12 +48,15 @@
 
 | Tarea | Responsable | Estado | Notas |
 |---|---|---|---|
-| Piezas 4-6 del grid | Emmanuel | ⏳ | Mezcla educativo/testimonial según reglas de colorimetría |
-| Guion + grabación Reel 2 (preparación de postulantes PDI/FF.AA.) | Ambos | ⏳ | Target primario — usar el dato del 100% de aprobación |
-| Publicación Reel 2 | Ambos | ⏳ | |
-| Foto de perfil editada con IA | Emmanuel | ⏳ | Usar prompt de la sección 1 (requiere sesión de fotos ya realizada) |
+| Copy pieza 5 — "3 errores que eliminan postulantes" | Emmanuel | ⏳ | Pendiente redactar |
+| Copy pieza 7 — "Detrás de cada postulación hay un sueño" | Emmanuel | ⏳ | Pendiente redactar |
+| Copy pieza 8 — "Señales de trauma/abuso que no deberías ignorar" | Emmanuel | ⏳ | Pendiente redactar |
+| Copy pieza 9 — "Preparación para PDI, Ejército, Armada, Carabineros" | Emmanuel | ⏳ | Pendiente redactar |
+| Publicar piezas 5, 7, 8, 9 (grid completo) | Yocelyn | ⏳ | Reemplazar marcador de texto en Claude Design por fotos reales, igual que las 5 ya publicadas |
+| Confirmar estado del Reel 1 hablado (2:00) | Ambos | ⏳ | Ver nota en Semana 1 |
+| Foto de perfil editada con IA | Emmanuel | ⏳ | Ya no urgente — perfil actual ya usa foto real y se ve bien |
 
-**Próximo hito:** foto de perfil definitiva publicada y grid con 6 de 9 piezas.
+**Próximo hito:** grid de 9 piezas completo (4 piezas nuevas: 5, 7, 8, 9).
 
 ---
 
