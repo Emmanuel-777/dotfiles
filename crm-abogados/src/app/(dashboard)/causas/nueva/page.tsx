@@ -177,7 +177,7 @@ function NuevaCausaForm() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Nueva causa</h1>
 
       <form onSubmit={handleSubmit} className="card p-6 space-y-5">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="label">ROL / RIT *</label>
             <input name="rol" value={form.rol} onChange={handleChange} required className="input font-mono" placeholder="C-1234-2024" />
@@ -190,7 +190,7 @@ function NuevaCausaForm() {
             </select>
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label">Tribunal *</label>
             <TribunalSelect
               value={form.tribunal}
@@ -199,7 +199,7 @@ function NuevaCausaForm() {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label">Cliente *</label>
             <select name="clienteId" value={form.clienteId} onChange={handleChange} required className="input">
               <option value="">Seleccionar cliente...</option>
@@ -247,13 +247,13 @@ function NuevaCausaForm() {
             </select>
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label">Descripción / Notas</label>
             <textarea name="descripcion" value={form.descripcion} onChange={handleChange} rows={3} className="input resize-none" placeholder="Resumen del caso, antecedentes relevantes..." />
           </div>
 
           {/* Documento adjunto */}
-          <div className="col-span-2 pt-2 border-t border-gray-100">
+          <div className="sm:col-span-2 pt-2 border-t border-gray-100">
             <label className="label">Documento adjunto (opcional)</label>
             {!file ? (
               <label className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors">
@@ -274,7 +274,7 @@ function NuevaCausaForm() {
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="label text-xs">Nombre del documento</label>
                     <input value={docNombre} onChange={(e) => setDocNombre(e.target.value)} className="input text-sm" placeholder="Patrocinio y poder..." />
