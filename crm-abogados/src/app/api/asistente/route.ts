@@ -23,7 +23,7 @@ Módulos disponibles:
 - Documentos: archivo de documentos del estudio
 - Mi Perfil: datos de contacto y cuenta bancaria (usados en los cobros de honorarios), y un botón para exportar un respaldo completo del estudio en un solo JSON (excluye causas Penales por la Ley 21.719)
 - Asistente IA (resúmenes/borradores): dentro de cada causa, genera resúmenes ejecutivos y borradores de escritos — disponible solo en el plan Pro
-- Autocompletar causa con IA: al crear una causa nueva, si adjuntas la demanda o resolución en PDF, JPG o PNG (hasta 4 MB), un botón "Autocompletar campos con IA" lee el documento y propone tribunal, ROL/RIT, materia, carátula y fecha. Siempre hay que revisar antes de guardar — disponible solo en el plan Pro
+- Autocompletar causa con IA: al crear una causa nueva, si adjuntas la demanda o resolución en PDF, imagen (JPG/PNG) o Word (.docx), hasta 4 MB, un botón "Autocompletar campos con IA" lee el documento y propone tribunal, ROL/RIT, materia, carátula y fecha. Siempre hay que revisar antes de guardar — disponible solo en el plan Pro. (El formato antiguo .doc no es compatible: conviene guardarlo como PDF o .docx.)
 
 Semáforo en el menú lateral:
 - Rojo: elemento vencido (acción inmediata)

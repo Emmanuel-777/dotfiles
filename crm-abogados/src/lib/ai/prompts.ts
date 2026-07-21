@@ -93,9 +93,17 @@ Devuelves SIEMPRE y ÚNICAMENTE un objeto JSON válido, sin texto adicional, sin
 y sin envolverlo en bloques de código. Si un dato no aparece en el documento, usa null.
 No inventes datos que no consten en el documento.`
 
-/** Construye el prompt de extracción con la lista de tipos de causa válidos. */
-export function extraerPrompt(tiposCausa: readonly string[]): string {
-  return `Extrae del documento adjunto los siguientes campos y devuélvelos como JSON con EXACTAMENTE estas claves:
+/**
+ * Construye el prompt de extracción con la lista de tipos de causa válidos.
+ * Si se pasa `documentoTexto` (p. ej. extraído de un .docx), la IA lee ese
+ * texto; si no, lee el documento adjunto (PDF/imagen).
+ */
+export function extraerPrompt(tiposCausa: readonly string[], documentoTexto?: string): string {
+  const fuente = documentoTexto ? 'del documento incluido más abajo' : 'del documento adjunto'
+  const cola = documentoTexto
+    ? `\n\nDOCUMENTO:\n"""\n${documentoTexto.slice(0, 40000)}\n"""`
+    : ''
+  return `Extrae ${fuente} los siguientes campos y devuélvelos como JSON con EXACTAMENTE estas claves:
 
 {
   "rol": "ROL o RIT de la causa (ej: C-1234-2024, RIT 567-2024), o null",
@@ -111,7 +119,7 @@ export function extraerPrompt(tiposCausa: readonly string[]): string {
 Reglas:
 - Responde solo el JSON, nada más.
 - Usa null (no cadenas vacías) para lo que no encuentres.
-- Para "tipoCausa" elige exactamente uno de los valores de la lista; si no puedes determinarlo, usa null.`
+- Para "tipoCausa" elige exactamente uno de los valores de la lista; si no puedes determinarlo, usa null.${cola}`
 }
 
 /**

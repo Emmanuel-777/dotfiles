@@ -15,8 +15,13 @@ const TIPO_DOC_LABELS: Record<string, string> = {
 }
 const ACCEPTED = '.pdf,.doc,.docx,.jpg,.jpeg,.png'
 const MAX_MB = 10
-// Tipos que la IA puede leer de forma nativa (PDF e imágenes) y tope de tamaño para hacerlo.
-const EXTRACT_TYPES = ['application/pdf', 'image/jpeg', 'image/png']
+// Tipos que la IA puede leer (PDF/imagen de forma nativa, .docx vía extracción de texto) y tope de tamaño.
+const EXTRACT_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+]
 const EXTRACT_MAX_BYTES = 4 * 1024 * 1024
 
 function NuevaCausaForm() {
