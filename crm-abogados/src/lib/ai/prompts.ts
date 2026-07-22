@@ -125,6 +125,39 @@ Reglas:
 - Para "tipoCausa" elige exactamente uno de los valores de la lista; si no puedes determinarlo, usa null.${cola}`
 }
 
+// ————————————————————————————————————————————————————————————
+// Extracción de datos de un CLIENTE desde un documento (cédula, contrato, etc.)
+// ————————————————————————————————————————————————————————————
+
+export const EXTRAER_CLIENTE_SYSTEM = `Eres un asistente que lee documentos chilenos de identificación
+(cédula de identidad, RUT, tarjetas, documentos con datos personales o de una empresa) y extrae los
+datos de identificación de una persona o empresa para registrarla como cliente de un estudio jurídico.
+Devuelves SIEMPRE y ÚNICAMENTE un objeto JSON válido, sin texto adicional, sin explicaciones y sin
+envolverlo en bloques de código. Si un dato no aparece en el documento, usa null. No inventes datos.`
+
+/** Prompt de extracción de un cliente; opcionalmente con el texto de un .docx. */
+export function extraerClientePrompt(documentoTexto?: string): string {
+  const fuente = documentoTexto ? 'del documento incluido más abajo' : 'del documento adjunto'
+  const cola = documentoTexto ? `\n\nDOCUMENTO:\n"""\n${documentoTexto.slice(0, 40000)}\n"""` : ''
+  return `Extrae ${fuente} los datos del cliente y devuélvelos como JSON con EXACTAMENTE estas claves:
+
+{
+  "nombre": "nombre completo de la persona o razón social de la empresa, o null",
+  "rut": "RUT en formato chileno con guión y dígito verificador (ej: 12.345.678-9), o null",
+  "tipo": "PERSONA_NATURAL si es una persona; PERSONA_JURIDICA si es una empresa/razón social, o null",
+  "email": "correo electrónico, o null",
+  "telefono": "teléfono fijo, o null",
+  "celular": "teléfono celular/móvil, o null",
+  "direccion": "dirección/domicilio, o null",
+  "ciudad": "ciudad o comuna, o null"
+}
+
+Reglas:
+- Responde solo el JSON, nada más.
+- Usa null (no cadenas vacías) para lo que no encuentres.
+- "tipo" debe ser exactamente PERSONA_NATURAL o PERSONA_JURIDICA; si no puedes determinarlo, usa null.${cola}`
+}
+
 /**
  * Parsea la respuesta de la IA a un objeto de campos, tolerando que venga
  * envuelta en ```json o con texto alrededor. Devuelve {} si no logra parsear.

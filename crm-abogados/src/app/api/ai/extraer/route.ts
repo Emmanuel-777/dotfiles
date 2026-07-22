@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import mammoth from 'mammoth'
 import { getUserId } from '@/lib/auth'
 import { getAIProvider, AIError } from '@/lib/ai'
-import { EXTRAER_SYSTEM, extraerPrompt, parseExtraccion } from '@/lib/ai/prompts'
+import { EXTRAER_SYSTEM, extraerPrompt, EXTRAER_CLIENTE_SYSTEM, extraerClientePrompt, parseExtraccion } from '@/lib/ai/prompts'
 import { getPlan } from '@/lib/plan'
 import { TIPOS_CAUSA } from '@/lib/utils'
 
@@ -38,6 +38,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'El archivo supera 4 MB para lectura con IA.' }, { status: 400 })
   }
 
+  // Qué se está extrayendo: datos de una causa (default) o de un cliente.
+  const esCliente = formData?.get('tipo') === 'cliente'
+  const system = esCliente ? EXTRAER_CLIENTE_SYSTEM : EXTRAER_SYSTEM
+  const prompt = (docTexto?: string) =>
+    esCliente ? extraerClientePrompt(docTexto) : extraerPrompt(TIPOS_CAUSA, docTexto)
+
   const buf = Buffer.from(await file.arrayBuffer())
 
   try {
@@ -49,8 +55,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'El documento Word no contiene texto legible.' }, { status: 400 })
       }
       texto = await getAIProvider().complete({
-        system: EXTRAER_SYSTEM,
-        prompt: extraerPrompt(TIPOS_CAUSA, docTexto),
+        system,
+        prompt: prompt(docTexto),
         maxTokens: 1024,
         temperature: 0,
       })
@@ -58,8 +64,8 @@ export async function POST(req: Request) {
       // PDF / imagen: la IA lee el archivo de forma nativa.
       const kind = file.type === 'application/pdf' ? 'document' : 'image'
       texto = await getAIProvider().complete({
-        system: EXTRAER_SYSTEM,
-        prompt: extraerPrompt(TIPOS_CAUSA),
+        system,
+        prompt: prompt(),
         maxTokens: 1024,
         temperature: 0,
         attachments: [{ kind, mediaType: file.type, dataBase64: buf.toString('base64') }],

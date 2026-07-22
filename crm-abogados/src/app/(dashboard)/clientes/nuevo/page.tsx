@@ -1,14 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Sparkles, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+
+// Tipos que la IA puede leer (PDF/imagen nativos, .docx vía texto) y tope de tamaño.
+const EXTRACT_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]
+const EXTRACT_MAX_BYTES = 4 * 1024 * 1024
 
 export default function NuevoClientePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [extrayendo, setExtrayendo] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState({
     rut: '',
     nombre: '',
@@ -24,6 +35,54 @@ export default function NuevoClientePage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const autocompletar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    const limpiarInput = () => { if (fileRef.current) fileRef.current.value = '' }
+    if (!EXTRACT_TYPES.includes(f.type)) {
+      toast.error('Formato no soportado. Usa PDF, imagen (JPG/PNG) o Word (.docx).')
+      limpiarInput(); return
+    }
+    if (f.size > EXTRACT_MAX_BYTES) {
+      toast.error('El archivo supera 4 MB para lectura con IA.')
+      limpiarInput(); return
+    }
+    setExtrayendo(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', f)
+      fd.append('tipo', 'cliente')
+      const res = await fetch('/api/ai/extraer', { method: 'POST', body: fd })
+      const data = await res.json().catch(() => ({}))
+      if (res.status === 403) {
+        toast.error('La lectura de documentos con IA es parte del plan Pro.')
+        return
+      }
+      if (!res.ok) throw new Error(data.error || 'No se pudo leer el documento')
+
+      const campos: Record<string, unknown> = data.campos || {}
+      const limpio = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : null)
+      let completados = 0
+      setForm((prev) => {
+        const next = { ...prev }
+        const tipo = limpio(campos.tipo)
+        if (tipo === 'PERSONA_NATURAL' || tipo === 'PERSONA_JURIDICA') { next.tipo = tipo; completados++ }
+        for (const k of ['nombre', 'rut', 'email', 'telefono', 'celular', 'direccion', 'ciudad'] as const) {
+          const v = limpio(campos[k])
+          if (v) { next[k] = v; completados++ }
+        }
+        return next
+      })
+      if (completados > 0) toast.success('Datos completados desde el documento. Revísalos antes de guardar.')
+      else toast.info('No se encontraron datos reconocibles en el documento.')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'No se pudo leer el documento')
+    } finally {
+      setExtrayendo(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,8 +116,35 @@ export default function NuevoClientePage() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Nuevo cliente</h1>
 
       <form onSubmit={handleSubmit} className="card p-6 space-y-5">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="col-span-2">
+        {/* Autocompletar con IA desde un documento (cédula, contrato, etc.) */}
+        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4">
+          <div className="flex items-start gap-2">
+            <Sparkles className="h-4 w-4 flex-shrink-0 text-violet-500 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-violet-800">Autocompletar con IA <span className="font-normal text-violet-500">(Plan Pro)</span></p>
+              <p className="text-[11px] leading-relaxed text-violet-700 mt-0.5">
+                Sube la cédula, un contrato o una foto con los datos del cliente (PDF, imagen o Word) y la IA
+                completa nombre, RUT y contacto. El archivo se envía de forma segura solo para leerlo; no se almacena.
+              </p>
+              <label className={`mt-2 inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-white px-3 py-1.5 text-xs font-medium text-violet-700 transition-colors hover:bg-violet-100 ${extrayendo ? 'opacity-60 pointer-events-none' : 'cursor-pointer'}`}>
+                {extrayendo
+                  ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />Leyendo documento…</>
+                  : <><Sparkles className="h-3.5 w-3.5" />Subir documento y autocompletar</>}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.docx"
+                  onChange={autocompletar}
+                  disabled={extrayendo}
+                  className="sr-only"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="sm:col-span-2">
             <label className="label">Tipo de cliente</label>
             <select name="tipo" value={form.tipo} onChange={handleChange} className="input">
               <option value="PERSONA_NATURAL">Persona Natural</option>
@@ -66,7 +152,7 @@ export default function NuevoClientePage() {
             </select>
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label">
               {form.tipo === 'PERSONA_JURIDICA' ? 'Razón social' : 'Nombre completo'} *
             </label>
@@ -126,7 +212,7 @@ export default function NuevoClientePage() {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label">Dirección</label>
             <input
               name="direccion"
@@ -170,7 +256,7 @@ export default function NuevoClientePage() {
             </select>
           </div>
 
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="label">Notas internas</label>
             <textarea
               name="notas"
