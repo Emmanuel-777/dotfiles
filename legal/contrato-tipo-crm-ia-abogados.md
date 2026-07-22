@@ -2,7 +2,7 @@
 
 *Contrato tipo — para uso entre empresa proveedora de software de gestión jurídica (CRM con herramientas de inteligencia artificial) y estudios jurídicos o abogados/as clientes*
 
-> **Nota de uso:** Este es un modelo de contrato base. Los campos entre corchetes `[ ]` deben completarse en cada caso concreto. Se recomienda revisión de un/a abogado/a antes de su firma, ajustando montos, plazos y cláusulas según el cliente y el tipo de servicio contratado.
+> **Nota de uso:** Este contrato ya viene completado con los datos del Proveedor, las medidas de seguridad reales, los subencargados, los planes y precios, la forma de pago (transferencia mensual), la vigencia (mensual renovable) y la jurisdicción (tribunales ordinarios de Concepción). **Antes de enviarlo a cada cliente, completa únicamente:** (1) la ciudad y fecha de firma; (2) los datos del Cliente (razón social/nombre, RUT, representante y domicilio) en el comparendo y en el Anexo N° 1 punto 16; y (3) el plan contratado y N° de usuarios en el Anexo N° 3. Se recomienda una revisión final por un/a abogado/a antes de su uso, y ajustar cualquier cláusula según el caso.
 
 ---
 
@@ -69,19 +69,19 @@ Para los efectos de este Contrato, se entenderá por:
 
 ## CLÁUSULA QUINTA — PRECIO Y FORMA DE PAGO
 
-5.1. El Cliente pagará al Proveedor la suma de **[monto]** más IVA, con periodicidad **[mensual/anual]**, según el plan contratado en el **Anexo N° 3**.
+5.1. El Cliente pagará al Proveedor el precio correspondiente al **plan contratado**, individualizado en el **Anexo N° 3**, con periodicidad **mensual**. Los valores se expresan en pesos chilenos (CLP); los impuestos que correspondan se aplicarán conforme a la normativa tributaria vigente.
 
-5.2. El pago se realizará dentro de los **[N]** días siguientes a la emisión de la factura respectiva, mediante **[medio de pago]**.
+5.2. El pago se efectuará por **mensualidades anticipadas**, dentro de los **primeros 5 días** de cada período mensual, mediante **transferencia bancaria** a la cuenta corriente del Proveedor informada al Cliente.
 
-5.3. El atraso en el pago facultará al Proveedor para suspender el acceso a la Plataforma, previo aviso escrito con **[N]** días de anticipación, sin perjuicio de las acciones de cobro que correspondan. La suspensión por mora no exime al Proveedor de sus obligaciones de custodia y seguridad respecto de los Datos Personales ya almacenados.
+5.3. El atraso en el pago facultará al Proveedor para suspender el acceso a la Plataforma, previo aviso escrito con **5 días** de anticipación, sin perjuicio de las acciones de cobro que correspondan. La suspensión por mora no exime al Proveedor de sus obligaciones de custodia y seguridad respecto de los Datos Personales ya almacenados.
 
 ---
 
 ## CLÁUSULA SEXTA — PLAZO Y VIGENCIA
 
-6.1. El presente Contrato tendrá una duración de **[plazo]**, contado desde la fecha de su suscripción, renovándose automáticamente por períodos iguales y sucesivos, salvo que alguna de las Partes comunique su voluntad de no renovar con **[N]** días de anticipación al vencimiento.
+6.1. El presente Contrato tendrá una duración inicial de **un (1) mes**, contado desde la fecha de su suscripción, renovándose **automáticamente** por períodos mensuales iguales y sucesivos, salvo que alguna de las Partes comunique su voluntad de no renovar con **30 días** de anticipación al vencimiento del período en curso.
 
-6.2. Cualquiera de las Partes podrá poner término anticipado al Contrato en caso de incumplimiento grave de la otra Parte, no subsanado dentro de **[N]** días hábiles contados desde el requerimiento escrito respectivo.
+6.2. Cualquiera de las Partes podrá poner término anticipado al Contrato en caso de incumplimiento grave de la otra Parte, no subsanado dentro de **10 días hábiles** contados desde el requerimiento escrito respectivo.
 
 ---
 
@@ -115,7 +115,14 @@ Para los efectos de este Contrato, se entenderá por:
 
 10.1. El Proveedor se obliga a mantener medidas de seguridad técnicas y organizativas acordes al estado de la técnica, conforme al detalle establecido en el Anexo N° 1, cláusula de Medidas de Seguridad.
 
-10.2. El Proveedor declara contar, a la fecha de este Contrato, con las siguientes medidas mínimas: **[cifrado en tránsito y en reposo / control de acceso basado en roles / registro de auditoría (logs) / respaldo periódico / autenticación multifactor / otras que correspondan]**.
+10.2. El Proveedor declara contar, a la fecha de este Contrato, con las siguientes medidas mínimas:
+
+- Cifrado de la información **en tránsito** (protocolo HTTPS/TLS) y **en reposo**.
+- **Cifrado adicional reforzado (AES-256-GCM)** a nivel de aplicación para las credenciales de portales de terceros y los datos bancarios almacenados.
+- **Control de acceso** con autenticación gestionada y aislamiento de datos por cuenta (cada usuario accede únicamente a su propia información).
+- **Registro de auditoría** de las operaciones sensibles de exportación y eliminación de datos.
+- **Respaldo** periódico de la información y posibilidad de exportación de los datos por parte del Cliente en cualquier momento.
+- **Restricción de la exportación o descarga masiva** de datos relativos a causas penales, conforme a la prohibición de tratamiento masivo del artículo 25 de la Ley.
 
 ---
 
@@ -143,7 +150,7 @@ Para los efectos de este Contrato, se entenderá por:
 
 13.1. Terminado el Contrato por cualquier causa, el Proveedor deberá, a elección del Cliente:
 
-**(a)** Devolver la totalidad de los Datos Personales en un formato estructurado y de uso común, dentro de un plazo de **[N]** días hábiles; o
+**(a)** Devolver la totalidad de los Datos Personales en un formato estructurado y de uso común, dentro de un plazo de **30 días hábiles**; o
 
 **(b)** Suprimir de forma segura y verificable la totalidad de los Datos Personales, incluidos los respaldos, dentro del mismo plazo, entregando constancia de dicha eliminación al Cliente.
 
@@ -155,13 +162,13 @@ Para los efectos de este Contrato, se entenderá por:
 
 14.1. Este Contrato se rige por las leyes de la República de Chile, y en especial por la Ley N° 21.719 en lo relativo al tratamiento de Datos Personales.
 
-14.2. Toda dificultad o controversia que se produzca entre las Partes respecto de la aplicación, interpretación, validez o ejecución de este Contrato, se someterá a **[mediación previa / arbitraje / conocimiento de los tribunales ordinarios de justicia]**, en la ciudad señalada en la Cláusula Décimo Quinta.
+14.2. Toda dificultad o controversia que se produzca entre las Partes respecto de la aplicación, interpretación, validez o ejecución de este Contrato, se someterá al conocimiento de los **tribunales ordinarios de justicia** con asiento en la ciudad señalada en la Cláusula Décimo Quinta.
 
 ---
 
 ## CLÁUSULA DÉCIMO QUINTA — DOMICILIO Y NOTIFICACIONES
 
-15.1. Para todos los efectos legales derivados de este Contrato, las Partes fijan domicilio en la ciudad de **[ciudad]** y se someten a la jurisdicción de sus tribunales.
+15.1. Para todos los efectos legales derivados de este Contrato, las Partes fijan domicilio en la ciudad de **Concepción**, Región del Biobío, y se someten a la jurisdicción de sus tribunales.
 
 15.2. Las notificaciones entre las Partes se entenderán válidamente efectuadas al ser remitidas a los correos electrónicos de contacto individualizados en el Anexo N° 1.
 
@@ -175,7 +182,7 @@ Para los efectos de este Contrato, se entenderá por:
 
 16.3. Si alguna cláusula de este Contrato fuere declarada nula o inaplicable, ello no afectará la validez de las restantes.
 
-Se firma en **[N]** ejemplares de idéntico tenor, quedando uno en poder de cada Parte, o mediante firma electrónica avanzada según lo dispuesto en la Ley N° 19.799.
+Se firma en **dos (2) ejemplares** de idéntico tenor, quedando uno en poder de cada Parte, o mediante firma electrónica avanzada según lo dispuesto en la Ley N° 19.799.
 
 **[FIRMA PROVEEDOR]** ______________________
 **[FIRMA CLIENTE]** ______________________
@@ -263,11 +270,14 @@ El Proveedor pondrá a disposición del Cliente las herramientas técnicas o pro
 
 ## 12. Listado Inicial de Subencargados / Proveedores de Infraestructura
 
-| Subencargado | Servicio prestado | Ubicación de servidores | País con nivel adecuado (Sí/No) |
+| Subencargado | Servicio prestado | Ubicación de servidores | Base de la transferencia internacional |
 |---|---|---|---|
-| [Proveedor de hosting/cloud] | Almacenamiento de datos | [país/región] | [ ] |
-| [Proveedor de IA / API de terceros, si aplica] | Procesamiento de lenguaje natural | [país/región] | [ ] |
-| [Otro] | [ ] | [ ] | [ ] |
+| **Vercel Inc.** | Alojamiento (hosting) de la aplicación | Estados Unidos | Garantías adecuadas (cláusulas contractuales / DPA del proveedor) |
+| **Turso (ChiselStrike, Inc.)** | Base de datos / almacenamiento | Estados Unidos | Garantías adecuadas (cláusulas contractuales / DPA del proveedor) |
+| **Anthropic, PBC** | Procesamiento de lenguaje natural (funcionalidades de IA) | Estados Unidos | Garantías adecuadas (cláusulas contractuales / DPA del proveedor) |
+| **Resend (Plus Five Five, Inc.)** | Envío de correo transaccional (recordatorios y avisos) | Estados Unidos | Garantías adecuadas (cláusulas contractuales / DPA del proveedor) |
+
+> Al tratarse de proveedores con servidores en Estados Unidos, y no existiendo a la fecha una declaración de nivel adecuado de protección por parte de la Agencia respecto de dicho país, las transferencias se amparan en garantías adecuadas conforme al Título V de la Ley (cláusulas contractuales tipo o acuerdos de tratamiento de datos —DPA— suscritos con cada subencargado). El Proveedor mantendrá este listado actualizado e informará al Cliente de cualquier cambio de subencargado con antelación razonable.
 
 ## 13. Devolución o Eliminación de Datos al Término del Encargo
 
@@ -275,7 +285,7 @@ Conforme a la Cláusula Décimo Tercera del Contrato principal, terminado el enc
 
 ## 14. Derecho de Auditoría
 
-El Cliente podrá solicitar al Proveedor, con una anticipación razonable y hasta **[N]** veces al año, información, documentación o evidencia razonable que acredite el cumplimiento de las obligaciones de seguridad y protección de datos establecidas en este Anexo, pudiendo el Proveedor sustituir una auditoría directa por la entrega de certificaciones vigentes equivalentes (ISO 27001, certificación de modelo de prevención de infracciones ante la Agencia, u otras).
+El Cliente podrá solicitar al Proveedor, con una anticipación razonable y hasta **1 vez al año** (salvo que ocurra un Incidente de Seguridad que justifique una revisión adicional), información, documentación o evidencia razonable que acredite el cumplimiento de las obligaciones de seguridad y protección de datos establecidas en este Anexo, pudiendo el Proveedor sustituir una auditoría directa por la entrega de certificaciones vigentes equivalentes (ISO 27001, certificación de modelo de prevención de infracciones ante la Agencia, u otras).
 
 ## 15. Régimen Especial para Datos de Infracciones Penales
 
@@ -309,11 +319,19 @@ Cuando el Cliente ejerza la abogacía en materia penal y trate a través de la P
 
 # ANEXO N° 3 — DESCRIPCIÓN DEL SERVICIO Y CONDICIONES COMERCIALES
 
-- **Plan contratado:** [básico / profesional / estudio jurídico]
-- **N° de usuarios habilitados:** [ ]
-- **Funcionalidades incluidas:** [gestión de causas, agenda, gestión documental, IA de redacción, IA de análisis de documentos, cobranza, reportería, otros]
-- **Nivel de servicio (SLA):** disponibilidad comprometida de [99%], tiempo de respuesta ante incidentes críticos de [N] horas.
-- **Soporte técnico:** [canal, horario]
+**Planes disponibles** (marcar el contratado):
+
+| Plan | Precio mensual (CLP) | Incluye |
+|---|---|---|
+| ☐ **Básico** | $25.000 | Gestión completa del estudio: clientes, causas, agenda y plazos, honorarios, citas con recordatorios, tareas, documentos, embudo de ventas y respaldo de datos. |
+| ☐ **Pro** | $45.000 | Todo lo del plan Básico **más el Asistente de IA**: resumen ejecutivo y borrador de escritos por causa, y lectura de documentos para autocompletar causas y clientes. |
+
+- **Plan contratado:** ______________________
+- **N° de usuarios habilitados:** ______ (por defecto, 1 usuario por cuenta)
+- **Forma de pago:** transferencia bancaria mensual anticipada a la cuenta corriente del Proveedor (Banco BCI, Soluciones Con IA SpA).
+- **Nivel de servicio (SLA):** disponibilidad objetivo de **99%** mensual, con monitoreo de disponibilidad activo. Ante incidentes críticos, el Proveedor procurará restablecer el Servicio a la brevedad e informar al Cliente.
+- **Soporte técnico:** por **WhatsApp y correo electrónico** (contacto@lexcrm.site), en horario hábil.
+- **Prueba gratuita:** 7 días, según se haya ofrecido al Cliente al momento de la contratación.
 
 ---
 
