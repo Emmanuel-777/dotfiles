@@ -156,7 +156,7 @@
   <div class="cover-logo"><span class="w">Lex</span><span class="b">CRM</span></div>
   <div class="cover-title">Manual de Usuario</div>
   <div class="cover-sub">Guía completa para abogados y estudios jurídicos — todo lo que necesitas para operar tu estudio desde LexCRM.</div>
-  <div class="cover-footer">Versión 2.2 · Julio 2026<br><strong>lexcrm.site</strong></div>
+  <div class="cover-footer">Versión 2.3 · Julio 2026<br><strong>lexcrm.site</strong></div>
 </div>
 
 <!-- ═══════════ ÍNDICE ═══════════ -->
@@ -357,6 +357,12 @@
     <li>Clic en <strong>"Guardar"</strong></li>
   </ol>
 
+  <h2>Autocompletar con IA <span style="font-weight:400;color:#7c3aed">(Plan Pro)</span></h2>
+  <p>Al crear un cliente, el botón <strong>"Subir documento y autocompletar"</strong> lee la cédula de identidad, un contrato o una foto con los datos (PDF, imagen o Word) y completa nombre, RUT, tipo y contacto. Revisa siempre antes de guardar; el archivo se usa solo para leerlo y <strong>no se almacena</strong>.</p>
+
+  <h2>Actuaciones del cliente</h2>
+  <p>En la ficha del cliente, la sección <strong>"Actuaciones"</strong> reúne las gestiones de todas sus causas (con el ROL de cada una y el documento adjunto si lo tiene). El botón <strong>"Agregar"</strong> permite registrar una gestión eligiendo a qué causa corresponde.</p>
+
   <h2>Buscar un cliente</h2>
   <p>Usa la barra de búsqueda superior (o el atajo <code>Ctrl+K</code> / <code>Cmd+K</code>) — puedes buscar por nombre, RUT o email.</p>
 
@@ -409,6 +415,9 @@
     <li><strong>Carátula, abogado responsable, descripción</strong> (opcionales)</li>
     <li><strong>Estado inicial:</strong> En Trámite, Suspendida, Terminada o Archivada</li>
   </ol>
+
+  <h2>Autocompletar con IA <span style="font-weight:400;color:#7c3aed">(Plan Pro)</span></h2>
+  <p>Al crear una causa, si adjuntas la demanda o resolución (PDF, imagen JPG/PNG o Word <code>.docx</code>, hasta 4 MB), el botón <strong>"Autocompletar campos con IA"</strong> lee el documento y propone tribunal, ROL/RIT, materia, carátula y fecha. Revisa antes de guardar; el documento se usa solo para leerlo.</p>
 
   <h2>Dentro de cada causa puedes</h2>
   <ul>
@@ -639,10 +648,24 @@
   </div>
 
   <h2>Resumen de causa</h2>
-  <p>Genera un resumen ejecutivo del estado de la causa a partir de sus actuaciones, plazos y tareas registrados.</p>
+  <p>Genera un resumen ejecutivo del estado de la causa a partir de sus actuaciones, plazos y tareas. El texto aparece <strong>en tiempo real</strong> (palabra por palabra) y cada dato viene respaldado con la <strong>fecha de la actuación</strong> que lo sustenta, para que puedas verificarlo de un vistazo.</p>
 
   <h2>Borrador de escrito</h2>
-  <p>Elige el tipo de escrito que necesitas y, si quieres, agrega instrucciones específicas (por ejemplo: "solicitar prórroga de 5 días por motivos de salud"). La IA genera un borrador que puedes copiar y editar.</p>
+  <p>Elige el tipo de escrito que necesitas y, si quieres, agrega instrucciones específicas (por ejemplo: "solicitar prórroga de 5 días por motivos de salud"). La IA genera un borrador con estructura procesal chilena, con una advertencia visible de que debes revisarlo y completarlo antes de presentarlo.</p>
+
+  <h2>Editar y enviar el resultado</h2>
+  <ul>
+    <li>Botón <strong>"Editar"</strong>: modifica el resultado dentro de LexCRM, sin pasarlo a Word.</li>
+    <li>Botón <strong>"Copiar"</strong> y botones <strong>"Enviar al cliente"</strong> (WhatsApp / correo): el texto sale limpio, sin símbolos de formato.</li>
+  </ul>
+
+  <h2>Lectura de documentos (autocompletar)</h2>
+  <p>La IA también lee documentos para ahorrarte tipear:</p>
+  <ul>
+    <li>Al crear una <strong>causa</strong>: autocompleta tribunal, ROL, materia y carátula desde la demanda o resolución.</li>
+    <li>Al crear un <strong>cliente</strong>: autocompleta nombre, RUT y contacto desde la cédula, un contrato o una foto.</li>
+    <li>Formatos: PDF, imagen (JPG/PNG) o Word <code>.docx</code>, hasta 4 MB. El documento se usa solo para leerlo y <strong>no se almacena</strong> (Ley N° 21.719).</li>
+  </ul>
 
   <div class="callout callout-warn">
     <strong>El asistente IA es una herramienta de apoyo, no un sustituto del criterio profesional.</strong> Revisa y ajusta siempre el contenido generado antes de usarlo o presentarlo.

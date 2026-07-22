@@ -1,7 +1,7 @@
 # LexCRM — Manual de Usuario
 ## Guía para abogados
 
-> Versión 2.2 · Julio 2026 · Sistema de gestión legal para abogados en Chile
+> Versión 2.3 · Julio 2026 · Sistema de gestión legal para abogados en Chile
 >
 > **Nota:** este archivo es la referencia de texto rápida. El documento oficial para entregar a clientes es `MANUAL_USUARIO.pdf` (diseñado para A4), generado a partir de `MANUAL_USUARIO.html`.
 
@@ -64,6 +64,10 @@ Menú: Dashboard, Embudo, Clientes, Causas, Tareas, Citas, Agenda y Plazos, Docu
 
 **Agregar:** Clientes → Nuevo cliente → RUT (obligatorio, `12345678-9`), nombre, tipo (natural/jurídica), contacto (opcional) → Guardar.
 
+**Autocompletar con IA (Plan Pro):** al crear un cliente, el botón **"Subir documento y autocompletar"** lee la cédula de identidad, un contrato o una foto con los datos (PDF, imagen o Word) y completa nombre, RUT, tipo y contacto. Revisa siempre antes de guardar; el archivo se usa solo para leerlo y **no se almacena**.
+
+**Actuaciones del cliente:** en la ficha del cliente, la sección **"Actuaciones"** reúne las gestiones de todas sus causas (con el ROL de cada una y el documento adjunto si lo tiene). El botón **"Agregar"** permite registrar una gestión eligiendo a qué causa corresponde.
+
 **Buscar:** barra superior o `Ctrl+K` / `Cmd+K`, por nombre, RUT o email.
 
 **Eliminar:** desde Editar cliente → Eliminar cliente. Borra también todas sus causas, tareas, documentos, plazos y honorarios asociados — irreversible.
@@ -78,7 +82,9 @@ Menú: Dashboard, Embudo, Clientes, Causas, Tareas, Citas, Agenda y Plazos, Docu
 
 **Agregar:** Causas → Nueva causa → Cliente, ROL/RIT, Tribunal, Tipo (Civil, Laboral, Familia, Penal, Comercial, Tributario, Administrativo, Constitucional, Otro), Fecha de ingreso, Estado inicial (En Trámite / Suspendida / Terminada / Archivada).
 
-Dentro de cada causa: editar, plazos/audiencias, tareas, actuaciones (con compromisos y recordatorios al cliente, con fecha **y hora**), documentos, honorarios, Asistente IA.
+**Autocompletar con IA (Plan Pro):** al crear una causa, si adjuntas la demanda o resolución (PDF, imagen JPG/PNG o Word `.docx`, hasta 4 MB), el botón **"Autocompletar campos con IA"** lee el documento y propone tribunal, ROL/RIT, materia, carátula y fecha. Revisa antes de guardar; el documento se usa solo para leerlo.
+
+Dentro de cada causa: editar, plazos/audiencias, tareas, actuaciones (con compromisos y recordatorios al cliente, con fecha **y hora**, y **documento adjunto opcional** descargable), documentos, honorarios, Asistente IA.
 
 **Exportar listado:** Excel desde Causas — las causas Penales quedan excluidas por disposición legal.
 
@@ -177,8 +183,17 @@ Mover entre etapas con flechas en el tablero. Al ganar, botón "Convertir a clie
 
 Dentro de cada causa, panel lateral derecho:
 
-- **Resumen de causa:** resumen ejecutivo a partir de actuaciones, plazos y tareas.
-- **Borrador de escrito:** elige tipo + instrucciones opcionales → borrador editable.
+- **Resumen de causa:** resumen ejecutivo a partir de actuaciones, plazos y tareas. El texto aparece **en tiempo real** (palabra por palabra) y cada dato viene respaldado con la **fecha de la actuación** que lo sustenta, para que puedas verificarlo de un vistazo.
+- **Borrador de escrito:** elige tipo + instrucciones opcionales → borrador con estructura procesal chilena. Lleva una advertencia visible: es un apoyo que debes revisar y completar antes de presentarlo.
+
+**Editar y enviar el resultado:**
+- Botón **"Editar"**: modifica el resultado dentro de LexCRM, sin pasarlo a Word.
+- Botón **"Copiar"** y botones **"Enviar al cliente"** (WhatsApp / correo): el texto sale **limpio**, sin símbolos de formato (`**`, `##`, tablas).
+
+**Lectura de documentos (autocompletar):** además del resumen y el borrador, la IA puede leer documentos para ahorrarte tipear:
+- Al crear una **causa**, autocompleta tribunal, ROL, materia y carátula desde la demanda o resolución.
+- Al crear un **cliente**, autocompleta nombre, RUT y contacto desde la cédula, un contrato o una foto.
+- Formatos: PDF, imagen (JPG/PNG) o Word `.docx`, hasta 4 MB. El documento se envía de forma segura solo para leerlo y **no se almacena** en ese proceso (conforme a la Ley N° 21.719).
 
 > Herramienta de apoyo, no sustituye el criterio profesional. Revisa siempre antes de usar.
 
