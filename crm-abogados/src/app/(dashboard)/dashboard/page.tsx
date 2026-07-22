@@ -353,7 +353,7 @@ export default async function DashboardPage() {
                 return (
                   <Link
                     key={tarea.id}
-                    href={`/causas/${tarea.causaId}`}
+                    href={tarea.causaId ? `/causas/${tarea.causaId}` : `/tareas/${tarea.id}/editar`}
                     className={[
                       'flex items-start gap-3 px-4 py-3 hover:opacity-90 transition-opacity',
                       clases ? `${clases.border} ${clases.bg}` : 'border-l-4 border-gray-200 bg-white',

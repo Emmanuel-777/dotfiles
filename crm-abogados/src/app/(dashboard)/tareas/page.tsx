@@ -211,7 +211,7 @@ export default async function TareasPage() {
               return (
                 <Link
                   key={tarea.id}
-                  href={`/causas/${tarea.causaId}`}
+                  href={tarea.causaId ? `/causas/${tarea.causaId}` : `/tareas/${tarea.id}/editar`}
                   className="block bg-gray-50 border border-gray-200 rounded-lg p-3 hover:bg-gray-100 transition-colors opacity-70"
                 >
                   <div className="flex items-center justify-between gap-4">
