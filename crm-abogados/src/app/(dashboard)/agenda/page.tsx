@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Plus, Calendar, Clock, AlertTriangle, CheckCircle } from 'lucide-react'
 import { formatFechaCorta, estaVencido, esCritico } from '@/lib/utils'
 import { requireUserId } from '@/lib/auth'
+import PlazoCheck from '@/components/PlazoCheck'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,8 +35,8 @@ export default async function AgendaPage() {
   const hoy = new Date()
   hoy.setHours(0, 0, 0, 0)
 
-  const proximos = rows.filter((r) => r.plazo.estado === 'PENDIENTE' && !estaVencido(r.plazo.fecha))
-  const vencidos = rows.filter((r) => r.plazo.estado === 'PENDIENTE' && estaVencido(r.plazo.fecha))
+  const proximos = rows.filter((r) => r.plazo.estado !== 'COMPLETADO' && !estaVencido(r.plazo.fecha))
+  const vencidos = rows.filter((r) => r.plazo.estado !== 'COMPLETADO' && estaVencido(r.plazo.fecha))
   const completados = rows.filter((r) => r.plazo.estado === 'COMPLETADO')
 
   const hoy7 = proximos.filter((r) => {
@@ -153,6 +154,7 @@ function PlazoRow({ plazo, causa, cliente, tipoColors, tipoLabels, vencido = fal
       </div>
       <div className="flex items-center gap-3">
         <span className={`badge ${tipoColors[plazo.tipo] || tipoColors.OTRO}`}>{tipoLabels[plazo.tipo] || plazo.tipo}</span>
+        <PlazoCheck plazoId={plazo.id} estado={plazo.estado} />
         <Link href={`/causas/${plazo.causaId}`} className="text-xs text-blue-600 hover:text-blue-700">Ver causa</Link>
       </div>
     </div>

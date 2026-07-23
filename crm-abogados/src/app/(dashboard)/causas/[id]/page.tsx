@@ -9,6 +9,7 @@ import TareaEstadoSelect from '@/components/TareaEstadoSelect'
 import ReminderButtons from '@/components/ReminderButtons'
 import AIPanel from '@/components/AIPanel'
 import CausaDocUpload from '@/components/CausaDocUpload'
+import PlazoCheck from '@/components/PlazoCheck'
 import { TIPOS_ESCRITO } from '@/lib/ai/prompts'
 import { requireUserId } from '@/lib/auth'
 import { parseCredenciales } from '@/lib/crypto'
@@ -138,11 +139,12 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                           {plazo.notas && <p className="text-xs text-gray-400 mt-0.5">{plazo.notas}</p>}
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right flex flex-col items-end gap-1">
                         <p className={`text-sm font-medium ${vencido && plazo.estado === 'PENDIENTE' ? 'text-red-600' : critico ? 'text-amber-600' : 'text-gray-700'}`}>
                           {formatFechaCorta(plazo.fecha)}
                         </p>
                         <span className={`badge ${estadoPlazo?.color}`}>{estadoPlazo?.label}</span>
+                        <PlazoCheck plazoId={plazo.id} estado={plazo.estado} />
                       </div>
                     </div>
                   )
