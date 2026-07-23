@@ -7,6 +7,7 @@ import { ArrowLeft, Save, Upload, X, FileText, Sparkles, Loader2 } from 'lucide-
 import { TIPOS_CAUSA } from '@/lib/utils'
 import TribunalSelect from '@/components/TribunalSelect'
 import { toast } from 'sonner'
+import { subirDocumento } from '@/lib/upload'
 
 const TIPOS_DOC = ['PODER', 'ESCRITO', 'RESOLUCION', 'CONTRATO', 'OTRO']
 const TIPO_DOC_LABELS: Record<string, string> = {
@@ -141,11 +142,7 @@ function NuevaCausaForm() {
       // 2. Si hay archivo, subirlo y registrar el documento
       if (file) {
         try {
-          const fd = new FormData()
-          fd.append('file', file)
-          const uploadRes = await fetch('/api/documentos/upload', { method: 'POST', body: fd })
-          if (!uploadRes.ok) throw new Error('Error al subir el archivo')
-          const { url } = await uploadRes.json()
+          const url = await subirDocumento(file)
           await fetch('/api/documentos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

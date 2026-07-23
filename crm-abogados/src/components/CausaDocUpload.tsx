@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { Upload, X, FileText, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { subirDocumento } from '@/lib/upload'
 
 const TIPOS_DOC = ['ESCRITO', 'RESOLUCION', 'CONTRATO', 'PODER', 'OTRO']
 const TIPO_LABELS: Record<string, string> = {
@@ -53,14 +54,7 @@ export default function CausaDocUpload({ causaId }: Props) {
     if (!file || !nombre.trim()) return
     setLoading(true)
     try {
-      const fd = new FormData()
-      fd.append('file', file)
-      const uploadRes = await fetch('/api/documentos/upload', { method: 'POST', body: fd })
-      if (!uploadRes.ok) {
-        const err = await uploadRes.json().catch(() => ({}))
-        throw new Error(err.error ?? 'Error al subir el archivo')
-      }
-      const { url } = await uploadRes.json()
+      const url = await subirDocumento(file)
 
       const res = await fetch('/api/documentos', {
         method: 'POST',

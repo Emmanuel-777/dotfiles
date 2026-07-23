@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Upload, X, FileText } from 'lucide-react'
 import { toast } from 'sonner'
+import { subirDocumento } from '@/lib/upload'
 
 const ACCEPTED = '.pdf,.doc,.docx,.jpg,.jpeg,.png'
 const MAX_MB = 10
@@ -57,15 +58,7 @@ function NuevoDocumentoForm() {
       let archivoUrl: string | null = null
 
       if (file) {
-        const fd = new FormData()
-        fd.append('file', file)
-        const uploadRes = await fetch('/api/documentos/upload', { method: 'POST', body: fd })
-        if (!uploadRes.ok) {
-          const err = await uploadRes.json().catch(() => ({}))
-          throw new Error(err.error ?? 'Error al subir el archivo')
-        }
-        const { url } = await uploadRes.json()
-        archivoUrl = url
+        archivoUrl = await subirDocumento(file)
       }
 
       const res = await fetch('/api/documentos', {

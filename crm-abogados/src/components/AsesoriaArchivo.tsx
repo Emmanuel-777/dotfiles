@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { Upload, X, FileText, Loader2, Download } from 'lucide-react'
 import { toast } from 'sonner'
+import { subirDocumento } from '@/lib/upload'
 
 const ACCEPTED = '.pdf,.doc,.docx,.jpg,.jpeg,.png'
 const MAX_MB = 10
@@ -28,14 +29,7 @@ export default function AsesoriaArchivo({ existente, onChange }: Props) {
     }
     setSubiendo(true)
     try {
-      const fd = new FormData()
-      fd.append('file', f)
-      const res = await fetch('/api/documentos/upload', { method: 'POST', body: fd })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error ?? 'Error al subir el archivo')
-      }
-      const { url } = await res.json()
+      const url = await subirDocumento(f)
       const archivo = { url, nombre: f.name }
       setPendiente(archivo)
       setQuitado(false)
