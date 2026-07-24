@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { esAdmin } from '@/lib/acceso'
-import { listarCuentas, activarPagado, suspenderCuenta, reactivarPrueba, eliminarCuenta } from '@/lib/cuentas'
+import { listarCuentas, activarPagado, suspenderCuenta, reactivarPrueba, eliminarCuenta, purgarUsuario } from '@/lib/cuentas'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,12 +28,18 @@ export async function POST(request: Request) {
   const accion = typeof body?.accion === 'string' ? body.accion : ''
   if (!userId || !accion) return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
 
+  // Candado: el admin no puede purgar su propia cuenta (se autobloquearía).
+  if (accion === 'purgar' && userId === admin) {
+    return NextResponse.json({ error: 'No puedes eliminar tu propia cuenta.' }, { status: 400 })
+  }
+
   try {
     switch (accion) {
       case 'activar': await activarPagado(userId); break
       case 'suspender': await suspenderCuenta(userId); break
       case 'reactivar': await reactivarPrueba(userId); break
       case 'eliminar': await eliminarCuenta(userId); break
+      case 'purgar': await purgarUsuario(userId); break
       default: return NextResponse.json({ error: 'Acción no válida' }, { status: 400 })
     }
     return NextResponse.json({ ok: true })

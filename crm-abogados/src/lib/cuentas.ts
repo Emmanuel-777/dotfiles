@@ -1,7 +1,11 @@
 import { clerkClient } from '@clerk/nextjs/server'
 import { eq, or, desc } from 'drizzle-orm'
 import { db, initDB } from '@/lib/db'
-import { cuentas } from '@/lib/schema'
+import {
+  cuentas, clientes, causas, actuaciones, asesorias, plazos, documentos,
+  honorarios, cuotasHonorario, tareas, gestionesTarea, citas, prospectos,
+  perfilAbogado, registrosAuditoria,
+} from '@/lib/schema'
 import { TRIAL_DIAS, type CuentaMeta } from '@/lib/acceso'
 import { planForEmail } from '@/lib/plan'
 
@@ -145,6 +149,34 @@ export async function eliminarCuenta(userId: string) {
   await initDB()
   await db.delete(cuentas).where(eq(cuentas.userId, userId))
   await sincronizarMetadataClerk(userId, {})
+}
+
+/**
+ * BORRADO TOTAL e IRREVERSIBLE de un usuario: todos sus datos (clientes,
+ * causas, honorarios, etc.), su cuenta de prueba y su login de Clerk.
+ * El borrado de datos va en orden hijo→padre para respetar las claves foráneas.
+ */
+export async function purgarUsuario(userId: string) {
+  await initDB()
+  await db.delete(gestionesTarea).where(eq(gestionesTarea.userId, userId))
+  await db.delete(cuotasHonorario).where(eq(cuotasHonorario.userId, userId))
+  await db.delete(actuaciones).where(eq(actuaciones.userId, userId))
+  await db.delete(plazos).where(eq(plazos.userId, userId))
+  await db.delete(documentos).where(eq(documentos.userId, userId))
+  await db.delete(tareas).where(eq(tareas.userId, userId))
+  await db.delete(asesorias).where(eq(asesorias.userId, userId))
+  await db.delete(citas).where(eq(citas.userId, userId))
+  await db.delete(honorarios).where(eq(honorarios.userId, userId))
+  await db.delete(prospectos).where(eq(prospectos.userId, userId))
+  await db.delete(causas).where(eq(causas.userId, userId))
+  await db.delete(clientes).where(eq(clientes.userId, userId))
+  await db.delete(perfilAbogado).where(eq(perfilAbogado.userId, userId))
+  await db.delete(registrosAuditoria).where(eq(registrosAuditoria.userId, userId))
+  await db.delete(cuentas).where(eq(cuentas.userId, userId))
+
+  // Borrar el login en Clerk (último paso).
+  const client = await clerkClient()
+  await client.users.deleteUser(userId)
 }
 
 /** Crea la cuenta de prueba (7 días, plan Pro) y sincroniza el metadata de Clerk. */

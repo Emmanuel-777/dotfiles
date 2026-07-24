@@ -33,7 +33,7 @@ function fmtFecha(iso: string | null): string {
 }
 
 export default async function AdminPage() {
-  const { sessionClaims } = await auth()
+  const { userId: adminUserId, sessionClaims } = await auth()
   const email = sessionClaims?.email as string | undefined
   if (!esAdmin(email)) notFound()
 
@@ -75,12 +75,21 @@ export default async function AdminPage() {
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-gray-100">
-                {u.gestionable ? (
-                  <AdminCuentaAcciones userId={u.userId} estado={u.tipo} />
-                ) : u.tipo === 'cliente' ? (
-                  <p className="text-xs text-gray-400">Cliente permanente — gestionado por la lista de autorizados.</p>
+                {u.userId === adminUserId ? (
+                  <p className="text-xs text-gray-400">Tu propia cuenta.</p>
                 ) : (
-                  <p className="text-xs text-gray-400">Registrado sin acceso activo.</p>
+                  <>
+                    {!u.gestionable && u.tipo === 'cliente' && (
+                      <p className="text-xs text-gray-400 mb-2">Cliente permanente — gestionado por la lista de autorizados.</p>
+                    )}
+                    <AdminCuentaAcciones
+                      userId={u.userId}
+                      estado={u.tipo}
+                      gestionable={u.gestionable}
+                      puedeEliminar
+                      etiqueta={`${u.nombre} (${u.email})`}
+                    />
+                  </>
                 )}
               </div>
             </div>
