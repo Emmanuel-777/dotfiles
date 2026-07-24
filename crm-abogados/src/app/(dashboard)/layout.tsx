@@ -17,8 +17,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // Días restantes de prueba (solo para usuarios en trial; el resto no ve nada).
   const meta = (sessionClaims?.metadata ?? {}) as { estado?: string; trialFin?: string }
+  const esTrial = meta.estado === 'trial'
   let trialDias: number | null = null
-  if (meta.estado === 'trial' && meta.trialFin) {
+  if (esTrial && meta.trialFin) {
     const ms = Date.parse(meta.trialFin) - Date.now()
     trialDias = ms > 0 ? Math.ceil(ms / (24 * 60 * 60 * 1000)) : 0
   }
@@ -82,7 +83,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto}>
-      <ProfileGuard perfilCompleto={perfilCompleto} />
+      <ProfileGuard perfilCompleto={perfilCompleto} esTrial={esTrial} />
       <TrialBanner trialDias={trialDias} />
       {children}
       <AsistenteVirtual />

@@ -3,15 +3,18 @@
 import { useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 
-export default function ProfileGuard({ perfilCompleto }: { perfilCompleto: boolean }) {
+// A los usuarios de prueba NO se les obliga a completar el perfil (incluida la
+// cuenta bancaria) para explorar el CRM — eso solo aplica a cuentas permanentes,
+// que necesitan esos datos para recibir pagos. Un trial entra y prueba libre.
+export default function ProfileGuard({ perfilCompleto, esTrial = false }: { perfilCompleto: boolean; esTrial?: boolean }) {
   const pathname = usePathname()
   const router = useRouter()
 
   useEffect(() => {
-    if (!perfilCompleto && pathname !== '/perfil') {
+    if (!perfilCompleto && !esTrial && pathname !== '/perfil') {
       router.replace('/perfil?requerido=1')
     }
-  }, [perfilCompleto, pathname, router])
+  }, [perfilCompleto, esTrial, pathname, router])
 
   return null
 }
