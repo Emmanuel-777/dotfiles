@@ -10,7 +10,9 @@ import { Users, Briefcase, Calendar, DollarSign, AlertTriangle, Clock, TrendingU
 import { eq, gte, lte, lt, count, desc, asc, and, inArray, ne, isNotNull } from 'drizzle-orm'
 import ReminderButtons from '@/components/ReminderButtons'
 import EmptyState from '@/components/EmptyState'
+import DatosEjemploCard from '@/components/DatosEjemploCard'
 import { requireUserId } from '@/lib/auth'
+import { esCuentaTrial } from '@/lib/plan'
 
 const QUICK_ACTIONS = [
   { label: 'Nuevo cliente', href: '/clientes/nuevo', icon: UserPlus,     color: 'text-blue-600',    bg: 'bg-blue-50 hover:bg-blue-100' },
@@ -100,6 +102,7 @@ export default async function DashboardPage() {
   const totalVencidos = plazosVencidos + tareasVencidas
 
   const totalClientes = totalClientesRows[0]?.count ?? 0
+  const mostrarDatosEjemplo = totalClientes === 0 && (await esCuentaTrial())
   const totalCausas = totalCausasRows[0]?.count ?? 0
   const causasActivas = causasActivasRows[0]?.count ?? 0
   const plazosProximos = plazosProximosRows[0]?.count ?? 0
@@ -132,6 +135,8 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1">Resumen de tu estudio jurídico</p>
       </div>
+
+      {mostrarDatosEjemplo && <DatosEjemploCard />}
 
       {/* Banner de alertas — vencimientos */}
       {totalVencidos > 0 && (

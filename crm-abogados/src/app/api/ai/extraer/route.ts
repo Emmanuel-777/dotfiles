@@ -3,7 +3,8 @@ import mammoth from 'mammoth'
 import { getUserId } from '@/lib/auth'
 import { getAIProvider, AIError } from '@/lib/ai'
 import { EXTRAER_SYSTEM, extraerPrompt, EXTRAER_CLIENTE_SYSTEM, extraerClientePrompt, parseExtraccion } from '@/lib/ai/prompts'
-import { getPlan } from '@/lib/plan'
+import { getPlan, esCuentaTrial } from '@/lib/plan'
+import { chequearYRegistrarIA } from '@/lib/usoIa'
 import { TIPOS_CAUSA } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
@@ -24,6 +25,11 @@ export async function POST(req: Request) {
   const plan = await getPlan()
   if (plan !== 'pro') {
     return NextResponse.json({ error: 'La lectura de documentos con IA es parte del plan Pro.' }, { status: 403 })
+  }
+
+  const { permitido, limite } = await chequearYRegistrarIA(userId, await esCuentaTrial())
+  if (!permitido) {
+    return NextResponse.json({ error: `Alcanzaste el límite diario de IA de la prueba (${limite} usos). Vuelve mañana o suscríbete para uso sin límite.` }, { status: 429 })
   }
 
   const formData = await req.formData().catch(() => null)

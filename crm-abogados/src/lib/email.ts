@@ -562,6 +562,49 @@ export function buildSolicitudAccesoEmail({
 </html>`
 }
 
+export function buildPruebaVenceEmail({
+  nombre,
+  trialFin,
+}: {
+  nombre: string
+  trialFin: string
+}): string {
+  const finFmt = new Date(trialFin).toLocaleDateString('es-CL', { day: '2-digit', month: 'long' })
+  const wa = 'https://wa.me/56979710838?text=' + encodeURIComponent('Hola, quiero suscribirme a LexCRM antes de que termine mi prueba.')
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:linear-gradient(135deg,#14254c,#1a3060);padding:28px 32px;">
+      <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Tu prueba está por terminar</p>
+    </div>
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 16px;font-size:15px;color:#334155;">Hola ${nombre || 'abogado/a'},</p>
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;">
+        Tu prueba gratuita de LexCRM termina el <strong>${finFmt}</strong>. Después de esa fecha,
+        tu cuenta se pausará, pero <strong>todos tus datos quedan guardados</strong> y los recuperas
+        al suscribirte.
+      </p>
+      <p style="margin:0 0 24px;font-size:15px;color:#334155;">
+        Si quieres seguir con el orden y los recordatorios automáticos de tus causas, activa tu plan:
+      </p>
+      <a href="${wa}" style="display:inline-block;background:#14254c;color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 22px;border-radius:8px;">
+        Quiero suscribirme
+      </a>
+    </div>
+    <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+      <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+        LexCRM · Gestión Legal ·
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+}
+
 export function buildNuevaPruebaEmail({
   nombre,
   email,

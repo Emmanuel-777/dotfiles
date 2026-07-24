@@ -218,8 +218,15 @@ export async function initDB() {
       estado TEXT NOT NULL DEFAULT 'trial',
       trial_inicio TEXT,
       trial_fin TEXT,
+      recordatorio_vencimiento INTEGER NOT NULL DEFAULT 0,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS uso_ia (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      fecha TEXT NOT NULL,
+      conteo INTEGER NOT NULL DEFAULT 0
     )`,
   ]
   for (const sql of statements) {
@@ -259,6 +266,8 @@ export async function initDB() {
     // Documento adjunto opcional por actuación/gestión
     `ALTER TABLE actuaciones ADD COLUMN archivo_url TEXT`,
     `ALTER TABLE actuaciones ADD COLUMN archivo_nombre TEXT`,
+    // Aviso de "tu prueba vence mañana" (0=pendiente, 1=enviado)
+    `ALTER TABLE cuentas ADD COLUMN recordatorio_vencimiento INTEGER NOT NULL DEFAULT 0`,
   ]
   for (const m of migrations) {
     try { await client.execute(m) } catch {}

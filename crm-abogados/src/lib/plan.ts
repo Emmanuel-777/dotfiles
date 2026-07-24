@@ -19,6 +19,13 @@ export function planForEmail(email: string | undefined | null): Plan {
   return proEmails().includes(email.toLowerCase()) ? 'pro' : 'basico'
 }
 
+/** ¿La sesión actual es una cuenta de prueba? (para topar la IA, etc.) */
+export async function esCuentaTrial(): Promise<boolean> {
+  const { sessionClaims } = await auth()
+  const meta = (sessionClaims?.metadata ?? {}) as { estado?: string }
+  return meta.estado === 'trial'
+}
+
 /** Para server components y API routes. */
 export async function getPlan(): Promise<Plan> {
   const { sessionClaims } = await auth()

@@ -234,8 +234,17 @@ export const cuentas = sqliteTable('cuentas', {
   estado: text('estado').notNull().default('trial'),
   trialInicio: text('trial_inicio'),
   trialFin: text('trial_fin'),
+  recordatorioVencimiento: integer('recordatorio_vencimiento').notNull().default(0),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
+// Conteo diario de usos de IA, para topar las pruebas (una fila por usuario y día).
+export const usoIa = sqliteTable('uso_ia', {
+  id: text('id').primaryKey(), // `${userId}:${fecha}`
+  userId: text('user_id').notNull(),
+  fecha: text('fecha').notNull(),
+  conteo: integer('conteo').notNull().default(0),
 })
 
 export type Cliente = typeof clientes.$inferSelect
