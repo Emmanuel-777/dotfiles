@@ -3,6 +3,7 @@ import { eq, or, desc } from 'drizzle-orm'
 import { db, initDB } from '@/lib/db'
 import { cuentas } from '@/lib/schema'
 import { TRIAL_DIAS, type CuentaMeta } from '@/lib/acceso'
+import { planForEmail } from '@/lib/plan'
 
 /** Normaliza un RUT para comparar (sin puntos, guión ni espacios, en minúscula). */
 export function normalizarRut(rut: string): string {
@@ -42,6 +43,72 @@ export async function sincronizarMetadataClerk(userId: string, meta: CuentaMeta)
 export async function listarCuentas() {
   await initDB()
   return db.select().from(cuentas).orderBy(desc(cuentas.createdAt))
+}
+
+export interface UsuarioAdmin {
+  userId: string
+  email: string
+  nombre: string
+  rut: string | null
+  tipo: 'cliente' | 'trial' | 'activo' | 'suspendido' | 'bloqueado' | 'sin_acceso'
+  plan: 'pro' | 'basico'
+  trialFin: string | null
+  createdAt: string | null
+  gestionable: boolean // tiene cuenta de prueba: las acciones del panel aplican
+}
+
+/**
+ * Lista TODOS los usuarios registrados (desde Clerk), cruzados con su estado
+ * real: clientes permanentes (ALLOWED_EMAILS), cuentas de prueba, o registrados
+ * sin acceso. Los permanentes se muestran como información (los gobierna la
+ * lista de autorizados, no el panel).
+ */
+export async function listarUsuariosAdmin(): Promise<UsuarioAdmin[]> {
+  await initDB()
+  const cuentasRows = await db.select().from(cuentas)
+  const porUser = new Map(cuentasRows.map((c) => [c.userId, c]))
+
+  const listaAutorizados = (process.env.ALLOWED_EMAILS || '')
+    .split(',').map((e) => e.trim().toLowerCase()).filter(Boolean)
+
+  const client = await clerkClient()
+  const res = await client.users.getUserList({ limit: 200, orderBy: '-created_at' })
+  const users = Array.isArray(res) ? res : res.data
+
+  return users.map((u) => {
+    const email =
+      u.emailAddresses.find((e: { id: string; emailAddress: string }) => e.id === u.primaryEmailAddressId)?.emailAddress ??
+      u.emailAddresses[0]?.emailAddress ??
+      ''
+    const cuenta = porUser.get(u.id)
+    const nombreClerk = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim()
+    const permanente = !!email && listaAutorizados.includes(email.toLowerCase())
+
+    let tipo: UsuarioAdmin['tipo']
+    let plan: 'pro' | 'basico'
+    if (permanente) {
+      tipo = 'cliente'
+      plan = planForEmail(email)
+    } else if (cuenta) {
+      tipo = cuenta.estado as UsuarioAdmin['tipo']
+      plan = cuenta.plan === 'pro' ? 'pro' : 'basico'
+    } else {
+      tipo = 'sin_acceso'
+      plan = 'basico'
+    }
+
+    return {
+      userId: u.id,
+      email,
+      nombre: nombreClerk || cuenta?.nombre || 'Sin nombre',
+      rut: cuenta?.rut ?? null,
+      tipo,
+      plan,
+      trialFin: cuenta?.trialFin ?? null,
+      createdAt: cuenta?.createdAt ?? (u.createdAt ? new Date(u.createdAt).toISOString() : null),
+      gestionable: !permanente && !!cuenta,
+    }
+  })
 }
 
 /** Activa una cuenta como cliente permanente pagado (plan Pro). */
