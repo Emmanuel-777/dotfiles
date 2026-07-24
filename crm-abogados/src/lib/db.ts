@@ -208,6 +208,19 @@ export async function initDB() {
       archivo_nombre TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )`,
+    // Cuentas de acceso / sistema de pruebas (aditiva — no toca datos existentes)
+    `CREATE TABLE IF NOT EXISTS cuentas (
+      user_id TEXT PRIMARY KEY,
+      email TEXT,
+      nombre TEXT,
+      rut TEXT,
+      plan TEXT NOT NULL DEFAULT 'pro',
+      estado TEXT NOT NULL DEFAULT 'trial',
+      trial_inicio TEXT,
+      trial_fin TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
   ]
   for (const sql of statements) {
     await client.execute(sql)

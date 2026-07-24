@@ -561,3 +561,49 @@ export function buildSolicitudAccesoEmail({
 </body>
 </html>`
 }
+
+export function buildNuevaPruebaEmail({
+  nombre,
+  email,
+  rut,
+  trialFin,
+}: {
+  nombre: string
+  email: string
+  rut: string
+  trialFin: string
+}): string {
+  const finFmt = new Date(trialFin).toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' })
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:linear-gradient(135deg,#14254c,#1a3060);padding:28px 32px;">
+      <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Nueva prueba iniciada</p>
+    </div>
+    <div style="padding:28px 32px;">
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;">
+        Un abogado inició la prueba gratuita de 7 días de LexCRM:
+      </p>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#166534;">${nombre}</p>
+        <p style="margin:0 0 4px;font-size:13px;color:#15803d;">RUT: ${rut}</p>
+        <p style="margin:0 0 4px;font-size:13px;color:#15803d;">Correo: ${email}</p>
+        <p style="margin:0;font-size:13px;color:#15803d;">Prueba vigente hasta el ${finFmt}</p>
+      </div>
+      <p style="margin:0;font-size:13px;color:#64748b;">
+        Ya está usando el CRM en modo Pro. Cuando confirmes su pago, actívalo como cliente permanente desde el panel de administración.
+      </p>
+    </div>
+    <div style="padding:16px 32px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+      <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+        LexCRM · Gestión Legal ·
+        <a href="mailto:contacto@lexcrm.site" style="color:#94a3b8;">contacto@lexcrm.site</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+}

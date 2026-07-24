@@ -219,6 +219,25 @@ export const registrosAuditoria = sqliteTable('registros_auditoria', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 })
 
+// Cuentas de acceso — fuente de verdad del sistema de pruebas (Fase 1).
+// Tabla NUEVA y aditiva: no afecta a los usuarios actuales, que siguen
+// entrando por ALLOWED_EMAILS/PLAN_PRO_EMAILS. El estado se refleja además en
+// el metadata de Clerk para que el middleware lo lea sin consultar la base.
+// estado: 'trial' | 'activo' | 'bloqueado' | 'suspendido'
+// plan:   'pro' | 'basico'
+export const cuentas = sqliteTable('cuentas', {
+  userId: text('user_id').primaryKey(),
+  email: text('email'),
+  nombre: text('nombre'),
+  rut: text('rut'),
+  plan: text('plan').notNull().default('pro'),
+  estado: text('estado').notNull().default('trial'),
+  trialInicio: text('trial_inicio'),
+  trialFin: text('trial_fin'),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
 export type Cliente = typeof clientes.$inferSelect
 export type NuevoCliente = typeof clientes.$inferInsert
 export type Causa = typeof causas.$inferSelect

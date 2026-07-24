@@ -23,5 +23,16 @@ export function planForEmail(email: string | undefined | null): Plan {
 export async function getPlan(): Promise<Plan> {
   const { sessionClaims } = await auth()
   const email = sessionClaims?.email as string | undefined
-  return planForEmail(email)
+
+  // PLAN_PRO_EMAILS manda: los clientes Pro de hoy quedan Pro pase lo que pase.
+  if (planForEmail(email) === 'pro') return 'pro'
+
+  // Prueba vigente o cuenta activa con plan Pro (sistema de pruebas) → Pro.
+  const meta = (sessionClaims?.metadata ?? {}) as { estado?: string; plan?: string; trialFin?: string }
+  if (meta.plan === 'pro') {
+    if (meta.estado === 'activo') return 'pro'
+    if (meta.estado === 'trial' && meta.trialFin && Date.now() < Date.parse(meta.trialFin)) return 'pro'
+  }
+
+  return 'basico'
 }
