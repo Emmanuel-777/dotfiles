@@ -1,6 +1,7 @@
 import DashboardShell from '@/components/DashboardShell'
 import AsistenteVirtual from '@/components/AsistenteVirtual'
 import ProfileGuard from '@/components/ProfileGuard'
+import TrialBanner from '@/components/TrialBanner'
 import { db, initDB } from '@/lib/db'
 import { plazos, tareas, citas, prospectos, perfilAbogado } from '@/lib/schema'
 import { eq, and, ne, gte, lte, isNull, or } from 'drizzle-orm'
@@ -11,8 +12,16 @@ import { hoyChile, sumarDiasISO } from '@/lib/utils'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = await auth()
+  const { userId, sessionClaims } = await auth()
   if (!userId) redirect('/sign-in')
+
+  // Días restantes de prueba (solo para usuarios en trial; el resto no ve nada).
+  const meta = (sessionClaims?.metadata ?? {}) as { estado?: string; trialFin?: string }
+  let trialDias: number | null = null
+  if (meta.estado === 'trial' && meta.trialFin) {
+    const ms = Date.parse(meta.trialFin) - Date.now()
+    trialDias = ms > 0 ? Math.ceil(ms / (24 * 60 * 60 * 1000)) : 0
+  }
 
   try {
     await initDB()
@@ -74,6 +83,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto}>
       <ProfileGuard perfilCompleto={perfilCompleto} />
+      <TrialBanner trialDias={trialDias} />
       {children}
       <AsistenteVirtual />
     </DashboardShell>
