@@ -17,6 +17,14 @@ export function pruebasHabilitadas(): boolean {
   return process.env.TRIALS_ENABLED === 'true'
 }
 
+/** ¿El correo es administrador (dueño)? Definido por ADMIN_EMAILS (coma-separado). */
+export function esAdmin(email: string | undefined | null): boolean {
+  const raw = process.env.ADMIN_EMAILS
+  if (!raw) return false
+  const admins = raw.split(',').map((e) => e.trim().toLowerCase()).filter(Boolean)
+  return !!email && admins.includes(email.toLowerCase())
+}
+
 /**
  * Replica EXACTAMENTE el criterio de acceso de hoy:
  * - Sin ALLOWED_EMAILS definida → todos los autenticados entran.

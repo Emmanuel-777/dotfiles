@@ -20,6 +20,7 @@ import {
   X,
   UserCog,
   AlertTriangle,
+  ShieldCheck,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import LogoMark from '@/components/LogoMark'
@@ -82,11 +83,13 @@ function AlertBadge({ alertKey, alertas }: { alertKey: 'agenda' | 'tareas' | 'ci
 export default function Sidebar({
   alertas,
   perfilCompleto = true,
+  esAdmin = false,
   isOpen = false,
   onClose,
 }: {
   alertas: SidebarAlertas
   perfilCompleto?: boolean
+  esAdmin?: boolean
   isOpen?: boolean
   onClose?: () => void
 }) {
@@ -154,6 +157,21 @@ export default function Sidebar({
 
       {/* Perfil */}
       <div className="px-3 pt-3 border-t border-white/10">
+        {esAdmin && (
+          <Link
+            href="/admin"
+            onClick={onClose}
+            className={cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-1',
+              pathname === '/admin'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-300 hover:bg-white/10 hover:text-white'
+            )}
+          >
+            <ShieldCheck className="h-4 w-4 flex-shrink-0" />
+            <span className="flex-1">Administración</span>
+          </Link>
+        )}
         <Link
           href="/perfil"
           onClick={onClose}

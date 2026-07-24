@@ -8,6 +8,7 @@ import { eq, and, ne, gte, lte, isNull, or } from 'drizzle-orm'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { hoyChile, sumarDiasISO } from '@/lib/utils'
+import { esAdmin } from '@/lib/acceso'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,6 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // Días restantes de prueba (solo para usuarios en trial; el resto no ve nada).
   const meta = (sessionClaims?.metadata ?? {}) as { estado?: string; trialFin?: string }
   const esTrial = meta.estado === 'trial'
+  const admin = esAdmin(sessionClaims?.email as string | undefined)
   let trialDias: number | null = null
   if (esTrial && meta.trialFin) {
     const ms = Date.parse(meta.trialFin) - Date.now()
@@ -82,7 +84,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto}>
+    <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto} esAdmin={admin}>
       <ProfileGuard perfilCompleto={perfilCompleto} esTrial={esTrial} />
       <TrialBanner trialDias={trialDias} />
       {children}

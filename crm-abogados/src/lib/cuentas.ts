@@ -1,5 +1,5 @@
 import { clerkClient } from '@clerk/nextjs/server'
-import { eq, or } from 'drizzle-orm'
+import { eq, or, desc } from 'drizzle-orm'
 import { db, initDB } from '@/lib/db'
 import { cuentas } from '@/lib/schema'
 import { TRIAL_DIAS, type CuentaMeta } from '@/lib/acceso'
@@ -36,6 +36,48 @@ export async function getCuenta(userId: string) {
 export async function sincronizarMetadataClerk(userId: string, meta: CuentaMeta): Promise<void> {
   const client = await clerkClient()
   await client.users.updateUserMetadata(userId, { publicMetadata: { ...meta } })
+}
+
+/** Lista todas las cuentas (para el panel de admin), más recientes primero. */
+export async function listarCuentas() {
+  await initDB()
+  return db.select().from(cuentas).orderBy(desc(cuentas.createdAt))
+}
+
+/** Activa una cuenta como cliente permanente pagado (plan Pro). */
+export async function activarPagado(userId: string) {
+  await initDB()
+  await db.update(cuentas)
+    .set({ estado: 'activo', plan: 'pro', updatedAt: new Date().toISOString() })
+    .where(eq(cuentas.userId, userId))
+  await sincronizarMetadataClerk(userId, { estado: 'activo', plan: 'pro' })
+}
+
+/** Suspende una cuenta (pierde acceso → pantalla de suscripción). */
+export async function suspenderCuenta(userId: string) {
+  await initDB()
+  await db.update(cuentas)
+    .set({ estado: 'suspendido', updatedAt: new Date().toISOString() })
+    .where(eq(cuentas.userId, userId))
+  await sincronizarMetadataClerk(userId, { estado: 'suspendido', plan: 'basico' })
+}
+
+/** Reinicia la prueba (otros 7 días de Pro). */
+export async function reactivarPrueba(userId: string) {
+  await initDB()
+  const ahora = new Date()
+  const trialFin = new Date(ahora.getTime() + TRIAL_DIAS * 24 * 60 * 60 * 1000).toISOString()
+  await db.update(cuentas)
+    .set({ estado: 'trial', plan: 'pro', trialInicio: ahora.toISOString(), trialFin, updatedAt: ahora.toISOString() })
+    .where(eq(cuentas.userId, userId))
+  await sincronizarMetadataClerk(userId, { estado: 'trial', plan: 'pro', trialFin })
+}
+
+/** Elimina la cuenta de prueba (libera el RUT/email) y limpia el metadata de Clerk. */
+export async function eliminarCuenta(userId: string) {
+  await initDB()
+  await db.delete(cuentas).where(eq(cuentas.userId, userId))
+  await sincronizarMetadataClerk(userId, {})
 }
 
 /** Crea la cuenta de prueba (7 días, plan Pro) y sincroniza el metadata de Clerk. */
