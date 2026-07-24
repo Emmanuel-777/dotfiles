@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import { toast } from 'sonner'
 import { Loader2, Sparkles } from 'lucide-react'
 
 export default function BienvenidaForm() {
-  const router = useRouter()
   const { getToken } = useAuth()
   const [nombre, setNombre] = useState('')
   const [rut, setRut] = useState('')
@@ -32,11 +30,12 @@ export default function BienvenidaForm() {
         toast.error(data.error || 'No se pudo activar la prueba')
         return
       }
-      // Forzar un token nuevo para que el estado de prueba viaje en la sesión.
+      // Forzar un token nuevo y recargar /bienvenida: al existir ya la cuenta,
+      // la página muestra el redirector que espera a que el token refleje la
+      // prueba antes de entrar al CRM (sin bucle).
       try { await getToken({ skipCache: true }) } catch {}
       toast.success('¡Tu prueba de 7 días está activa!')
-      router.push('/dashboard')
-      router.refresh()
+      window.location.assign('/bienvenida')
     } catch {
       toast.error('Ocurrió un error. Intenta nuevamente.')
     } finally {
