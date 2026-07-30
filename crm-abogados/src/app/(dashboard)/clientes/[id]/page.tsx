@@ -149,8 +149,12 @@ export default async function ClienteDetallePage({ params }: { params: { id: str
               <DollarSign className="h-4 w-4 text-emerald-500" />
               Honorarios ({clienteHonorarios.length})
             </h2>
-            <Link href={`/honorarios/nuevo?clienteId=${cliente.id}`} className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1">
-              <Plus className="h-3 w-3" /> Nuevo
+            <Link
+              href={`/honorarios/nuevo?clienteId=${cliente.id}&volver=/clientes/${cliente.id}`}
+              className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1"
+              title="Puedes pactarlo en cuotas al crearlo"
+            >
+              <Plus className="h-3 w-3" /> Nuevo / en cuotas
             </Link>
           </div>
           <div className="divide-y divide-gray-50">

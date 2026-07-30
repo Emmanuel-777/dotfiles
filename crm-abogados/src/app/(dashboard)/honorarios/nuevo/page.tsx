@@ -3,12 +3,27 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Plus, Trash2, CalendarClock } from 'lucide-react'
 import { toast } from 'sonner'
+import { formatMonto, sumarDiasISO } from '@/lib/utils'
+
+type CuotaBorrador = { monto: string; fechaPago: string }
+
+/** Suma meses a una fecha YYYY-MM-DD ajustando el día al último del mes cuando corresponde (31-ene + 1 mes = 28/29-feb). */
+function sumarMeses(fechaISO: string, meses: number): string {
+  const [y, m, d] = fechaISO.split('-').map(Number)
+  const base = new Date(Date.UTC(y, m - 1 + meses, 1))
+  const ultimoDia = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth() + 1, 0)).getUTCDate()
+  base.setUTCDate(Math.min(d, ultimoDia))
+  return base.toISOString().slice(0, 10)
+}
 
 function NuevoHonorarioForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  // Solo rutas internas: evita que un enlace manipulado redirija fuera del CRM.
+  const volverParam = searchParams.get('volver')
+  const volver = volverParam && /^\/[^/\\]/.test(volverParam) ? volverParam : '/honorarios'
   const [loading, setLoading] = useState(false)
   const [clientes, setClientes] = useState<{ id: string; nombre: string }[]>([])
   const [causas, setCausas] = useState<{ id: string; rol: string }[]>([])
@@ -24,6 +39,10 @@ function NuevoHonorarioForm() {
     causaId: searchParams.get('causaId') || '',
   })
 
+  const [enCuotas, setEnCuotas] = useState(false)
+  const [plan, setPlan] = useState({ numero: '3', primeraFecha: '', periodicidad: 'MENSUAL' })
+  const [cuotas, setCuotas] = useState<CuotaBorrador[]>([])
+
   useEffect(() => {
     Promise.all([
       fetch('/api/clientes').then((r) => r.json()),
@@ -35,6 +54,39 @@ function NuevoHonorarioForm() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  const generarCuotas = () => {
+    const total = parseFloat(form.monto)
+    const n = parseInt(plan.numero, 10)
+    if (!total || total <= 0) return toast.error('Primero ingresa el monto total')
+    if (!n || n < 1) return toast.error('Indica cuántas cuotas')
+    if (!plan.primeraFecha) return toast.error('Indica la fecha de la primera cuota')
+
+    // Reparto en pesos enteros: la última cuota absorbe el resto para que sume exacto.
+    const base = Math.floor(total / n)
+    const nuevas: CuotaBorrador[] = Array.from({ length: n }, (_, i) => {
+      const monto = i === n - 1 ? total - base * (n - 1) : base
+      const fechaPago =
+        plan.periodicidad === 'MENSUAL' ? sumarMeses(plan.primeraFecha, i)
+        : plan.periodicidad === 'QUINCENAL' ? sumarDiasISO(plan.primeraFecha, i * 15)
+        : sumarDiasISO(plan.primeraFecha, i * 7)
+      return { monto: String(monto), fechaPago }
+    })
+    setCuotas(nuevas)
+  }
+
+  const actualizarCuota = (i: number, campo: keyof CuotaBorrador, valor: string) => {
+    setCuotas((prev) => prev.map((c, idx) => (idx === i ? { ...c, [campo]: valor } : c)))
+  }
+
+  const eliminarCuota = (i: number) => setCuotas((prev) => prev.filter((_, idx) => idx !== i))
+
+  const agregarCuotaManual = () => setCuotas((prev) => [...prev, { monto: '', fechaPago: '' }])
+
+  const cuotasValidas = enCuotas ? cuotas.filter((c) => c.monto && c.fechaPago) : []
+  const sumaCuotas = cuotasValidas.reduce((s, c) => s + parseFloat(c.monto || '0'), 0)
+  const totalHonorario = parseFloat(form.monto || '0')
+  const descuadre = cuotasValidas.length > 0 && Math.abs(sumaCuotas - totalHonorario) > 0.5
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -44,6 +96,9 @@ function NuevoHonorarioForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
+          // Un honorario con cuotas pactadas nace como PARCIAL para que el
+          // cobrado/pendiente se calcule a partir de las cuotas pagadas.
+          estado: cuotasValidas.length > 0 ? 'PARCIAL' : form.estado,
           monto: parseFloat(form.monto),
           fechaEmision: new Date(form.fechaEmision).toISOString(),
           fechaVence: form.fechaVence ? new Date(form.fechaVence).toISOString() : null,
@@ -51,8 +106,26 @@ function NuevoHonorarioForm() {
         }),
       })
       if (!res.ok) throw new Error()
-      toast.success('Honorario registrado')
-      router.push('/honorarios')
+      const honorario = await res.json()
+
+      let fallidas = 0
+      for (const c of cuotasValidas) {
+        const r = await fetch('/api/cuotas-honorario', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ honorarioId: honorario.id, monto: parseFloat(c.monto), fechaPago: c.fechaPago }),
+        })
+        if (!r.ok) fallidas++
+      }
+
+      if (fallidas > 0) {
+        toast.error(`Honorario guardado, pero ${fallidas} cuota(s) no se pudieron registrar. Revísalas en Editar.`)
+      } else if (cuotasValidas.length > 0) {
+        toast.success(`Honorario registrado con ${cuotasValidas.length} cuotas y sus recordatorios`)
+      } else {
+        toast.success('Honorario registrado')
+      }
+      router.push(volver)
     } catch {
       toast.error('Error al guardar')
     } finally {
@@ -62,7 +135,7 @@ function NuevoHonorarioForm() {
 
   return (
     <div className="p-4 lg:p-8 max-w-lg">
-      <Link href="/honorarios" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
+      <Link href={volver} className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6">
         <ArrowLeft className="h-4 w-4" />
         Volver
       </Link>
@@ -75,7 +148,7 @@ function NuevoHonorarioForm() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">Monto (CLP) *</label>
+            <label className="label">Monto total (CLP) *</label>
             <input name="monto" type="number" value={form.monto} onChange={handleChange} required className="input" placeholder="850000" min="0" />
           </div>
           <div>
@@ -104,6 +177,111 @@ function NuevoHonorarioForm() {
           </select>
         </div>
 
+        {/* Pago en cuotas */}
+        <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={enCuotas}
+              onChange={(e) => { setEnCuotas(e.target.checked); if (!e.target.checked) setCuotas([]) }}
+              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+            />
+            <span className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+              <CalendarClock className="h-4 w-4 text-blue-500" />
+              Pactar pago en cuotas
+            </span>
+          </label>
+
+          {enCuotas && (
+            <div className="space-y-3">
+              <p className="text-xs text-gray-400">
+                Cada cuota crea automáticamente una tarea de recordatorio de cobro con su fecha.
+              </p>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="label">N° cuotas</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={plan.numero}
+                    onChange={(e) => setPlan((p) => ({ ...p, numero: e.target.value }))}
+                    className="input"
+                  />
+                </div>
+                <div>
+                  <label className="label">1ª cuota</label>
+                  <input
+                    type="date"
+                    value={plan.primeraFecha}
+                    onChange={(e) => setPlan((p) => ({ ...p, primeraFecha: e.target.value }))}
+                    className="input"
+                  />
+                </div>
+                <div>
+                  <label className="label">Cada</label>
+                  <select
+                    value={plan.periodicidad}
+                    onChange={(e) => setPlan((p) => ({ ...p, periodicidad: e.target.value }))}
+                    className="input"
+                  >
+                    <option value="MENSUAL">Mes</option>
+                    <option value="QUINCENAL">15 días</option>
+                    <option value="SEMANAL">Semana</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="button" onClick={generarCuotas} className="btn-secondary w-full justify-center">
+                Generar cuotas
+              </button>
+
+              {cuotas.length > 0 && (
+                <div className="space-y-2">
+                  {cuotas.map((c, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400 w-6 flex-shrink-0">{i + 1}.</span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={c.monto}
+                        onChange={(e) => actualizarCuota(i, 'monto', e.target.value)}
+                        className="input flex-1"
+                        placeholder="Monto"
+                      />
+                      <input
+                        type="date"
+                        value={c.fechaPago}
+                        onChange={(e) => actualizarCuota(i, 'fechaPago', e.target.value)}
+                        className="input flex-1"
+                      />
+                      <button type="button" onClick={() => eliminarCuota(i)} className="text-gray-300 hover:text-red-500 flex-shrink-0">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between pt-1">
+                    <button type="button" onClick={agregarCuotaManual} className="text-blue-600 text-sm hover:text-blue-700 flex items-center gap-1">
+                      <Plus className="h-3 w-3" /> Agregar cuota
+                    </button>
+                    <p className={`text-xs font-medium ${descuadre ? 'text-amber-600' : 'text-gray-500'}`}>
+                      Suma: {formatMonto(sumaCuotas)} de {formatMonto(totalHonorario)}
+                    </p>
+                  </div>
+
+                  {descuadre && (
+                    <p className="text-xs text-amber-600">
+                      La suma de las cuotas no coincide con el monto total. Puedes guardarlo igual si así lo pactaste.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Fecha emisión *</label>
@@ -115,14 +293,20 @@ function NuevoHonorarioForm() {
           </div>
         </div>
 
-        <div>
-          <label className="label">Estado inicial</label>
-          <select name="estado" value={form.estado} onChange={handleChange} className="input">
-            <option value="PENDIENTE">Pendiente</option>
-            <option value="PAGADO">Pagado</option>
-            <option value="PARCIAL">Parcial</option>
-          </select>
-        </div>
+        {cuotasValidas.length > 0 ? (
+          <p className="text-xs text-gray-500">
+            El honorario se guardará como <span className="font-semibold">Parcial</span>, y se irá marcando como cobrado a medida que pagues cada cuota.
+          </p>
+        ) : (
+          <div>
+            <label className="label">Estado inicial</label>
+            <select name="estado" value={form.estado} onChange={handleChange} className="input">
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="PAGADO">Pagado</option>
+              <option value="PARCIAL">Parcial</option>
+            </select>
+          </div>
+        )}
 
         <div>
           <label className="label">Notas</label>
@@ -134,7 +318,7 @@ function NuevoHonorarioForm() {
             <Save className="h-4 w-4" />
             {loading ? 'Guardando...' : 'Guardar'}
           </button>
-          <Link href="/honorarios" className="btn-secondary">Cancelar</Link>
+          <Link href={volver} className="btn-secondary">Cancelar</Link>
         </div>
       </form>
     </div>

@@ -344,7 +344,11 @@ export default async function CausaDetallePage({ params }: { params: { id: strin
                 <DollarSign className="h-4 w-4 text-emerald-500" />
                 Honorarios
               </h2>
-              <Link href={`/honorarios/nuevo?causaId=${causa.id}&clienteId=${causa.clienteId}`} className="text-blue-600 text-xs hover:text-blue-700 flex items-center gap-1">
+              <Link
+                href={`/honorarios/nuevo?causaId=${causa.id}&clienteId=${causa.clienteId}&volver=/causas/${causa.id}`}
+                className="text-blue-600 text-xs hover:text-blue-700 flex items-center gap-1"
+                title="Puedes pactarlo en cuotas al crearlo"
+              >
                 <Plus className="h-3 w-3" /> Agregar
               </Link>
             </div>
