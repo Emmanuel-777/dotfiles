@@ -5,9 +5,30 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Plus, Trash2, CalendarClock } from 'lucide-react'
 import { toast } from 'sonner'
-import { formatMonto, sumarDiasISO } from '@/lib/utils'
+import { formatMonto, sumarDiasISO, hoyChile } from '@/lib/utils'
 
 type CuotaBorrador = { monto: string; fechaPago: string }
+
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+
+/** "2026-08-05" → "5 de agosto". Sin new Date() para no correr el día por zona horaria. */
+function fechaEnPalabras(fechaISO: string): string {
+  const [, m, d] = fechaISO.split('-').map(Number)
+  return `${d} de ${MESES[m - 1]}`
+}
+
+/** "2026-08-05" → "5-ago" */
+function fechaAbreviada(fechaISO: string): string {
+  const [, m, d] = fechaISO.split('-').map(Number)
+  return `${d}-${MESES[m - 1].slice(0, 3)}`
+}
+
+/** Fecha de la cuota n° i (0-indexada) según la fecha inicial y la periodicidad. */
+function fechaDeCuota(i: number, primeraFecha: string, periodicidad: string): string {
+  if (periodicidad === 'MENSUAL') return sumarMeses(primeraFecha, i)
+  if (periodicidad === 'QUINCENAL') return sumarDiasISO(primeraFecha, i * 15)
+  return sumarDiasISO(primeraFecha, i * 7)
+}
 
 /** Suma meses a una fecha YYYY-MM-DD ajustando el día al último del mes cuando corresponde (31-ene + 1 mes = 28/29-feb). */
 function sumarMeses(fechaISO: string, meses: number): string {
@@ -50,13 +71,19 @@ function NuevoHonorarioForm() {
     ]).then(([c, ca]) => { setClientes(c); setCausas(ca) })
   }, [])
 
+  // La primera cuota se sugiere a un mes. Se calcula al montar (no en el
+  // estado inicial) para que la fecha sea la de Chile y no la del servidor.
+  useEffect(() => {
+    setPlan((p) => (p.primeraFecha ? p : { ...p, primeraFecha: sumarMeses(hoyChile(), 1) }))
+  }, [])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const generarCuotas = () => {
+  const generarCuotas = (numeroDirecto?: number) => {
     const total = parseFloat(form.monto)
-    const n = parseInt(plan.numero, 10)
+    const n = numeroDirecto ?? parseInt(plan.numero, 10)
     if (!total || total <= 0) return toast.error('Primero ingresa el monto total')
     if (!n || n < 1) return toast.error('Indica cuántas cuotas')
     if (!plan.primeraFecha) return toast.error('Indica la fecha de la primera cuota')
@@ -65,14 +92,18 @@ function NuevoHonorarioForm() {
     const base = Math.floor(total / n)
     const nuevas: CuotaBorrador[] = Array.from({ length: n }, (_, i) => {
       const monto = i === n - 1 ? total - base * (n - 1) : base
-      const fechaPago =
-        plan.periodicidad === 'MENSUAL' ? sumarMeses(plan.primeraFecha, i)
-        : plan.periodicidad === 'QUINCENAL' ? sumarDiasISO(plan.primeraFecha, i * 15)
-        : sumarDiasISO(plan.primeraFecha, i * 7)
-      return { monto: String(monto), fechaPago }
+      return { monto: String(monto), fechaPago: fechaDeCuota(i, plan.primeraFecha, plan.periodicidad) }
     })
     setCuotas(nuevas)
   }
+
+  // Si se cambia la fecha inicial o la periodicidad con cuotas ya generadas,
+  // se recorren las fechas y se respetan los montos (que pueden estar editados).
+  useEffect(() => {
+    if (!plan.primeraFecha) return
+    setCuotas((prev) => prev.length === 0 ? prev : prev.map((c, i) => ({ ...c, fechaPago: fechaDeCuota(i, plan.primeraFecha, plan.periodicidad) })))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plan.primeraFecha, plan.periodicidad])
 
   const actualizarCuota = (i: number, campo: keyof CuotaBorrador, valor: string) => {
     setCuotas((prev) => prev.map((c, idx) => (idx === i ? { ...c, [campo]: valor } : c)))
@@ -86,6 +117,19 @@ function NuevoHonorarioForm() {
   const sumaCuotas = cuotasValidas.reduce((s, c) => s + parseFloat(c.monto || '0'), 0)
   const totalHonorario = parseFloat(form.monto || '0')
   const descuadre = cuotasValidas.length > 0 && Math.abs(sumaCuotas - totalHonorario) > 0.5
+
+  // Resumen en palabras: es lo que quien atiende le va a decir al cliente,
+  // así que se muestra tal cual se conversa ("3 cuotas de $300.000 desde...").
+  const ordenadas = [...cuotasValidas].sort((a, b) => a.fechaPago.localeCompare(b.fechaPago))
+  const montosIguales = ordenadas.length > 1 && ordenadas.every((c) => parseFloat(c.monto) === parseFloat(ordenadas[0].monto))
+  const resumenCuotas = ordenadas.length === 0 ? '' : ordenadas.length === 1
+    ? `1 cuota de ${formatMonto(parseFloat(ordenadas[0].monto))} el ${fechaEnPalabras(ordenadas[0].fechaPago)}`
+    : montosIguales
+      ? `${ordenadas.length} cuotas de ${formatMonto(parseFloat(ordenadas[0].monto))} desde el ${fechaEnPalabras(ordenadas[0].fechaPago)}`
+      : `${ordenadas.length} cuotas por un total de ${formatMonto(sumaCuotas)} desde el ${fechaEnPalabras(ordenadas[0].fechaPago)}`
+  const fechasResumen = ordenadas.length > 6
+    ? [...ordenadas.slice(0, 3).map((c) => fechaAbreviada(c.fechaPago)), '…', fechaAbreviada(ordenadas[ordenadas.length - 1].fechaPago)]
+    : ordenadas.map((c) => fechaAbreviada(c.fechaPago))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -198,9 +242,29 @@ function NuevoHonorarioForm() {
                 Cada cuota crea automáticamente una tarea de recordatorio de cobro con su fecha.
               </p>
 
+              <div>
+                <label className="label">¿En cuántas cuotas?</label>
+                <div className="flex gap-2">
+                  {[2, 3, 6, 12].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => { setPlan((p) => ({ ...p, numero: String(n) })); generarCuotas(n) }}
+                      className={`flex-1 rounded-lg border py-2 text-sm font-semibold transition-colors ${
+                        plan.numero === String(n) && cuotas.length === n
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600'
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="label">N° cuotas</label>
+                  <label className="label">U otro n°</label>
                   <input
                     type="number"
                     min="1"
@@ -233,7 +297,7 @@ function NuevoHonorarioForm() {
                 </div>
               </div>
 
-              <button type="button" onClick={generarCuotas} className="btn-secondary w-full justify-center">
+              <button type="button" onClick={() => generarCuotas()} className="btn-secondary w-full justify-center">
                 Generar cuotas
               </button>
 
@@ -275,6 +339,13 @@ function NuevoHonorarioForm() {
                     <p className="text-xs text-amber-600">
                       La suma de las cuotas no coincide con el monto total. Puedes guardarlo igual si así lo pactaste.
                     </p>
+                  )}
+
+                  {resumenCuotas && (
+                    <div className="rounded-lg bg-blue-50 border border-blue-100 px-3 py-2">
+                      <p className="text-sm font-semibold text-blue-900">{resumenCuotas}</p>
+                      <p className="text-xs text-blue-700 mt-0.5">{fechasResumen.join(' · ')}</p>
+                    </div>
                   )}
                 </div>
               )}
