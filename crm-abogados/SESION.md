@@ -26,10 +26,10 @@ despliega automáticamente en **Vercel**.
 Cuenta para recibir el pago mensual de los clientes (abogados) de LexCRM. Distinta de los datos bancarios que cada abogado carga en su propio "Mi Perfil" (esos son para que ELLOS cobren a SUS clientes).
 
 - **Razón social:** Soluciones Con IA SpA
-- **RUT:** 78.464.829-K
+- **RUT:** [RUT_SPA]
 - **Banco:** BCI
 - **Tipo de cuenta:** Cuenta Corriente en pesos
-- **N° de cuenta:** 69584832
+- **N° de cuenta:** [N_CUENTA]
 - **Correo para comprobantes:** contacto@lexcrm.site
 
 **Precios:** Plan Básico $25.000/mes · Plan Pro $45.000/mes. Cobro mensual por transferencia, sin pasarela de pago.
@@ -41,10 +41,10 @@ Hola [nombre],
 Te recuerdo que la mensualidad de LexCRM vence el día [X] de cada mes. Puedes realizar la transferencia a:
 
 Soluciones Con IA SpA
-RUT: 78.464.829-K
+RUT: [RUT_SPA]
 Banco BCI
 Cuenta Corriente en pesos
-N° de cuenta: 69584832
+N° de cuenta: [N_CUENTA]
 Correo para el comprobante: contacto@lexcrm.site
 
 Monto: $25.000 (Plan Básico) / $45.000 (Plan Pro)
@@ -164,3 +164,15 @@ Luego Redeploy. Probar en cualquier causa → panel "Asistente IA".
 1. Abrir el repo en la rama `claude/crm-chilean-lawyers-wnk6t5`.
 2. Leer `SESION.md` (este archivo) y `HISTORIAL.md`.
 3. Continuar con "Próximos pasos" o lo que el usuario indique.
+
+---
+
+## 🔐 Datos de facturación
+
+Los datos reales (RUT de la SpA, cuenta corriente BCI, RUT y domicilio del representante legal)
+**no viven en este repositorio**, que es público. Están en el repositorio privado
+`Emmanuel-777/Archivos-Priv`, carpeta `LexCRM_Privado/DATOS_FACTURACION.md`, junto con el
+contrato tipo y la designación de responsable ya completados.
+
+Los marcadores `[RUT_SPA]`, `[N_CUENTA]`, `[NOMBRE_REPRESENTANTE]`, `[RUT_REPRESENTANTE]` y
+`[DOMICILIO_SPA]` se reemplazan al momento de enviar un cobro o firmar un contrato.

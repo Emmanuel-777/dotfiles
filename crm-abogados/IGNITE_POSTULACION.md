@@ -76,7 +76,7 @@ Cobro por transferencia bancaria manual a la cuenta corriente de Soluciones Con 
 ## 3. Tareas pendientes antes de postular
 
 ### Legales (urgente)
-- [x] Constituir **SPA** — Soluciones Con IA SpA, RUT 78.464.829-K
+- [x] Constituir **SPA** — Soluciones Con IA SpA (RUT en repositorio privado)
 - [x] **Inicio de actividades en SII**
 - [x] Abrir cuenta bancaria empresarial — BCI, Cuenta Corriente
 - [x] Registrar dominio propio — `lexcrm.site` (landing) + `app.lexcrm.site` (CRM)

@@ -14,13 +14,13 @@ En Concepción, Región del Biobío, Chile, a 14 de julio de 2026.
 
 3. La Ley N° 21.719 sobre Protección de Datos Personales entra en plena vigencia el **1 de diciembre de 2026**, y exige de las organizaciones un modelo de cumplimiento basado en la responsabilidad proactiva (*accountability*), lo que incluye la designación de una persona responsable de coordinar el programa de cumplimiento.
 
-4. Conforme al Artículo Sexto de los estatutos sociales, la sociedad es administrada por un Gerente General, cargo que recae en don **Emmanuel Alejandro Fernández Sandoval**, RUT 15.222.189-4, quien además actúa como representante de la sociedad ante el Servicio de Impuestos Internos y se encuentra premunido, conforme al Artículo Octavo de los estatutos, de amplias facultades de representación y administración.
+4. Conforme al Artículo Sexto de los estatutos sociales, la sociedad es administrada por un Gerente General, cargo que recae en don **[NOMBRE_REPRESENTANTE]**, RUT [RUT_REPRESENTANTE], quien además actúa como representante de la sociedad ante el Servicio de Impuestos Internos y se encuentra premunido, conforme al Artículo Octavo de los estatutos, de amplias facultades de representación y administración.
 
 ## Designación
 
 En virtud de lo anterior, se designa formalmente a:
 
-> **Emmanuel Alejandro Fernández Sandoval**, RUT 15.222.189-4, en su calidad de Gerente General y representante legal de Soluciones con IA SpA,
+> **[NOMBRE_REPRESENTANTE]**, RUT [RUT_REPRESENTANTE], en su calidad de Gerente General y representante legal de Soluciones con IA SpA,
 
 como **Responsable Interno del Programa de Cumplimiento en materia de Protección de Datos Personales** de la sociedad y de la plataforma LexCRM.
 
@@ -42,8 +42,8 @@ La presente designación rige desde esta fecha y se mantendrá vigente mientras 
 
 ---
 
-**Emmanuel Alejandro Fernández Sandoval**
-RUT 15.222.189-4
+**[NOMBRE_REPRESENTANTE]**
+RUT [RUT_REPRESENTANTE]
 Gerente General — Soluciones con IA SpA
 
 Firma: ______________________

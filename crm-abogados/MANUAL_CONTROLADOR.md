@@ -122,9 +122,9 @@ Envía uno de estos dos mensajes apenas el prospecto confirma qué plan quiere c
 
 ```
 Soluciones con IA SpA
-RUT: 78.464.829-K
+RUT: [RUT_SPA]
 Banco BCI
-Cuenta Corriente N° 69584832
+Cuenta Corriente N° [N_CUENTA]
 Email: contacto@lexcrm.site
 ```
 
@@ -142,9 +142,9 @@ Plan Básico — $25.000/mes
 Para activar tu cuenta, realiza la transferencia a:
 
 *Soluciones con IA SpA*
-RUT: 78.464.829-K
+RUT: [RUT_SPA]
 Banco BCI
-Cuenta Corriente N° 69584832
+Cuenta Corriente N° [N_CUENTA]
 Email: contacto@lexcrm.site
 
 Cuando nos envíes el comprobante, activamos tu acceso en minutos y te mandamos el Manual de Usuario para que empieces a trabajar de inmediato. ¿Alguna duda antes de partir?
@@ -165,9 +165,9 @@ Plan Pro — $45.000/mes
 Para activar tu cuenta, realiza la transferencia a:
 
 *Soluciones con IA SpA*
-RUT: 78.464.829-K
+RUT: [RUT_SPA]
 Banco BCI
-Cuenta Corriente N° 69584832
+Cuenta Corriente N° [N_CUENTA]
 Email: contacto@lexcrm.site
 
 Cuando nos envíes el comprobante, activamos tu acceso en minutos (incluida la IA) y te mandamos el Manual de Usuario para que empieces a trabajar de inmediato. ¿Alguna duda antes de partir?
