@@ -1,0 +1,4 @@
+# Vista previa: no indexar.
+# BORRAR ESTE ARCHIVO al publicar en el dominio definitivo (yocelyncea.cl).
+User-agent: *
+Disallow: /

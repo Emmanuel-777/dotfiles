@@ -38,6 +38,13 @@ funciona igual y el aviso de cookies sigue apareciendo sin activar nada.
    completa. La estructura dentro de `public_html` debe quedar idéntica a la de arriba.
 4. Verificar que el sitio abra en el dominio y que las imágenes se vean.
 
+## Importante al pasar a producción
+
+La carpeta incluye un `robots.txt` que **impide que Google indexe el sitio**. Está ahí a
+propósito, para que la vista previa gratuita no compita después con el dominio real.
+**Al publicar en `yocelyncea.cl`, borrar ese archivo**; si no, el sitio nunca aparecerá en las
+búsquedas.
+
 ## Dominio
 
 1. Comprar o apuntar `yocelyncea.cl` (recomendado en la propuesta de Etapa 2).
