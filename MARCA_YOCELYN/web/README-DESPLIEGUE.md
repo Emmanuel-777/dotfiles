@@ -38,6 +38,13 @@ funciona igual y el aviso de cookies sigue apareciendo sin activar nada.
    completa. La estructura dentro de `public_html` debe quedar idéntica a la de arriba.
 4. Verificar que el sitio abra en el dominio y que las imágenes se vean.
 
+## El archivo `.htaccess`
+
+La carpeta incluye un `.htaccess`. **Súbelo junto con el resto** — es un archivo oculto, así que
+en el administrador de archivos puede que tengas que activar "mostrar archivos ocultos" para
+verlo. Sin él, Hostinger sigue sirviendo la versión antigua de la página durante horas después
+de cada actualización, y uno cree que los cambios no se aplicaron.
+
 ## Importante al pasar a producción
 
 La carpeta incluye un `robots.txt` que **impide que Google indexe el sitio**. Está ahí a

@@ -20,7 +20,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <script type="application/ld+json">
 {
@@ -44,405 +44,341 @@
   }
 }
 </script>
-
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --navy:        #14213D;
-  --navy-deep:   #0d1728;
-  --navy-soft:   #1d2f52;
-  --gold:        #C9A15A;
-  --gold-light:  #dcbc82;
-  --terracota:   #7A2E2E;
-  --cream:       #F5F1EA;
-  --cream-warm:  #ede6da;
-  --graphite:    #1C1C1C;
-  --grey:        #6b6b6b;
-  --white:       #ffffff;
-  --wa:          #25D366;
-  --serif: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
-  --sans:  'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --maxw: 1140px;
+  --navy:       #14213D;
+  --navy-deep:  #0D1526;
+  --navy-soft:  #1E3055;
+  --gold:       #C9A15A;
+  --gold-soft:  #DCBC82;
+  --terracota:  #7A2E2E;
+  --cream:      #F5F1EA;
+  --cream-2:    #EDE7DB;
+  --graphite:   #1C1C1C;
+  --grey:       #66625C;
+  --white:      #ffffff;
+  --wa:         #25D366;
+  --line-dark:  rgba(245,241,234,.16);
+  --line-light: rgba(20,33,61,.14);
+  --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  --sans:  'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --maxw: 1160px;
 }
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
-  font-family: var(--sans);
-  color: var(--graphite);
-  background: var(--cream);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  font-family: var(--sans); font-weight: 400;
+  color: var(--graphite); background: var(--cream);
+  line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden;
 }
 img { max-width: 100%; display: block; }
 a { color: var(--terracota); }
 a:hover { color: var(--navy); }
-
 .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 1.5rem; }
 
-/* ─────────── NAV ─────────── */
+/* Texto justificado con partición de palabras (obligatoria en columnas angostas) */
+.just { text-align: justify; hyphens: auto; -webkit-hyphens: auto; text-wrap: pretty; }
+
+/* ───────── Apariciones al scroll: CSS defensivo, el texto nunca queda invisible ───────── */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.seen, .no-js .reveal { opacity: 1; transform: none; }
+
+/* ───────── NAV ───────── */
 nav {
   position: fixed; inset: 0 0 auto 0; z-index: 200;
-  background: rgba(20,33,61,.94);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(201,161,90,.22);
+  background: rgba(13,21,38,.92); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-dark);
 }
-.nav-in {
-  max-width: var(--maxw); margin: 0 auto; padding: .85rem 1.5rem;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-}
-.brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
+.nav-in { max-width: var(--maxw); margin: 0 auto; padding: .8rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
 .brand-logo { height: 44px; width: auto; flex-shrink: 0; }
-.brand-text { display: flex; flex-direction: column; line-height: 1.15; }
-.brand-name { font-size: .95rem; font-weight: 600; color: var(--cream); letter-spacing: .06em; }
-.brand-role { font-size: .68rem; color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
-.nav-links { display: flex; align-items: center; gap: 1.7rem; }
-.nav-links a {
-  color: rgba(245,241,234,.82); text-decoration: none;
-  font-size: .88rem; font-weight: 500; transition: color .18s;
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-name { font-size: .95rem; font-weight: 600; color: var(--cream); letter-spacing: .1em; }
+.brand-role { font-size: .66rem; color: var(--gold); letter-spacing: .16em; text-transform: uppercase; }
+.nav-links { display: flex; align-items: center; gap: 1.9rem; }
+.nav-links a { position: relative; color: rgba(245,241,234,.8); text-decoration: none;
+  font-size: .87rem; font-weight: 400; transition: color .2s; }
+.nav-links a:not(.btn-nav)::after {
+  content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px;
+  background: var(--gold); transition: width .28s ease;
 }
-.nav-links a:hover { color: var(--gold); }
-.btn-nav {
-  display: inline-flex; align-items: center; gap: .45rem;
-  background: var(--gold); color: var(--navy) !important;
-  font-size: .85rem; font-weight: 600; text-decoration: none;
-  padding: .55rem 1.15rem; border-radius: 3px; transition: background .18s, transform .18s;
-  white-space: nowrap;
-}
-.btn-nav:hover { background: var(--gold-light); transform: translateY(-1px); }
-.nav-toggle { display: none; background: none; border: 0; cursor: pointer; padding: .3rem; }
-.nav-toggle span { display: block; width: 24px; height: 2px; background: var(--cream); margin: 5px 0; transition: .25s; }
+.nav-links a:not(.btn-nav):hover { color: var(--gold); }
+.nav-links a:not(.btn-nav):hover::after { width: 100%; }
+.btn-nav { display: inline-flex; align-items: center; gap: .45rem;
+  background: var(--gold); color: var(--navy) !important; font-size: .84rem; font-weight: 600;
+  text-decoration: none; padding: .58rem 1.2rem; border-radius: 2px;
+  transition: background .2s, transform .2s; white-space: nowrap; }
+.btn-nav:hover { background: var(--gold-soft); transform: translateY(-2px); }
+.nav-toggle { display: none; background: none; border: 0; cursor: pointer; padding: .35rem; }
+.nav-toggle span { display: block; width: 24px; height: 1.5px; background: var(--cream); margin: 5px 0; transition: .25s; }
 
-/* ─────────── HERO ─────────── */
-.hero {
-  position: relative; background: var(--navy); color: var(--cream);
-  padding: 9rem 0 5rem; overflow: hidden;
+/* ───────── BOTONES ───────── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+  font-family: var(--sans); font-size: .95rem; font-weight: 600; text-decoration: none;
+  padding: .95rem 1.8rem; border-radius: 2px; border: 0; cursor: pointer;
+  transition: transform .2s, background .2s, box-shadow .2s, color .2s; }
+.btn-primary { background: var(--wa); color: var(--white); box-shadow: 0 8px 26px rgba(37,211,102,.26); }
+.btn-primary:hover { background: #1fbe5b; color: var(--white); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(37,211,102,.36); }
+.btn-ghost { background: transparent; color: var(--cream); border: 1px solid rgba(201,161,90,.5); }
+.btn-ghost:hover { background: rgba(201,161,90,.1); color: var(--gold); transform: translateY(-3px); }
+.btn-cream { background: var(--cream); color: var(--terracota); }
+.btn-cream:hover { background: var(--white); color: var(--terracota); transform: translateY(-3px); }
+
+/* ───────── HERO ───────── */
+.hero { position: relative; background: var(--navy); color: var(--cream);
+  padding: 9.5rem 0 4.5rem; overflow: hidden; }
+.hero-mesh {
+  position: absolute; inset: -30%; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(38% 44% at 78% 18%, rgba(201,161,90,.20) 0%, transparent 62%),
+    radial-gradient(42% 40% at 12% 78%, rgba(122,46,46,.22) 0%, transparent 64%),
+    radial-gradient(50% 50% at 50% 50%, rgba(30,48,85,.55) 0%, transparent 70%);
+  filter: blur(52px); animation: meshDrift 26s ease-in-out infinite alternate;
 }
-.hero::before {
-  content: ''; position: absolute; top: -20%; right: -10%;
-  width: 60vw; height: 60vw; border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,161,90,.13) 0%, transparent 68%);
-  pointer-events: none;
+@keyframes meshDrift {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to   { transform: translate3d(3%, 2%, 0) scale(1.1); }
 }
-.hero-grid {
-  display: grid; grid-template-columns: 1.15fr .85fr; gap: 3.5rem; align-items: center;
-  position: relative; z-index: 1;
+.hero-grain {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: .5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.055'/></svg>");
 }
-.kicker {
-  display: inline-block; font-size: .75rem; font-weight: 600;
-  letter-spacing: .18em; text-transform: uppercase; color: var(--gold);
-  border-left: 3px solid var(--gold); padding-left: .8rem; margin-bottom: 1.6rem;
+.hero-mark {
+  position: absolute; right: -8%; bottom: -14%; width: min(52vw, 620px);
+  opacity: .05; z-index: 0; pointer-events: none; transform: rotate(-8deg);
 }
+.hero-grid { position: relative; z-index: 2; display: grid;
+  grid-template-columns: 1.25fr .75fr; gap: 4rem; align-items: center; }
+.kicker { display: inline-flex; align-items: center; gap: .8rem; font-size: .72rem; font-weight: 600;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.8rem; }
+.kicker::before { content: ''; width: 38px; height: 1px; background: var(--gold); }
 .hero h1 {
-  font-family: var(--serif); font-weight: 700;
-  font-size: clamp(2.1rem, 4.6vw, 3.35rem); line-height: 1.22;
-  color: var(--white); margin-bottom: 1.4rem; text-wrap: balance;
+  font-family: var(--serif); font-weight: 400; letter-spacing: -.015em;
+  font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1.06;
+  color: var(--white); margin-bottom: 1.6rem; text-wrap: balance;
 }
 .hero h1 em { font-style: italic; color: var(--gold); }
-.hero-sub {
-  font-size: clamp(1rem, 1.6vw, 1.13rem); color: rgba(245,241,234,.86);
-  max-width: 33rem; margin-bottom: 2.2rem;
-}
+.hero-sub { font-size: clamp(1rem, 1.5vw, 1.1rem); color: rgba(245,241,234,.82);
+  max-width: 34rem; margin-bottom: 2.4rem; font-weight: 300; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: .9rem; align-items: center; }
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
-  font-family: var(--sans); font-size: .97rem; font-weight: 600;
-  text-decoration: none; padding: .95rem 1.8rem; border-radius: 3px;
-  transition: transform .18s, background .18s, box-shadow .18s; cursor: pointer; border: 0;
-}
-.btn-primary { background: var(--wa); color: var(--white); box-shadow: 0 6px 22px rgba(37,211,102,.28); }
-.btn-primary:hover { background: #1fbe5b; color: var(--white); transform: translateY(-2px); }
-.btn-ghost { background: transparent; color: var(--cream); border: 1px solid rgba(201,161,90,.55); }
-.btn-ghost:hover { background: rgba(201,161,90,.12); color: var(--gold); }
-.btn-solid { background: var(--navy); color: var(--cream); }
-.btn-solid:hover { background: var(--navy-soft); color: var(--white); transform: translateY(-2px); }
+.hero-photo { position: relative; max-width: 380px; margin-left: auto; }
+.hero-photo img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover;
+  object-position: center 12%; border-radius: 50%; }
+.hero-photo::after { content: ''; position: absolute; inset: -18px; border-radius: 50%;
+  border: 1px solid rgba(201,161,90,.42); pointer-events: none; }
+.hero-photo::before { content: ''; position: absolute; inset: -34px; border-radius: 50%;
+  border: 1px solid rgba(201,161,90,.14); pointer-events: none; }
 
-.hero-photo { position: relative; }
-.hero-photo { max-width: 420px; margin-left: auto; }
-.hero-photo img {
-  width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; object-position: center 12%;
-  border-radius: 50%;
-  border: 1px solid rgba(201,161,90,.4);
-  box-shadow: 0 24px 60px rgba(0,0,0,.35);
-}
-.hero-photo::after {
-  content: ''; position: absolute; inset: -14px; border-radius: 50%;
-  border: 1px solid rgba(201,161,90,.25); pointer-events: none;
-}
+/* Franja de credibilidad, integrada al hero */
+.proof { position: relative; z-index: 2; margin-top: 4.5rem; padding-top: 2.4rem;
+  border-top: 1px solid var(--line-dark); display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.proof-item { display: flex; flex-direction: column; gap: .4rem; }
+.proof-big { font-family: var(--serif); font-weight: 400; font-size: 2.5rem; line-height: 1;
+  color: var(--gold); }
+.proof-txt { font-size: .86rem; color: rgba(245,241,234,.68); font-weight: 300; line-height: 1.5; }
 
-/* ─────────── BARRA DE CREDIBILIDAD ─────────── */
-.proof { background: var(--cream-warm); border-bottom: 1px solid rgba(20,33,61,.09); }
-.proof-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1rem; padding: 2.6rem 0; text-align: center;
-}
-.proof-item { padding: 0 1.2rem; }
-.proof-item + .proof-item { border-left: 1px solid rgba(20,33,61,.12); }
-.proof-big {
-  font-family: var(--serif); font-weight: 700; font-size: 1.9rem;
-  color: var(--navy); line-height: 1.1; margin-bottom: .35rem;
-}
-.proof-txt { font-size: .89rem; color: var(--grey); line-height: 1.5; }
-
-/* ─────────── SECCIONES ─────────── */
-section { padding: 5rem 0; }
-.sec-navy { background: var(--navy); color: var(--cream); }
+/* ───────── SECCIONES ───────── */
+section { padding: 5.5rem 0; }
+.sec-navy  { background: var(--navy); color: var(--cream); }
 .sec-cream { background: var(--cream); }
-.sec-head { max-width: 46rem; margin-bottom: 3rem; }
-.sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
-.eyebrow {
-  font-size: .74rem; font-weight: 600; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--terracota); margin-bottom: .9rem;
-}
-.sec-navy .eyebrow { color: var(--gold); }
-h2 {
-  font-family: var(--serif); font-weight: 700;
-  font-size: clamp(1.65rem, 3.2vw, 2.35rem); line-height: 1.28;
-  color: var(--navy); margin-bottom: 1rem; text-wrap: balance;
-}
-.sec-navy h2 { color: var(--white); }
-.lead { font-size: 1.05rem; color: var(--grey); }
-.sec-navy .lead { color: rgba(245,241,234,.82); }
-
-.rule { width: 64px; height: 2px; background: var(--gold); margin-bottom: 1.6rem; }
-.sec-head.center .rule { margin-left: auto; margin-right: auto; }
-
-/* Tarjetas */
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-.card {
-  background: var(--white); border: 1px solid rgba(20,33,61,.1);
-  border-top: 3px solid var(--gold); border-radius: 3px;
-  padding: 1.9rem 1.6rem; transition: transform .2s, box-shadow .2s;
-}
-.card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(20,33,61,.09); }
-.card h3 {
-  font-family: var(--serif); font-size: 1.06rem; font-weight: 700;
-  color: var(--navy); margin-bottom: .7rem; line-height: 1.35;
-}
-.card p { font-size: .93rem; color: var(--grey); }
-.card-ico { color: var(--gold); margin-bottom: 1rem; }
-
-/* Errores */
-.errors { margin-top: 3.5rem; }
-.error-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.8rem; }
-.error-item { border-left: 2px solid var(--terracota); padding-left: 1.2rem; }
-.error-num {
-  font-family: var(--serif); font-size: 1.45rem; font-weight: 700;
-  color: var(--terracota); line-height: 1; margin-bottom: .5rem;
-}
-.error-item h4 { font-size: .99rem; font-weight: 600; color: var(--navy); margin-bottom: .45rem; }
-.error-item p { font-size: .9rem; color: var(--grey); }
-
-/* Preparación */
-.prep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; }
-.check-list { list-style: none; display: flex; flex-direction: column; gap: 1.15rem; }
-.check-list li { display: flex; gap: .9rem; align-items: flex-start; font-size: 1rem; color: rgba(245,241,234,.9); }
-.check-list svg { flex-shrink: 0; margin-top: .28rem; color: var(--gold); }
-.prep-note {
-  margin-top: 2rem; padding: 1.15rem 1.35rem;
-  background: rgba(201,161,90,.09); border-left: 3px solid var(--gold);
-  font-size: .93rem; color: rgba(245,241,234,.85);
-}
-.modes { display: flex; flex-direction: column; gap: 1.2rem; }
-.mode {
-  background: rgba(255,255,255,.05); border: 1px solid rgba(201,161,90,.24);
-  border-radius: 3px; padding: 1.5rem;
-}
-.mode h4 {
-  font-family: var(--serif); font-size: 1.05rem; color: var(--gold);
-  margin-bottom: .45rem; font-weight: 700;
-}
-.mode p { font-size: .93rem; color: rgba(245,241,234,.8); }
-
-/* Trayectoria */
-.cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; }
-.cv-col h3 {
-  font-family: var(--serif); font-size: 1.2rem; font-weight: 700;
-  color: var(--navy); margin-bottom: 1.5rem; padding-bottom: .7rem;
-  border-bottom: 1px solid rgba(201,161,90,.5);
-}
-.timeline { list-style: none; position: relative; }
-.timeline li { position: relative; padding: 0 0 1.5rem 1.7rem; }
-.timeline li::before {
-  content: ''; position: absolute; left: 0; top: .52rem;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--gold); box-shadow: 0 0 0 3px rgba(201,161,90,.2);
-}
-.timeline li:not(:last-child)::after {
-  content: ''; position: absolute; left: 3.5px; top: 1.25rem; bottom: .1rem;
-  width: 1px; background: rgba(20,33,61,.16);
-}
-.tl-title { font-size: .99rem; font-weight: 600; color: var(--navy); line-height: 1.4; }
-.tl-meta { font-size: .85rem; color: var(--grey); margin-top: .2rem; }
-
-.cv-note {
-  grid-column: 1 / -1; margin-top: .5rem; padding: 1.4rem 1.6rem;
-  background: var(--white); border-left: 3px solid var(--terracota);
-  font-size: .97rem; color: var(--graphite); font-style: italic;
-}
-
-.diplomas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
-.dip { background: var(--white); border: 1px solid rgba(20,33,61,.1); padding: .75rem; border-radius: 3px; cursor: zoom-in; transition: transform .2s, box-shadow .2s; }
-.dip:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(20,33,61,.12); }
-.dip img { width: 100%; border-radius: 2px; }
-.dip figcaption { font-size: .8rem; color: var(--grey); text-align: center; padding-top: .7rem; line-height: 1.45; }
-
-/* Instituciones */
-.inst-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.1rem; }
-.inst {
-  background: rgba(255,255,255,.05); border: 1px solid rgba(201,161,90,.26);
-  border-radius: 3px; padding: 1.7rem 1rem; text-align: center;
-  transition: background .2s, transform .2s;
-}
-.inst:hover { background: rgba(201,161,90,.11); transform: translateY(-3px); }
-.inst svg { color: var(--gold); margin-bottom: .8rem; }
-.inst span { display: block; font-size: .93rem; font-weight: 600; color: var(--cream); letter-spacing: .02em; }
-
-/* Charlas */
 .sec-terra { background: var(--terracota); color: var(--cream); }
-.sec-terra h2 { color: var(--white); }
-.sec-terra .eyebrow { color: var(--gold-light); }
-.sec-terra .lead { color: rgba(245,241,234,.88); }
-.talk-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 3rem; align-items: center; }
-.talk-stat {
-  background: rgba(0,0,0,.16); border: 1px solid rgba(245,241,234,.18);
-  border-radius: 3px; padding: 2rem; text-align: center;
-}
-.talk-stat .n {
-  font-family: var(--serif); font-size: 3rem; font-weight: 700;
-  color: var(--gold-light); line-height: 1;
-}
-.talk-stat p { font-size: .93rem; color: rgba(245,241,234,.85); margin-top: .6rem; }
-.btn-cream { background: var(--cream); color: var(--terracota); }
-.btn-cream:hover { background: var(--white); color: var(--terracota); transform: translateY(-2px); }
+.sec-head { max-width: 44rem; margin-bottom: 3.2rem; }
+.sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+.eyebrow { font-size: .72rem; font-weight: 600; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--terracota); margin-bottom: 1rem; }
+.sec-navy .eyebrow, .sec-terra .eyebrow { color: var(--gold); }
+h2 { font-family: var(--serif); font-weight: 400; letter-spacing: -.015em;
+  font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.12; color: var(--navy);
+  margin-bottom: 1.2rem; text-wrap: balance; }
+.sec-navy h2, .sec-terra h2 { color: var(--white); }
+h2 em { font-style: italic; color: var(--terracota); }
+.sec-navy h2 em, .sec-terra h2 em { color: var(--gold); }
+.lead { font-size: 1.04rem; color: var(--grey); font-weight: 300; }
+.sec-navy .lead, .sec-terra .lead { color: rgba(245,241,234,.8); }
 
-/* FAQ */
-.faq { max-width: 46rem; margin: 0 auto; }
-details {
-  background: var(--white); border: 1px solid rgba(20,33,61,.1);
-  border-radius: 3px; margin-bottom: .85rem; overflow: hidden;
-}
-details[open] { border-color: rgba(201,161,90,.55); }
-summary {
-  cursor: pointer; list-style: none; padding: 1.15rem 1.4rem;
-  font-size: 1rem; font-weight: 600; color: var(--navy);
-  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
-}
+/* ───────── Lista editorial con numerales colgantes ───────── */
+.ed-list { border-top: 1px solid var(--line-light); }
+.sec-navy .ed-list { border-color: var(--line-dark); }
+.ed-item { display: grid; grid-template-columns: 4.5rem 1fr; gap: 1.5rem;
+  padding: 2rem 0; border-bottom: 1px solid var(--line-light); align-items: start; }
+.sec-navy .ed-item { border-color: var(--line-dark); }
+.ed-num { font-family: var(--serif); font-size: 2.4rem; line-height: .9; color: var(--gold); }
+.ed-body h3 { font-family: var(--serif); font-weight: 400; font-size: 1.5rem;
+  line-height: 1.25; color: var(--navy); margin-bottom: .5rem; }
+.sec-navy .ed-body h3 { color: var(--white); }
+.ed-body p { font-size: .98rem; color: var(--grey); font-weight: 300; max-width: 44rem; }
+.sec-navy .ed-body p { color: rgba(245,241,234,.75); }
+
+/* ───────── Errores: filete terracota, sin cajas ───────── */
+.errs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3.5rem; }
+.err { border-top: 2px solid var(--terracota); padding-top: 1.1rem; }
+.err h4 { font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: .5rem; }
+.err p { font-size: .93rem; color: var(--grey); font-weight: 300; }
+
+/* ───────── Preparación ───────── */
+.prep-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 4rem; align-items: start; }
+.check-list { list-style: none; display: flex; flex-direction: column; }
+.check-list li { display: flex; gap: 1rem; align-items: flex-start; font-size: 1rem;
+  color: rgba(245,241,234,.88); font-weight: 300; padding: 1.1rem 0;
+  border-bottom: 1px solid var(--line-dark); }
+.check-list li:first-child { border-top: 1px solid var(--line-dark); }
+.check-list svg { flex-shrink: 0; margin-top: .35rem; color: var(--gold); }
+.prep-note { margin-top: 2rem; padding-left: 1.3rem; border-left: 2px solid var(--gold);
+  font-size: .95rem; color: rgba(245,241,234,.75); font-weight: 300; }
+.modes { display: flex; flex-direction: column; }
+.mode { padding: 1.5rem 0; border-bottom: 1px solid var(--line-dark); }
+.mode:first-child { border-top: 1px solid var(--line-dark); }
+.mode h4 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; color: var(--gold);
+  margin-bottom: .4rem; }
+.mode p { font-size: .94rem; color: rgba(245,241,234,.75); font-weight: 300; }
+
+/* ───────── Trayectoria ───────── */
+.cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+.cv-col h3 { font-family: var(--serif); font-weight: 400; font-size: 1.6rem; color: var(--navy);
+  margin-bottom: 1.6rem; padding-bottom: .8rem; border-bottom: 1px solid var(--gold); }
+.timeline { list-style: none; position: relative; }
+.timeline li { position: relative; padding: 0 0 1.6rem 1.8rem; }
+.timeline li::before { content: ''; position: absolute; left: 0; top: .6rem;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,161,90,.18); }
+.timeline li:not(:last-child)::after { content: ''; position: absolute; left: 3px; top: 1.3rem;
+  bottom: .1rem; width: 1px; background: var(--line-light); }
+.tl-title { font-size: 1rem; font-weight: 600; color: var(--navy); line-height: 1.45; }
+.tl-meta { font-size: .87rem; color: var(--grey); margin-top: .2rem; font-weight: 300; }
+.cv-note { grid-column: 1 / -1; margin-top: 1rem; padding-left: 1.5rem;
+  border-left: 2px solid var(--terracota); font-family: var(--serif); font-style: italic;
+  font-size: 1.22rem; line-height: 1.5; color: var(--navy); max-width: 52rem; }
+
+.diplomas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; margin-top: 3.5rem; }
+.dip { cursor: zoom-in; transition: transform .25s ease; }
+.dip img { width: 100%; aspect-ratio: 4/3; object-fit: contain; background: var(--white);
+  border: 1px solid var(--line-light); transition: box-shadow .25s ease, border-color .25s ease; }
+.dip:hover { transform: translateY(-4px); }
+.dip:hover img { border-color: var(--gold); box-shadow: 0 16px 40px rgba(20,33,61,.16); }
+.dip figcaption { font-size: .8rem; color: var(--grey); padding-top: .8rem; line-height: 1.5; font-weight: 300; }
+
+/* ───────── Instituciones: UN SOLO BLOQUE ───────── */
+.inst-panel { border: 1px solid rgba(201,161,90,.3); display: grid;
+  grid-template-columns: repeat(5, 1fr); }
+.inst { padding: 2.2rem 1rem; text-align: center; border-right: 1px solid rgba(201,161,90,.22);
+  transition: background .25s ease; }
+.inst:last-child { border-right: 0; }
+.inst:hover { background: rgba(201,161,90,.08); }
+.inst svg { color: var(--gold); margin: 0 auto .85rem; }
+.inst span { display: block; font-size: .92rem; font-weight: 600; color: var(--cream); letter-spacing: .04em; }
+
+/* ───────── Charlas ───────── */
+.talk-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 3.5rem; align-items: center; }
+.talk-stat { border: 1px solid rgba(245,241,234,.22); padding: 2.2rem; text-align: center; }
+.talk-stat .n { font-family: var(--serif); font-size: 3.6rem; line-height: 1; color: var(--gold-soft); }
+.talk-stat p { font-size: .92rem; color: rgba(245,241,234,.82); margin-top: .7rem; font-weight: 300; }
+
+/* ───────── FAQ sin cajas ───────── */
+.faq { max-width: 46rem; margin: 0 auto; border-top: 1px solid var(--line-light); }
+details { border-bottom: 1px solid var(--line-light); }
+summary { cursor: pointer; list-style: none; padding: 1.3rem 0; font-size: 1.05rem;
+  font-weight: 500; color: var(--navy); display: flex; justify-content: space-between;
+  align-items: center; gap: 1rem; transition: color .2s; }
+summary:hover { color: var(--terracota); }
 summary::-webkit-details-marker { display: none; }
-summary::after {
-  content: '+'; font-size: 1.4rem; font-weight: 400; color: var(--gold);
-  line-height: 1; flex-shrink: 0; transition: transform .2s;
-}
+summary::after { content: '+'; font-family: var(--serif); font-size: 1.6rem; color: var(--gold);
+  line-height: 1; flex-shrink: 0; }
 details[open] summary::after { content: '−'; }
-details p { padding: 0 1.4rem 1.25rem; font-size: .95rem; color: var(--grey); }
+details p { padding: 0 0 1.4rem; font-size: .97rem; color: var(--grey); font-weight: 300; max-width: 42rem; }
 
-/* CTA final */
+/* ───────── CTA final ───────── */
 .cta-final { text-align: center; }
-.cta-final h2 { max-width: 32rem; margin-left: auto; margin-right: auto; }
-.contact-row {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;
-  margin-top: 2.8rem; padding-top: 2.2rem; border-top: 1px solid rgba(201,161,90,.25);
-}
-.contact-row a {
-  display: inline-flex; align-items: center; gap: .5rem;
-  color: rgba(245,241,234,.85); text-decoration: none; font-size: .93rem; transition: color .18s;
-}
+.cta-final h2 { max-width: 30rem; margin-left: auto; margin-right: auto; }
+.contact-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.2rem;
+  margin-top: 3rem; padding-top: 2.4rem; border-top: 1px solid var(--line-dark); }
+.contact-row a { display: inline-flex; align-items: center; gap: .55rem;
+  color: rgba(245,241,234,.82); text-decoration: none; font-size: .92rem; font-weight: 300; transition: color .2s; }
 .contact-row a:hover { color: var(--gold); }
 .contact-row svg { color: var(--gold); flex-shrink: 0; }
 
-/* Footer */
-footer { background: var(--navy-deep); color: rgba(245,241,234,.62); padding: 2.6rem 0; font-size: .85rem; }
+footer { background: var(--navy-deep); color: rgba(245,241,234,.55); padding: 2.6rem 0; font-size: .84rem; font-weight: 300; }
 .foot-in { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; align-items: center; }
-footer a { color: rgba(245,241,234,.62); text-decoration: none; }
+footer a { color: rgba(245,241,234,.55); text-decoration: none; }
 footer a:hover { color: var(--gold); }
 
-/* Botón flotante WhatsApp */
-.wa-float {
-  position: fixed; right: 1.15rem; bottom: 1.15rem; z-index: 150;
-  display: inline-flex; align-items: center; gap: .55rem;
-  background: var(--wa); color: var(--white); text-decoration: none;
-  font-size: .92rem; font-weight: 600; padding: .8rem 1.25rem;
-  border-radius: 40px; box-shadow: 0 8px 26px rgba(37,211,102,.42);
-  transition: transform .18s, box-shadow .18s;
-}
-.wa-float:hover { transform: translateY(-2px); color: var(--white); box-shadow: 0 12px 32px rgba(37,211,102,.52); }
-.wa-float .lbl { display: inline; }
+/* ───────── Flotante, lightbox, cookies ───────── */
+.wa-float { position: fixed; right: 1.15rem; bottom: 1.15rem; z-index: 150;
+  display: inline-flex; align-items: center; gap: .55rem; background: var(--wa); color: var(--white);
+  text-decoration: none; font-size: .9rem; font-weight: 600; padding: .85rem 1.3rem;
+  border-radius: 40px; box-shadow: 0 8px 26px rgba(37,211,102,.4);
+  transition: transform .2s, box-shadow .2s; }
+.wa-float:hover { transform: translateY(-3px); color: var(--white); box-shadow: 0 12px 32px rgba(37,211,102,.5); }
 
-/* Lightbox */
-.lb {
-  position: fixed; inset: 0; z-index: 300; display: none;
-  background: rgba(13,23,40,.94); padding: 2rem;
-  align-items: center; justify-content: center; cursor: zoom-out;
-}
+.lb { position: fixed; inset: 0; z-index: 300; display: none; background: rgba(13,21,38,.95);
+  padding: 2rem; align-items: center; justify-content: center; cursor: zoom-out; }
 .lb.on { display: flex; }
-.lb img { max-width: 100%; max-height: 88vh; border-radius: 3px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
-.lb-close {
-  position: absolute; top: 1.2rem; right: 1.5rem; background: none; border: 0;
-  color: var(--cream); font-size: 2.2rem; line-height: 1; cursor: pointer;
-}
+.lb img { max-width: 100%; max-height: 88vh; box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+.lb-close { position: absolute; top: 1.2rem; right: 1.5rem; background: none; border: 0;
+  color: var(--cream); font-size: 2.4rem; line-height: 1; cursor: pointer; }
 
-/* Cookies */
-.cookie {
-  position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 250;
-  max-width: 44rem; margin: 0 auto; display: none;
-  background: var(--navy); color: rgba(245,241,234,.9);
-  border: 1px solid rgba(201,161,90,.35); border-radius: 4px;
+.cookie { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 250;
+  max-width: 44rem; margin: 0 auto; display: none; background: var(--navy);
+  color: rgba(245,241,234,.88); border: 1px solid rgba(201,161,90,.32);
   padding: 1.15rem 1.35rem; box-shadow: 0 16px 44px rgba(0,0,0,.35);
-  font-size: .88rem; gap: 1rem; align-items: center; flex-wrap: wrap;
-}
+  font-size: .87rem; gap: 1rem; align-items: center; flex-wrap: wrap; font-weight: 300; }
 .cookie.on { display: flex; }
 .cookie p { flex: 1 1 18rem; }
 .cookie a { color: var(--gold); }
 .cookie-btns { display: flex; gap: .6rem; flex-shrink: 0; }
-.cookie button {
-  font-family: var(--sans); font-size: .84rem; font-weight: 600;
-  padding: .55rem 1.1rem; border-radius: 3px; cursor: pointer; border: 0; transition: opacity .18s;
-}
+.cookie button { font-family: var(--sans); font-size: .84rem; font-weight: 600;
+  padding: .58rem 1.15rem; border-radius: 2px; cursor: pointer; border: 0; transition: opacity .2s; }
 .cookie button:hover { opacity: .88; }
 .ck-yes { background: var(--gold); color: var(--navy); }
-.ck-no { background: transparent; color: rgba(245,241,234,.75); border: 1px solid rgba(245,241,234,.3); }
+.ck-no { background: transparent; color: rgba(245,241,234,.75); border: 1px solid rgba(245,241,234,.28); }
 
-/* ─────────── RESPONSIVE ─────────── */
+/* ───────── RESPONSIVE ───────── */
 @media (max-width: 940px) {
-  .hero-grid, .prep-grid, .cv-grid, .talk-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .hero-photo { max-width: 300px; margin: 0 auto; order: -1; }
-  .cards, .error-list, .diplomas { grid-template-columns: 1fr 1fr; }
-  .inst-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero-grid, .prep-grid, .cv-grid, .talk-grid { grid-template-columns: 1fr; gap: 2.8rem; }
+  .hero-photo { max-width: 260px; margin: 0 auto; order: -1; }
+  .errs, .diplomas { grid-template-columns: 1fr 1fr; }
+  .inst-panel { grid-template-columns: repeat(3, 1fr); }
+  .inst:nth-child(3) { border-right: 0; }
+  .inst:nth-child(-n+3) { border-bottom: 1px solid rgba(201,161,90,.22); }
 }
 @media (max-width: 720px) {
-  .nav-links {
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: var(--navy); flex-direction: column; align-items: stretch;
-    gap: 0; padding: .5rem 1.5rem 1.2rem;
-    border-bottom: 1px solid rgba(201,161,90,.25);
-    display: none;
-  }
+  .nav-links { position: absolute; top: 100%; left: 0; right: 0; background: var(--navy);
+    flex-direction: column; align-items: stretch; gap: 0; padding: .5rem 1.5rem 1.2rem;
+    border-bottom: 1px solid var(--line-dark); display: none; }
   .nav-links.on { display: flex; }
-  .nav-links a { padding: .75rem 0; border-bottom: 1px solid rgba(245,241,234,.08); }
-  .nav-links .btn-nav { justify-content: center; margin-top: .8rem; border-bottom: 0; }
+  .nav-links a { padding: .8rem 0; border-bottom: 1px solid rgba(245,241,234,.08); }
+  .nav-links .btn-nav { justify-content: center; margin-top: .9rem; border-bottom: 0; }
   .nav-toggle { display: block; }
-  .hero { padding: 7rem 0 3.5rem; }
-  section { padding: 3.5rem 0; }
-  .proof-grid { grid-template-columns: 1fr; gap: 1.8rem; padding: 2rem 0; }
-  .proof-item + .proof-item { border-left: 0; border-top: 1px solid rgba(20,33,61,.12); padding-top: 1.6rem; }
-  .cards, .error-list, .diplomas, .inst-grid { grid-template-columns: 1fr; }
-  .contact-row { flex-direction: column; gap: 1.1rem; align-items: center; }
+  .hero { padding: 7.5rem 0 3.5rem; }
+  section { padding: 3.8rem 0; }
+  .proof { grid-template-columns: 1fr; gap: 1.4rem; margin-top: 3rem; padding-top: 2rem; }
+  .proof-item { flex-direction: row; align-items: baseline; gap: 1rem; }
+  .proof-big { font-size: 1.9rem; flex-shrink: 0; min-width: 5.5rem; }
+  .errs, .diplomas { grid-template-columns: 1fr; }
+  .inst-panel { grid-template-columns: repeat(2, 1fr); }
+  .inst { padding: 1.5rem .75rem; border-bottom: 1px solid rgba(201,161,90,.22); }
+  .inst:nth-child(odd) { border-right: 1px solid rgba(201,161,90,.22); }
+  .inst:nth-child(even) { border-right: 0; }
+  .inst:last-child { grid-column: 1 / -1; border-bottom: 0; border-right: 0; }
+  .inst svg { width: 24px; height: 24px; }
+  .ed-item { grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.6rem 0; }
+  .ed-num { font-size: 1.9rem; }
+  .ed-body h3 { font-size: 1.28rem; }
+  .cv-note { font-size: 1.08rem; }
+  .contact-row { flex-direction: column; gap: 1.2rem; align-items: center; }
   .wa-float .lbl { display: none; }
   .wa-float { padding: .95rem; border-radius: 50%; }
-  .cookie {
-    flex-direction: column; align-items: stretch; gap: .75rem;
-    padding: .9rem 1rem; font-size: .8rem; line-height: 1.5;
-  }
+  .cookie { flex-direction: column; align-items: stretch; gap: .75rem;
+    padding: .9rem 1rem; font-size: .8rem; line-height: 1.55; }
   .cookie p { flex: 0 0 auto; }
-  .cookie-btns { justify-content: stretch; }
   .cookie-btns button { flex: 1; }
 }
 </style>
 </head>
-<body>
+<body class="no-js">
 
-<!-- ═══════════ NAV ═══════════ -->
 <nav>
   <div class="nav-in">
     <a class="brand" href="#top">
@@ -465,151 +401,129 @@ footer a:hover { color: var(--gold); }
   </div>
 </nav>
 
-<!-- ═══════════ HERO ═══════════ -->
 <header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="kicker">Oficial PDI en retiro · Psicóloga clínica</span>
-      <h1>Fui oficial de la PDI.<br>Hoy preparo a quienes <em>quieren serlo</em>.</h1>
-      <p class="hero-sub">
-        Preparación psicológica para la etapa de admisión a la Policía de Investigaciones,
-        el Ejército, la Armada, Carabineros y Gendarmería. Presencial en la Región del Biobío
-        y online en todo Chile.
-      </p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20preparaci%C3%B3n%20para%20la%20etapa%20psicol%C3%B3gica" target="_blank" rel="noopener" data-wa>
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zM12.04 2.4c-5.3 0-9.6 4.3-9.6 9.6 0 1.7.44 3.3 1.22 4.68L2.4 21.6l5.06-1.32a9.55 9.55 0 0 0 4.58 1.17h.01c5.29 0 9.6-4.3 9.6-9.6 0-2.57-1-4.98-2.82-6.79a9.53 9.53 0 0 0-6.79-2.66z"/></svg>
-          Agendar por WhatsApp
-        </a>
-        <a class="btn btn-ghost" href="#trayectoria">Conocer mi trayectoria</a>
+  <div class="hero-mesh"></div>
+  <img class="hero-mark" src="img/marca-agua.png" alt="" aria-hidden="true">
+  <div class="hero-grain"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="kicker">Oficial PDI en retiro · Psicóloga clínica</span>
+        <h1>Fui oficial de la PDI.<br>Hoy preparo a quienes <em>quieren serlo</em>.</h1>
+        <p class="hero-sub just">
+          Preparación psicológica para la etapa de admisión a la Policía de Investigaciones,
+          el Ejército, la Armada, Carabineros y Gendarmería. Presencial en la Región del Biobío
+          y online en todo Chile.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20preparaci%C3%B3n%20para%20la%20etapa%20psicol%C3%B3gica" target="_blank" rel="noopener" data-wa>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zM12.04 2.4c-5.3 0-9.6 4.3-9.6 9.6 0 1.7.44 3.3 1.22 4.68L2.4 21.6l5.06-1.32a9.55 9.55 0 0 0 4.58 1.17h.01c5.29 0 9.6-4.3 9.6-9.6 0-2.57-1-4.98-2.82-6.79a9.53 9.53 0 0 0-6.79-2.66z"/></svg>
+            Agendar por WhatsApp
+          </a>
+          <a class="btn btn-ghost" href="#trayectoria">Conocer mi trayectoria</a>
+        </div>
+      </div>
+      <figure class="hero-photo">
+        <img src="img/yocelyn.jpg" alt="Yocelyn Cea, psicóloga clínica y oficial de la PDI en retiro" width="900" height="900">
+      </figure>
+    </div>
+
+    <div class="proof">
+      <div class="proof-item">
+        <span class="proof-big">100%</span>
+        <span class="proof-txt">de los postulantes que he preparado ha aprobado la prueba psicológica</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-big">PDI</span>
+        <span class="proof-txt">oficial en retiro de la Policía de Investigaciones de Chile</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-big">Chile</span>
+        <span class="proof-txt">atención online en todo el país, además de presencial en Biobío</span>
       </div>
     </div>
-    <figure class="hero-photo">
-      <img src="img/yocelyn.jpg" alt="Yocelyn Cea, psicóloga clínica y oficial de la PDI en retiro" width="900" height="900">
-    </figure>
   </div>
 </header>
 
-<!-- ═══════════ PRUEBA SOCIAL ═══════════ -->
-<div class="proof">
-  <div class="wrap proof-grid">
-    <div class="proof-item">
-      <div class="proof-big">100%</div>
-      <p class="proof-txt">de los postulantes que he preparado ha aprobado la prueba psicológica</p>
-    </div>
-    <div class="proof-item">
-      <div class="proof-big">PDI</div>
-      <p class="proof-txt">oficial en retiro de la Policía de Investigaciones de Chile</p>
-    </div>
-    <div class="proof-item">
-      <div class="proof-big">Todo Chile</div>
-      <p class="proof-txt">atención online, además de presencial en la Región del Biobío</p>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ LA ETAPA PSICOLÓGICA ═══════════ -->
 <section class="sec-cream" id="etapa">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head reveal">
       <p class="eyebrow">El proceso de admisión</p>
-      <h2>La etapa que más elimina postulantes</h2>
-      <div class="rule"></div>
-      <p class="lead">
+      <h2>La etapa que <em>más elimina</em> postulantes</h2>
+      <p class="lead just">
         El ingreso a las instituciones policiales y militares tiene varias etapas. La psicológica
         es la que genera más dudas y la que deja fuera a más personas — no porque exija un perfil
         imposible, sino porque casi nadie llega preparado para ella.
       </p>
     </div>
 
-    <div class="cards">
-      <article class="card">
-        <div class="card-ico">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <div class="ed-list">
+      <article class="ed-item reveal">
+        <div class="ed-num">01</div>
+        <div class="ed-body">
+          <h3>Estabilidad emocional bajo presión</h3>
+          <p class="just">Cómo responde una persona cuando la entrevista incomoda, insiste o simplemente guarda silencio. No se evalúa la ausencia de nervios, sino qué se hace con ellos.</p>
         </div>
-        <h3>Estabilidad emocional bajo presión</h3>
-        <p>Cómo responde una persona cuando la entrevista incomoda, insiste o simplemente guarda silencio.</p>
       </article>
-      <article class="card">
-        <div class="card-ico">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+      <article class="ed-item reveal">
+        <div class="ed-num">02</div>
+        <div class="ed-body">
+          <h3>Coherencia entre historia y respuestas</h3>
+          <p class="just">La evaluación cruza lo que se declara con los antecedentes y con la propia biografía del postulante. Las contradicciones aparecen solas cuando el relato no está trabajado.</p>
         </div>
-        <h3>Coherencia entre historia y respuestas</h3>
-        <p>La evaluación cruza lo que se declara con los antecedentes y con la propia biografía del postulante.</p>
       </article>
-      <article class="card">
-        <div class="card-ico">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <article class="ed-item reveal">
+        <div class="ed-num">03</div>
+        <div class="ed-body">
+          <h3>Motivación real para la carrera</h3>
+          <p class="just">Las razones para ingresar tienen que sostenerse más allá de una frase aprendida de memoria. La pregunta nunca es qué se responde, sino cuánto resiste esa respuesta.</p>
         </div>
-        <h3>Motivación real para la carrera</h3>
-        <p>Las razones para ingresar tienen que sostenerse más allá de una frase aprendida de memoria.</p>
       </article>
     </div>
 
-    <div class="errors">
-      <p class="eyebrow">Lo que deja fuera a la mayoría</p>
-      <h2 style="font-size:clamp(1.3rem,2.4vw,1.75rem)">Tres errores frecuentes</h2>
-      <div class="error-list">
-        <div class="error-item">
-          <div class="error-num">01</div>
-          <h4>Memorizar respuestas "correctas"</h4>
-          <p>Los instrumentos de evaluación están diseñados para detectar respuestas construidas. La actuación se nota.</p>
-        </div>
-        <div class="error-item">
-          <div class="error-num">02</div>
-          <h4>No preparar la propia historia</h4>
-          <p>Las preguntas sobre la familia, las pérdidas o los episodios difíciles llegan sin aviso. Conviene haberlas pensado antes, no en la sala.</p>
-        </div>
-        <div class="error-item">
-          <div class="error-num">03</div>
-          <h4>Subestimar la etapa</h4>
-          <p>Muchos postulantes llegan sin práctica de entrevista, confiando en que saldrá natural. Es la causa más común de eliminación.</p>
-        </div>
+    <div class="errs">
+      <div class="err reveal">
+        <h4>Memorizar respuestas "correctas"</h4>
+        <p>Los instrumentos de evaluación están diseñados para detectar respuestas construidas. La actuación se nota.</p>
+      </div>
+      <div class="err reveal">
+        <h4>No preparar la propia historia</h4>
+        <p>Las preguntas sobre la familia, las pérdidas o los episodios difíciles llegan sin aviso. Conviene haberlas pensado antes, no en la sala.</p>
+      </div>
+      <div class="err reveal">
+        <h4>Subestimar la etapa</h4>
+        <p>Muchos postulantes llegan sin práctica de entrevista, confiando en que saldrá natural. Es la causa más común de eliminación.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ LA PREPARACIÓN ═══════════ -->
 <section class="sec-navy" id="preparacion">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head reveal">
       <p class="eyebrow">El servicio</p>
-      <h2>Cómo es la preparación</h2>
-      <div class="rule"></div>
-      <p class="lead">
+      <h2>Cómo es la <em>preparación</em></h2>
+      <p class="lead just">
         Sesiones individuales de una hora, enfocadas exclusivamente en la etapa psicológica del
         proceso de admisión.
       </p>
     </div>
 
     <div class="prep-grid">
-      <div>
-      <ul class="check-list">
-        <li>
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Revisión de la historia personal y de la motivación para postular.
-        </li>
-        <li>
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Entrenamiento en entrevista psicológica, con simulación de la situación real.
-        </li>
-        <li>
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Manejo de la ansiedad y de la presión propia del proceso.
-        </li>
-        <li>
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Retroalimentación honesta sobre los puntos que conviene trabajar antes de la evaluación.
-        </li>
-      </ul>
-      <div class="prep-note">
-        La cantidad de sesiones depende de cada postulante y del tiempo disponible antes de la
-        evaluación. Se define en la primera conversación, sin compromisos previos.
-      </div>
+      <div class="reveal">
+        <ul class="check-list">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Revisión de la historia personal y de la motivación para postular.</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Entrenamiento en entrevista psicológica, con simulación de la situación real.</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Manejo de la ansiedad y de la presión propia del proceso.</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Retroalimentación honesta sobre los puntos que conviene trabajar antes de la evaluación.</li>
+        </ul>
+        <p class="prep-note">
+          La cantidad de sesiones depende de cada postulante y del tiempo disponible antes de la
+          evaluación. Se define en la primera conversación, sin compromisos previos.
+        </p>
       </div>
 
-      <div class="modes">
+      <div class="modes reveal">
         <div class="mode">
           <h4>Presencial</h4>
           <p>Atención en la Región del Biobío, con hora agendada previamente.</p>
@@ -621,28 +535,25 @@ footer a:hover { color: var(--gold); }
         <div class="mode">
           <h4>Agendamiento</h4>
           <p>Directo por WhatsApp. Se coordina día y hora según disponibilidad y fecha de evaluación.</p>
-          <a class="btn btn-primary" style="margin-top:1.1rem" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20agendar%20una%20hora%20de%20preparaci%C3%B3n" target="_blank" rel="noopener" data-wa>Escribir por WhatsApp</a>
+          <a class="btn btn-primary" style="margin-top:1.2rem" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20agendar%20una%20hora%20de%20preparaci%C3%B3n" target="_blank" rel="noopener" data-wa>Escribir por WhatsApp</a>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- ═══════════ TRAYECTORIA ═══════════ -->
 <section class="sec-cream" id="trayectoria">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head reveal">
       <p class="eyebrow">Trayectoria y credenciales</p>
-      <h2>Conozco el proceso desde adentro</h2>
-      <div class="rule"></div>
-      <p class="lead">
+      <h2>Conozco el proceso <em>desde adentro</em></h2>
+      <p class="lead just">
         Preparo postulantes desde una experiencia poco común: una carrera dentro de la Policía de
         Investigaciones de Chile y una formación clínica y forense en evaluación psicológica.
       </p>
     </div>
 
     <div class="cv-grid">
-      <div class="cv-col">
+      <div class="cv-col reveal">
         <h3>Carrera institucional</h3>
         <ul class="timeline">
           <li>
@@ -668,7 +579,7 @@ footer a:hover { color: var(--gold); }
         </ul>
       </div>
 
-      <div class="cv-col">
+      <div class="cv-col reveal">
         <h3>Formación y certificaciones</h3>
         <ul class="timeline">
           <li>
@@ -690,7 +601,7 @@ footer a:hover { color: var(--gold); }
         </ul>
       </div>
 
-      <p class="cv-note">
+      <p class="cv-note reveal">
         Esa formación en evaluación forense me permite comprender cómo se construyen y cómo se
         leen los instrumentos psicométricos y las entrevistas estructuradas. Es el mismo terreno
         en el que se juega la etapa psicológica de una postulación.
@@ -698,15 +609,15 @@ footer a:hover { color: var(--gold); }
     </div>
 
     <div class="diplomas">
-      <figure class="dip" data-full="img/cert-psicopatia.jpg">
+      <figure class="dip reveal" data-full="img/cert-psicopatia.jpg">
         <img src="img/cert-psicopatia.jpg" alt="Diploma de especialización en Evaluación Forense de Personalidad y Psicopatía" loading="lazy">
         <figcaption>Evaluación Forense de Personalidad y Psicopatía · 40 h</figcaption>
       </figure>
-      <figure class="dip" data-full="img/cert-dano-psiquico.jpg">
+      <figure class="dip reveal" data-full="img/cert-dano-psiquico.jpg">
         <img src="img/cert-dano-psiquico.jpg" alt="Certificado en Evaluación Forense de Daño Psíquico" loading="lazy">
         <figcaption>Evaluación Forense de Daño Psíquico · 30 h</figcaption>
       </figure>
-      <figure class="dip" data-full="img/sello-especialista.jpg">
+      <figure class="dip reveal" data-full="img/sello-especialista.jpg">
         <img src="img/sello-especialista.jpg" alt="Sello de especialista de la Academia Pericial CESP" loading="lazy">
         <figcaption>Sello de especialista · Academia Pericial CESP</figcaption>
       </figure>
@@ -714,107 +625,98 @@ footer a:hover { color: var(--gold); }
   </div>
 </section>
 
-<!-- ═══════════ INSTITUCIONES ═══════════ -->
 <section class="sec-navy" id="instituciones">
   <div class="wrap">
-    <div class="sec-head center">
+    <div class="sec-head center reveal">
       <p class="eyebrow">Procesos que preparo</p>
       <h2>Instituciones</h2>
-      <div class="rule"></div>
       <p class="lead">Preparación para la etapa psicológica del proceso de admisión en las escuelas matrices y de formación.</p>
     </div>
-    <div class="inst-grid">
+    <div class="inst-panel reveal">
       <div class="inst">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <span>PDI</span>
       </div>
       <div class="inst">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 6v6c0 5 8 10 8 10s8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 6v6c0 5 8 10 8 10s8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
         <span>Ejército</span>
       </div>
       <div class="inst">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 6.7V21"/><path d="M8 10h8"/><path d="M20 15a8 8 0 0 1-16 0"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 6.7V21"/><path d="M8 10h8"/><path d="M20 15a8 8 0 0 1-16 0"/></svg>
         <span>Armada</span>
       </div>
       <div class="inst">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 2.4 5 5.6.8-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-.8z"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 2.4 5 5.6.8-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-.8z"/></svg>
         <span>Carabineros</span>
       </div>
       <div class="inst">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M8 4v16M12 4v16M16 4v16"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M8 4v16M12 4v16M16 4v16"/></svg>
         <span>Gendarmería</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ CHARLAS ═══════════ -->
 <section class="sec-terra" id="charlas">
   <div class="wrap talk-grid">
-    <div>
+    <div class="reveal">
       <p class="eyebrow">Sin costo</p>
       <h2>Charlas gratuitas de preparación</h2>
-      <div class="rule"></div>
-      <p class="lead" style="margin-bottom:1.8rem">
+      <p class="lead just" style="margin-bottom:2rem">
         Periódicamente realizo charlas online, sin costo, sobre la etapa psicológica del proceso
         de admisión: qué se evalúa realmente, los errores más frecuentes y cómo prepararse con el
-        tiempo que queda. Quienes quieran recibir la invitación a la próxima pueden dejar su correo.
+        tiempo que queda. Quienes quieran recibir la invitación a la próxima pueden escribirme.
       </p>
       <!-- Cuando exista el Google Form, reemplazar el href por su URL -->
       <a class="btn btn-cream" id="formLink" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20recibir%20la%20invitaci%C3%B3n%20a%20la%20pr%C3%B3xima%20charla" target="_blank" rel="noopener" data-wa>
         Quiero recibir la invitación
       </a>
     </div>
-    <div class="talk-stat">
+    <div class="talk-stat reveal">
       <div class="n">+30</div>
       <p>postulantes de distintas regiones del país participaron en la última charla</p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ FAQ ═══════════ -->
 <section class="sec-cream" id="faq">
   <div class="wrap">
-    <div class="sec-head center">
+    <div class="sec-head center reveal">
       <p class="eyebrow">Dudas frecuentes</p>
       <h2>Preguntas antes de agendar</h2>
-      <div class="rule"></div>
     </div>
-    <div class="faq">
+    <div class="faq reveal">
       <details>
         <summary>¿Cuándo conviene comenzar la preparación?</summary>
-        <p>Idealmente apenas se confirma la postulación. De todos modos, también se puede trabajar con plazos cortos: la preparación se ajusta al tiempo disponible antes de la evaluación.</p>
+        <p class="just">Idealmente apenas se confirma la postulación. De todos modos, también se puede trabajar con plazos cortos: la preparación se ajusta al tiempo disponible antes de la evaluación.</p>
       </details>
       <details>
         <summary>¿Sirve si ya reprobé la etapa psicológica antes?</summary>
-        <p>Sí. Es uno de los casos en que más aporta: se revisa qué pudo haber ocurrido en el proceso anterior y se trabaja específicamente sobre esos puntos.</p>
+        <p class="just">Sí. Es uno de los casos en que más aporta: se revisa qué pudo haber ocurrido en el proceso anterior y se trabaja específicamente sobre esos puntos.</p>
       </details>
       <details>
         <summary>¿Cuántas sesiones se necesitan?</summary>
-        <p>Depende de cada postulante. Algunos resuelven con una sesión; otros prefieren varias, sobre todo cuando hay que trabajar la historia personal o el manejo de la ansiedad.</p>
+        <p class="just">Depende de cada postulante. Algunos resuelven con una sesión; otros prefieren varias, sobre todo cuando hay que trabajar la historia personal o el manejo de la ansiedad.</p>
       </details>
       <details>
         <summary>¿La atención es online o presencial?</summary>
-        <p>Ambas. Presencial en la Región del Biobío y online, por videollamada, para postulantes de cualquier región del país.</p>
+        <p class="just">Ambas. Presencial en la Región del Biobío y online, por videollamada, para postulantes de cualquier región del país.</p>
       </details>
       <details>
         <summary>¿Qué pasa si postulo a más de una institución?</summary>
-        <p>Se trabaja igual. Cada proceso tiene sus particularidades, pero la etapa psicológica comparte una lógica común en todas las instituciones.</p>
+        <p class="just">Se trabaja igual. Cada proceso tiene sus particularidades, pero la etapa psicológica comparte una lógica común en todas las instituciones.</p>
       </details>
       <details>
         <summary>¿Esta preparación garantiza el ingreso?</summary>
-        <p>No. Ninguna preparación puede garantizar un resultado, porque la decisión final es de cada institución. Lo que sí ofrece es llegar a la etapa con la historia trabajada, sin improvisar y sabiendo qué se está evaluando.</p>
+        <p class="just">No. Ninguna preparación puede garantizar un resultado, porque la decisión final es de cada institución. Lo que sí ofrece es llegar a la etapa con la historia trabajada, sin improvisar y sabiendo qué se está evaluando.</p>
       </details>
     </div>
   </div>
 </section>
-
-<!-- ═══════════ CTA FINAL ═══════════ -->
 <section class="sec-navy cta-final" id="contacto">
   <div class="wrap">
     <p class="eyebrow">Agendar</p>
-    <h2>Prepare su etapa psicológica con quien conoce el proceso desde adentro</h2>
-    <div class="rule" style="margin:0 auto 1.8rem"></div>
+    <h2>Prepare su etapa psicológica con quien conoce el proceso <em>desde adentro</em></h2>
     <a class="btn btn-primary" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20agendar%20una%20hora%20de%20preparaci%C3%B3n" target="_blank" rel="noopener" data-wa>
       <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zM12.04 2.4c-5.3 0-9.6 4.3-9.6 9.6 0 1.7.44 3.3 1.22 4.68L2.4 21.6l5.06-1.32a9.55 9.55 0 0 0 4.58 1.17h.01c5.29 0 9.6-4.3 9.6-9.6 0-2.57-1-4.98-2.82-6.79a9.53 9.53 0 0 0-6.79-2.66z"/></svg>
       Agendar por WhatsApp
@@ -822,26 +724,25 @@ footer a:hover { color: var(--gold); }
 
     <div class="contact-row">
       <a href="https://wa.me/56998174401" target="_blank" rel="noopener" data-wa>
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
         +56 9 9817 4401
       </a>
       <a href="https://www.instagram.com/psicologayocelyncea" target="_blank" rel="noopener">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
         @psicologayocelyncea
       </a>
       <a href="https://www.facebook.com/psicologayocelyncea" target="_blank" rel="noopener">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
         Facebook
       </a>
       <a href="mailto:yocelynceapsi@gmail.com">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
         yocelynceapsi@gmail.com
       </a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   <div class="wrap foot-in">
     <div>© <span id="year">2026</span> Yocelyn Cea González · Psicóloga clínica · Oficial PDI en retiro</div>
@@ -849,19 +750,16 @@ footer a:hover { color: var(--gold); }
   </div>
 </footer>
 
-<!-- Botón flotante -->
 <a class="wa-float" href="https://wa.me/56998174401?text=Hola%20Yocelyn%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20preparaci%C3%B3n%20para%20la%20etapa%20psicol%C3%B3gica" target="_blank" rel="noopener" data-wa aria-label="Escribir por WhatsApp">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zM12.04 2.4c-5.3 0-9.6 4.3-9.6 9.6 0 1.7.44 3.3 1.22 4.68L2.4 21.6l5.06-1.32a9.55 9.55 0 0 0 4.58 1.17h.01c5.29 0 9.6-4.3 9.6-9.6 0-2.57-1-4.98-2.82-6.79a9.53 9.53 0 0 0-6.79-2.66z"/></svg>
   <span class="lbl">WhatsApp</span>
 </a>
 
-<!-- Lightbox de diplomas -->
 <div class="lb" id="lightbox">
   <button class="lb-close" aria-label="Cerrar">&times;</button>
   <img alt="Diploma ampliado" id="lbImg">
 </div>
 
-<!-- Aviso de cookies -->
 <div class="cookie" id="cookieBar">
   <p>Este sitio usa cookies de medición para entender cómo llegan las visitas y mejorar el contenido. Puede leer más en la <a href="politica-de-privacidad.html">política de privacidad</a>.</p>
   <div class="cookie-btns">
@@ -874,35 +772,70 @@ footer a:hover { color: var(--gold); }
 (function () {
   'use strict';
 
-  document.getElementById('year').textContent = new Date().getFullYear();
+  /* Marca que hay JS: el CSS deja de forzar los elementos visibles y permite las apariciones */
+  document.body.classList.remove('no-js');
 
-  /* Menú móvil */
-  var toggle = document.getElementById('navToggle');
-  var links  = document.getElementById('navLinks');
-  toggle.addEventListener('click', function () {
-    var open = links.classList.toggle('on');
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  links.addEventListener('click', function (e) {
-    if (e.target.tagName === 'A') { links.classList.remove('on'); toggle.setAttribute('aria-expanded', 'false'); }
-  });
+  function safe(fn, name) {
+    try { fn(); } catch (e) { console.warn('Fallo en ' + name, e); }
+  }
 
-  /* Lightbox de diplomas */
-  var lb = document.getElementById('lightbox');
-  var lbImg = document.getElementById('lbImg');
-  Array.prototype.forEach.call(document.querySelectorAll('.dip'), function (fig) {
-    fig.addEventListener('click', function () {
-      lbImg.src = fig.getAttribute('data-full');
-      lb.classList.add('on');
+  safe(function year() {
+    document.getElementById('year').textContent = new Date().getFullYear();
+  }, 'year');
+
+  safe(function menu() {
+    var toggle = document.getElementById('navToggle');
+    var links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', function () {
+      var open = links.classList.toggle('on');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
-  });
-  lb.addEventListener('click', function () { lb.classList.remove('on'); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') lb.classList.remove('on');
-  });
+    links.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') { links.classList.remove('on'); toggle.setAttribute('aria-expanded', 'false'); }
+    });
+  }, 'menu');
+
+  safe(function reveals() {
+    var items = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+    function showAll() { items.forEach(function (el) { el.classList.add('seen'); }); }
+
+    if (!('IntersectionObserver' in window)) { showAll(); return; }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('seen');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.04, rootMargin: '0px 0px -40px 0px' });
+
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = (i % 3) * 90 + 'ms';
+      io.observe(el);
+    });
+
+    /* Red de seguridad: pase lo que pase, a los 6 segundos todo es visible */
+    setTimeout(showAll, 6000);
+  }, 'reveals');
+
+  safe(function lightbox() {
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lbImg');
+    Array.prototype.forEach.call(document.querySelectorAll('.dip'), function (fig) {
+      fig.addEventListener('click', function () {
+        lbImg.src = fig.getAttribute('data-full');
+        lb.classList.add('on');
+      });
+    });
+    lb.addEventListener('click', function () { lb.classList.remove('on'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') lb.classList.remove('on');
+    });
+  }, 'lightbox');
 
   /* ───── Medición: se activa solo con consentimiento ─────
-     Al crear las cuentas, reemplazar los identificadores y descomentar. */
+     Al crear las cuentas, pegar los identificadores entre las comillas. */
   var GA4_ID   = '';   // ej: 'G-XXXXXXXXXX'
   var ADS_ID   = '';   // ej: 'AW-XXXXXXXXX'
   var PIXEL_ID = '';   // ej: '123456789012345'
@@ -930,33 +863,35 @@ footer a:hover { color: var(--gold); }
     }
   }
 
-  /* Conversión: clic en cualquier enlace de WhatsApp */
-  Array.prototype.forEach.call(document.querySelectorAll('[data-wa]'), function (el) {
-    el.addEventListener('click', function () {
-      if (window.gtag) window.gtag('event', 'contacto_whatsapp');
-      if (window.fbq)  window.fbq('track', 'Contact');
+  safe(function conversions() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-wa]'), function (el) {
+      el.addEventListener('click', function () {
+        if (window.gtag) window.gtag('event', 'contacto_whatsapp');
+        if (window.fbq)  window.fbq('track', 'Contact');
+      });
     });
-  });
+  }, 'conversions');
 
-  /* Barra de cookies */
-  var bar = document.getElementById('cookieBar');
-  var choice = null;
-  try { choice = localStorage.getItem('yc-cookies'); } catch (err) {}
+  safe(function cookies() {
+    var bar = document.getElementById('cookieBar');
+    var choice = null;
+    try { choice = localStorage.getItem('yc-cookies'); } catch (err) {}
 
-  if (choice === 'si') {
-    loadMeasurement();
-  } else if (choice !== 'no') {
-    bar.classList.add('on');
-  }
-  document.getElementById('ckYes').addEventListener('click', function () {
-    try { localStorage.setItem('yc-cookies', 'si'); } catch (err) {}
-    bar.classList.remove('on');
-    loadMeasurement();
-  });
-  document.getElementById('ckNo').addEventListener('click', function () {
-    try { localStorage.setItem('yc-cookies', 'no'); } catch (err) {}
-    bar.classList.remove('on');
-  });
+    if (choice === 'si') {
+      loadMeasurement();
+    } else if (choice !== 'no') {
+      bar.classList.add('on');
+    }
+    document.getElementById('ckYes').addEventListener('click', function () {
+      try { localStorage.setItem('yc-cookies', 'si'); } catch (err) {}
+      bar.classList.remove('on');
+      loadMeasurement();
+    });
+    document.getElementById('ckNo').addEventListener('click', function () {
+      try { localStorage.setItem('yc-cookies', 'no'); } catch (err) {}
+      bar.classList.remove('on');
+    });
+  }, 'cookies');
 })();
 </script>
 </body>
