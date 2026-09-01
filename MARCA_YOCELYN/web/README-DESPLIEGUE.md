@@ -1,0 +1,58 @@
+# Landing Page — Yocelyn Cea
+
+Sitio estático (HTML + CSS + JavaScript, sin dependencias ni compilación). Se sube tal cual al
+hosting: no requiere Node, npm, WordPress ni base de datos.
+
+## Contenido
+
+```
+web/
+├── index.html                  Landing completa
+├── politica-de-privacidad.html Requisito para Google Ads y Meta Ads
+└── img/                        Imágenes ya optimizadas (373 KB en total)
+```
+
+## Antes de publicar: cuatro cosas por reemplazar
+
+Todas están en `index.html` y se encuentran buscando el texto indicado.
+
+| Qué | Dónde buscar | Qué hacer |
+|---|---|---|
+| Formulario de charlas | `id="formLink"` | Cambiar el `href="#contacto"` por la URL del Google Form de inscripción. |
+| Medición de Google | `var GA4_ID` y `var ADS_ID` | Pegar los identificadores entre comillas cuando estén creadas las cuentas (ej. `'G-XXXXXXXXXX'`). |
+| Meta Pixel | `var PIXEL_ID` | Pegar el identificador del píxel entre comillas. |
+| Logo | `class="brand-mark"` | Hoy el logo es tipográfico (las letras `YC`). Cuando llegue el archivo del monograma, reemplazar ese `<span>` por `<img src="img/logo-yc.png" alt="Yocelyn Cea" height="34">`. |
+
+Mientras los identificadores de medición estén vacíos, no se carga ningún rastreador: la página
+funciona igual y el aviso de cookies sigue apareciendo sin activar nada.
+
+## Subir el sitio a Hostinger
+
+1. Entrar al panel de Hostinger → **Administrador de archivos** (o conectarse por FTP).
+2. Abrir la carpeta `public_html` y borrar el archivo `default.php` o `index.html` de ejemplo.
+3. Arrastrar los tres elementos: `index.html`, `politica-de-privacidad.html` y la carpeta `img`
+   completa. La estructura dentro de `public_html` debe quedar idéntica a la de arriba.
+4. Verificar que el sitio abra en el dominio y que las imágenes se vean.
+
+## Dominio
+
+1. Comprar o apuntar `yocelyncea.cl` (recomendado en la propuesta de Etapa 2).
+2. Si el dominio se compró fuera de Hostinger, cambiar los servidores DNS a los que indica el
+   panel de Hostinger. La propagación puede tardar hasta 24 horas.
+3. Activar el certificado SSL gratuito (Let's Encrypt) desde el panel, para que el sitio cargue
+   con `https://`. Google Ads exige HTTPS.
+4. Configurar la redirección de `yocelyncea.cl` a `www.yocelyncea.cl` (o al revés), para que
+   exista una sola versión.
+
+## Después de publicar
+
+- Enviar la URL a Google Search Console para que el sitio se indexe.
+- Revisar la página en un celular real, no solo en el computador.
+- Probar el botón de WhatsApp: debe abrir el chat con el mensaje ya escrito.
+- Actualizar el enlace de la biografía de Instagram para que apunte al sitio.
+
+## Mantención
+
+Cualquier cambio de texto se hace editando `index.html` con un editor de texto plano y volviendo
+a subir el archivo. No hay panel de administración: es intencional, para que el hosting sea
+barato y el sitio no requiera actualizaciones de seguridad.
