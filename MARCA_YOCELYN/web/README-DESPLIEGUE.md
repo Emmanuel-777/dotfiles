@@ -9,10 +9,14 @@ hosting: no requiere Node, npm, WordPress ni base de datos.
 web/
 ├── index.html                  Landing completa
 ├── politica-de-privacidad.html Requisito para Google Ads y Meta Ads
-└── img/                        Imágenes ya optimizadas (373 KB en total)
+└── img/                        Imágenes optimizadas, logo y favicon
 ```
 
-## Antes de publicar: cuatro cosas por reemplazar
+El logo, el favicon y el ícono para iPhone ya están integrados. Las demás versiones del
+monograma (navy para fondos claros, blanco hueso, lineal y ornamental) quedaron guardadas en
+`MARCA_YOCELYN/logo/`, junto con los archivos originales.
+
+## Antes de publicar: tres cosas por reemplazar
 
 Todas están en `index.html` y se encuentran buscando el texto indicado.
 
@@ -21,7 +25,7 @@ Todas están en `index.html` y se encuentran buscando el texto indicado.
 | Formulario de charlas | `id="formLink"` | Cambiar el `href="#contacto"` por la URL del Google Form de inscripción. |
 | Medición de Google | `var GA4_ID` y `var ADS_ID` | Pegar los identificadores entre comillas cuando estén creadas las cuentas (ej. `'G-XXXXXXXXXX'`). |
 | Meta Pixel | `var PIXEL_ID` | Pegar el identificador del píxel entre comillas. |
-| Logo | `class="brand-mark"` | Hoy el logo es tipográfico (las letras `YC`). Cuando llegue el archivo del monograma, reemplazar ese `<span>` por `<img src="img/logo-yc.png" alt="Yocelyn Cea" height="34">`. |
+
 
 Mientras los identificadores de medición estén vacíos, no se carga ningún rastreador: la página
 funciona igual y el aviso de cookies sigue apareciendo sin activar nada.
