@@ -319,6 +319,14 @@ footer a:hover { color: var(--gold); }
 .lb-close { position: absolute; top: 1.2rem; right: 1.5rem; background: none; border: 0;
   color: var(--cream); font-size: 2.4rem; line-height: 1; cursor: pointer; }
 
+.popup-charla { position: fixed; inset: 0; z-index: 320; display: none;
+  background: rgba(13,21,38,.92); padding: 1.5rem; align-items: center; justify-content: center; }
+.popup-charla.on { display: flex; }
+.popup-inner { position: relative; max-width: 420px; width: 100%; }
+.popup-inner img { width: 100%; border-radius: 4px; box-shadow: 0 24px 60px rgba(0,0,0,.5); display: block; }
+.popup-close { position: absolute; top: -2.6rem; right: 0; background: none; border: 0;
+  color: var(--cream); font-size: 2rem; line-height: 1; cursor: pointer; }
+
 .cookie { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 250;
   max-width: 44rem; margin: 0 auto; display: none; background: var(--navy);
   color: rgba(245,241,234,.88); border: 1px solid rgba(201,161,90,.32);
@@ -374,6 +382,8 @@ footer a:hover { color: var(--gold); }
     padding: .9rem 1rem; font-size: .8rem; line-height: 1.55; }
   .cookie p { flex: 0 0 auto; }
   .cookie-btns button { flex: 1; }
+  .popup-inner { max-width: 300px; }
+  .popup-close { top: -2.3rem; font-size: 1.7rem; }
 }
 </style>
 </head>
@@ -755,6 +765,16 @@ footer a:hover { color: var(--gold); }
   <span class="lbl">WhatsApp</span>
 </a>
 
+<!-- Popup charla 14/09 — quitar o cambiar el afiche pasada esa fecha -->
+<div class="popup-charla" id="popupCharla">
+  <div class="popup-inner">
+    <button class="popup-close" id="popupClose" aria-label="Cerrar">&times;</button>
+    <a href="https://forms.gle/e5DtzYEQKughPgeDA" target="_blank" rel="noopener" id="popupLink">
+      <img src="img/afiche-charla-14-sep.jpg" alt="Charla informativa gratuita — lunes 14 de septiembre, 19:30 hrs, online">
+    </a>
+  </div>
+</div>
+
 <div class="lb" id="lightbox">
   <button class="lb-close" aria-label="Cerrar">&times;</button>
   <img alt="Diploma ampliado" id="lbImg">
@@ -871,6 +891,23 @@ footer a:hover { color: var(--gold); }
       });
     });
   }, 'conversions');
+
+  safe(function popupCharla() {
+    var pop = document.getElementById('popupCharla');
+    var seen = null;
+    try { seen = localStorage.getItem('yc-popup-charla'); } catch (err) {}
+    if (!seen) {
+      setTimeout(function () { pop.classList.add('on'); }, 800);
+    }
+    function close() {
+      pop.classList.remove('on');
+      try { localStorage.setItem('yc-popup-charla', '1'); } catch (err) {}
+    }
+    document.getElementById('popupClose').addEventListener('click', close);
+    pop.addEventListener('click', function (e) { if (e.target === pop) close(); });
+    document.getElementById('popupLink').addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  }, 'popupCharla');
 
   safe(function cookies() {
     var bar = document.getElementById('cookieBar');
