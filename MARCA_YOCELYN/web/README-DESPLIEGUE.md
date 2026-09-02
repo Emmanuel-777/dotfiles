@@ -45,6 +45,12 @@ en el administrador de archivos puede que tengas que activar "mostrar archivos o
 verlo. Sin él, Hostinger sigue sirviendo la versión antigua de la página durante horas después
 de cada actualización, y uno cree que los cambios no se aplicaron.
 
+## Si la publicas en Cloudflare Pages (vista previa)
+
+El `.htaccess` es un archivo de Apache y **Cloudflare Pages lo ignora por completo**. No estorba
+ni rompe nada, simplemente no hace nada ahí: recién empieza a servir cuando el sitio se mude a
+Hostinger. No pierdas tiempo revisándolo si algo no funciona en Cloudflare.
+
 ## Importante al pasar a producción
 
 La carpeta incluye un `robots.txt` que **impide que Google indexe el sitio**. Está ahí a
