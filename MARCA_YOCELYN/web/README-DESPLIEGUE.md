@@ -53,10 +53,9 @@ Hostinger. No pierdas tiempo revisándolo si algo no funciona en Cloudflare.
 
 ## Importante al pasar a producción
 
-La carpeta incluye un `robots.txt` que **impide que Google indexe el sitio**. Está ahí a
-propósito, para que la vista previa gratuita no compita después con el dominio real.
-**Al publicar en `yocelyncea.cl`, borrar ese archivo**; si no, el sitio nunca aparecerá en las
-búsquedas.
+El sitio ya está publicado en `yocelyncea.cl` (y `www.yocelyncea.cl` redirige ahí) vía Cloudflare.
+El `robots.txt` ya permite la indexación — el bloqueo que traía durante la vista previa fue
+retirado una vez confirmado que el dominio real funcionaba.
 
 ## Dominio
 
