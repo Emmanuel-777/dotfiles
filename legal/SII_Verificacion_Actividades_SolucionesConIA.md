@@ -12,22 +12,28 @@
 ## Representante legal
 
 - **Nombre:** Emmanuel Alejandro Fernández Sandoval
-- **RUT personal:** [COMPLETAR]
+- **RUT personal:** 15.222.189-4
 
 ## Trámite
 
 - **Tipo:** Verificación de Actividades
 - **N° Solicitud:** 16907483
-- **Recibida:** 20-08-2026
-- **Plazo para corregir:** 03-09-2026
-- **Atendido por:** Mónica Pinto (mopinto@sii.cl — solo consultas, no recibe documentación por este correo)
+- **Recibida (1ra vez):** 20-08-2026 — plazo 03-09-2026
+- **Recibida (2da vez / segundo rechazo):** 02-09-2026 — plazo 15-09-2026
+- **Atendido por:** Mónica Pinto (mopinto@sii.cl — solo consultas, no recibe documentación por este correo). Los documentos van dirigidos formalmente al "Servicio de Impuestos Internos", no a ella directamente.
 - **Vía de corrección:** sii.cl → Mi SII → Peticiones Administrativas → Verificación de Actividad → buscar solicitud N° 16907483
 
 ## Requerimientos del SII
 
+### Primera corrección (20-08-2026)
 1. Contrato de trabajo y/o boletas de honorarios del personal informático/desarrollador. Si no existen, justificar quién presta el servicio.
 2. Acreditar equipos y licencias de software utilizados en la prestación de servicios (factura/boleta de compra, o Declaración Jurada de Inventario firmada ante notario o con Firma Electrónica Avanzada si se adquirieron antes del inicio de actividades).
 3. Contrato de arriendo Rol 137-252 de Concepción, firmado ante notario o con Firma Electrónica Avanzada.
+
+### Segundo rechazo (02-09-2026)
+- **Domicilio:** ya quedó acreditado con el contrato de arriendo — resuelto, no se pide de nuevo.
+- **Falta:** describir en la carta explicativa **cómo** se desarrolla el trabajo (no solo quién lo presta) → se generó `Carta_Explicativa_Metodologia_y_Gastos_SolucionesConIA.docx` con la metodología de trabajo y tabla de gastos asociados.
+- **Falta:** la Declaración Jurada de Inventario debe ir realmente **firmada** ante notario o con Firma Electrónica Avanzada (el contenido está bien, faltaba ejecutar la firma).
 
 ## Antecedentes propios (para completar los documentos)
 
@@ -39,10 +45,11 @@
 
 ## Documentos generados
 
-- `Declaracion_Jurada_Inventario_SolucionesConIA.docx` — declaración jurada de equipos y licencias de software.
-- `Carta_Prestacion_Servicio_SolucionesConIA.docx` — carta explicando quién presta el servicio, dirigida a Mónica Pinto.
+- `Declaracion_Jurada_Inventario_SolucionesConIA.docx` — declaración jurada de equipos y licencias de software. **Firma: Firma Electrónica Avanzada.**
+- `Carta_Prestacion_Servicio_SolucionesConIA.docx` — carta explicando quién presta el servicio (primera versión, dirigida al SII en general).
+- `Carta_Explicativa_Metodologia_y_Gastos_SolucionesConIA.docx` — carta que responde al segundo rechazo: describe la metodología de trabajo (desarrollo de software y sitios web, con Claude y ChatGPT como herramientas de productividad bajo dirección del representante legal) y una tabla de gastos asociados (equipo, licencias IA, hosting LexCRM en planes gratuitos — Vercel/Turso/Clerk/Resend —, dominios NIC.cl ~$9.990 CLP/año, hosting Hostinger USD 10-15/mes por sitio de cliente). **Firma: Firma Electrónica Avanzada.**
 
-Pendiente: completar RUT personal del representante, firmar ambos documentos (Firma Electrónica Avanzada gratuita vía firma.registrocivil.cl con Clave Única), convertir a PDF y subir en la plataforma del SII antes del 03-09-2026.
+Pendiente: firmar la Declaración Jurada y la Carta Explicativa con Firma Electrónica Avanzada (vía firma.registrocivil.cl con Clave Única), convertir a PDF y subir en la plataforma del SII antes del 15-09-2026.
 
 ## Notas sobre la plataforma SII (Gestor de Documentos)
 
