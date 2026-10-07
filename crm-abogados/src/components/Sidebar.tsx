@@ -21,6 +21,7 @@ import {
   UserCog,
   AlertTriangle,
   ShieldCheck,
+  FileSignature,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import LogoMark from '@/components/LogoMark'
@@ -84,12 +85,14 @@ export default function Sidebar({
   alertas,
   perfilCompleto = true,
   esAdmin = false,
+  mostrarPresupuestos = false,
   isOpen = false,
   onClose,
 }: {
   alertas: SidebarAlertas
   perfilCompleto?: boolean
   esAdmin?: boolean
+  mostrarPresupuestos?: boolean
   isOpen?: boolean
   onClose?: () => void
 }) {
@@ -128,7 +131,7 @@ export default function Sidebar({
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {navItems.map((item) => {
+        {[...navItems, ...(mostrarPresupuestos ? [{ href: '/presupuestos', label: 'Presupuestos', icon: FileSignature } as (typeof navItems)[number]] : [])].map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
           return (

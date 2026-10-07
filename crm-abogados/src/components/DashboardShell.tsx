@@ -11,11 +11,13 @@ export default function DashboardShell({
   alertas,
   perfilCompleto = true,
   esAdmin = false,
+  mostrarPresupuestos = false,
 }: {
   children: React.ReactNode
   alertas: SidebarAlertas
   perfilCompleto?: boolean
   esAdmin?: boolean
+  mostrarPresupuestos?: boolean
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -34,6 +36,7 @@ export default function DashboardShell({
         alertas={alertas}
         perfilCompleto={perfilCompleto}
         esAdmin={esAdmin}
+        mostrarPresupuestos={mostrarPresupuestos}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />

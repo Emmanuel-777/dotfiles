@@ -4,7 +4,7 @@ import { db, initDB } from '@/lib/db'
 import {
   cuentas, clientes, causas, actuaciones, asesorias, plazos, documentos,
   honorarios, cuotasHonorario, tareas, gestionesTarea, citas, prospectos,
-  perfilAbogado, registrosAuditoria,
+  perfilAbogado, registrosAuditoria, presupuestos, presupuestoEtapas, presupuestoPerfil,
 } from '@/lib/schema'
 import { TRIAL_DIAS, type CuentaMeta } from '@/lib/acceso'
 import { planForEmail } from '@/lib/plan'
@@ -158,6 +158,9 @@ export async function eliminarCuenta(userId: string) {
  */
 export async function purgarUsuario(userId: string) {
   await initDB()
+  await db.delete(presupuestoEtapas).where(eq(presupuestoEtapas.userId, userId))
+  await db.delete(presupuestos).where(eq(presupuestos.userId, userId))
+  await db.delete(presupuestoPerfil).where(eq(presupuestoPerfil.userId, userId))
   await db.delete(gestionesTarea).where(eq(gestionesTarea.userId, userId))
   await db.delete(cuotasHonorario).where(eq(cuotasHonorario.userId, userId))
   await db.delete(actuaciones).where(eq(actuaciones.userId, userId))

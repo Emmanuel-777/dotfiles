@@ -263,3 +263,69 @@ export type Prospecto = typeof prospectos.$inferSelect
 export type NuevoProspecto = typeof prospectos.$inferInsert
 export type PerfilAbogado = typeof perfilAbogado.$inferSelect
 export type RegistroAuditoria = typeof registrosAuditoria.$inferSelect
+
+// ── Módulo Presupuestos ─────────────────────────────────────────────────────
+// Tablas NUEVAS y aditivas, sin claves foráneas hacia el resto del CRM: el
+// módulo se puede vender y extraer por separado. cliente_id / causa_id son
+// referencias opcionales que se validan por código (siempre con user_id).
+export const presupuestos = sqliteTable('presupuestos', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  folio: text('folio').notNull(),
+  clienteId: text('cliente_id'),
+  causaId: text('causa_id'),
+  clienteNombre: text('cliente_nombre').notNull().default(''),
+  clienteRut: text('cliente_rut'),
+  pagador: text('pagador'),
+  materia: text('materia').notNull().default(''),
+  fecha: text('fecha').notNull(),
+  vigenciaDias: integer('vigencia_dias').notNull().default(15),
+  impuestos: text('impuestos').notNull().default('neutro'), // neutro | bruto | neto
+  moneda: text('moneda').notNull().default('CLP'), // CLP | UF
+  valorUf: real('valor_uf'), // CLP por UF, para convertir al aceptar
+  antecedentes: text('antecedentes'), // cifrado (v1:...)
+  objetivo: text('objetivo'), // cifrado (v1:...)
+  porQue: text('por_que'),
+  gastos: text('gastos'),
+  condicionesPago: text('condiciones_pago'),
+  clausulas: text('clausulas'),
+  exitoActivo: integer('exito_activo').notNull().default(0),
+  exitoAbono: real('exito_abono').notNull().default(0),
+  exitoPct: real('exito_pct').notNull().default(0),
+  estado: text('estado').notNull().default('BORRADOR'), // BORRADOR | ENVIADO | ACEPTADO | RECHAZADO | VENCIDO
+  honorariosCreados: integer('honorarios_creados').notNull().default(0),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
+export const presupuestoEtapas = sqliteTable('presupuesto_etapas', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  presupuestoId: text('presupuesto_id').notNull(),
+  nombre: text('nombre').notNull().default(''),
+  descripcion: text('descripcion'),
+  honorarios: real('honorarios').notNull().default(0),
+  abono: real('abono').notNull().default(0),
+  cuotas: integer('cuotas').notNull().default(1),
+  opcional: integer('opcional').notNull().default(0),
+  activada: integer('activada').notNull().default(0),
+  nota: text('nota'),
+  orden: integer('orden').notNull().default(0),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+})
+
+// Datos del estudio que aparecen en el membrete. Propia del módulo (no usa
+// perfil_abogado, que está atada al bloqueo de perfil incompleto del CRM).
+export const presupuestoPerfil = sqliteTable('presupuesto_perfil', {
+  userId: text('user_id').primaryKey(),
+  abogado: text('abogado'),
+  titulo: text('titulo'),
+  documento: text('documento'),
+  estudio: text('estudio'),
+  rutEstudio: text('rut_estudio'),
+  domicilio: text('domicilio'),
+  correo: text('correo'),
+  telefono: text('telefono'),
+  logo: text('logo'), // data URL, máx. ~300 KB
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+})

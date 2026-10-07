@@ -7,6 +7,7 @@ import { eq, and, inArray, ne } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
 import { registrarAuditoria } from '@/lib/audit'
 import { parseCredenciales, decrypt, looksEncrypted } from '@/lib/crypto'
+import { listarPresupuestos } from '@/lib/presupuestos/repo'
 
 export const dynamic = 'force-dynamic'
 
@@ -73,6 +74,11 @@ export async function GET() {
     ? { ...perfil[0], numeroCuenta: descifrarSiCorresponde(perfil[0].numeroCuenta), titularRut: descifrarSiCorresponde(perfil[0].titularRut) }
     : null
 
+  // Presupuestos: sin antecedentes ni objetivo (pueden describir hechos de una
+  // causa penal) y sin los vinculados a causas excluidas.
+  const presupuestosExport = (await listarPresupuestos(userId))
+    .filter((p) => !p.causaId || causaIds.includes(p.causaId))
+
   const data = {
     perfil: perfilDescifrado,
     clientes: todosClientes,
@@ -87,7 +93,8 @@ export async function GET() {
     tareas: tareasFiltradas,
     gestionesTarea: todasGestiones,
     citas: citasFiltradas,
-    nota: 'Las causas de tipo Penal y sus registros asociados (actuaciones, plazos, documentos, honorarios, tareas, citas) quedan excluidos de esta exportación masiva conforme a la Ley 21.719. Para exportar una causa Penal específica, hazlo desde la ficha de ese cliente.',
+    presupuestos: presupuestosExport,
+    nota: 'Las causas de tipo Penal y sus registros asociados (actuaciones, plazos, documentos, honorarios, tareas, citas) quedan excluidos de esta exportación masiva conforme a la Ley 21.719. Los presupuestos se exportan sin el texto de antecedentes ni de objetivo del caso. Para exportar una causa Penal específica, hazlo desde la ficha de ese cliente.',
     exportadoEl: new Date().toISOString(),
   }
 

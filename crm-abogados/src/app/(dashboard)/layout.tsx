@@ -9,6 +9,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { hoyChile, sumarDiasISO } from '@/lib/utils'
 import { esAdmin } from '@/lib/acceso'
+import { presupuestosHabilitados } from '@/lib/presupuestos/flag'
 
 export const dynamic = 'force-dynamic'
 
@@ -84,7 +85,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto} esAdmin={admin}>
+    <DashboardShell alertas={alertas} perfilCompleto={perfilCompleto} esAdmin={admin} mostrarPresupuestos={presupuestosHabilitados()}>
       <ProfileGuard perfilCompleto={perfilCompleto} esTrial={esTrial} />
       <TrialBanner trialDias={trialDias} />
       {children}
