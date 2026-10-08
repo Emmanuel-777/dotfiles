@@ -3,6 +3,7 @@ import { db, initDB } from '@/lib/db'
 import { honorarios } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
+import { referenciaAjena } from '@/lib/propiedad'
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   await initDB()
@@ -23,6 +24,10 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   const body = await req.json()
   const { descripcion, monto, tipo, estado, fechaEmision, fechaVence, fechaPago, notas, causaId } = body
+
+  if (causaId && (await referenciaAjena(userId, { causaId }))) {
+    return NextResponse.json({ error: 'Causa no encontrada' }, { status: 404 })
+  }
 
   await db.update(honorarios).set({
     descripcion: descripcion ?? hon.descripcion,

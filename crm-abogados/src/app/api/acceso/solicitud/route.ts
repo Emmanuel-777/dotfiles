@@ -1,4 +1,5 @@
 import { db, initDB } from '@/lib/db'
+import { cronAutorizado } from '@/lib/cronAuth'
 import { solicitudesAcceso } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
 import { getResend, buildSolicitudAccesoEmail } from '@/lib/email'
@@ -8,8 +9,7 @@ export const dynamic = 'force-dynamic'
 const VEINTICUATRO_HORAS_MS = 24 * 60 * 60 * 1000
 
 export async function POST(request: Request) {
-  const auth = request.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronAutorizado(request)) {
     return new Response('No autorizado', { status: 401 })
   }
 

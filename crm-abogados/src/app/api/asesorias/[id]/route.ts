@@ -3,6 +3,7 @@ import { db, initDB } from '@/lib/db'
 import { asesorias } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
+import { urlArchivoValida } from '@/lib/blobUrl'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +21,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
+  if ('archivoUrl' in body && !urlArchivoValida(body.archivoUrl)) {
+    return NextResponse.json({ error: 'URL de archivo no válida' }, { status: 400 })
+  }
   const updates: Record<string, unknown> = {}
   if ('fecha' in body) updates.fecha = body.fecha
   if ('tipo' in body) updates.tipo = body.tipo

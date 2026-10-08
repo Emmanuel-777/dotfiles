@@ -4,6 +4,7 @@ import { honorarios, clientes, causas } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
+import { referenciaAjena } from '@/lib/propiedad'
 
 export async function GET() {
   await initDB()
@@ -32,6 +33,10 @@ export async function POST(req: Request) {
 
   const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, clienteId), eq(clientes.userId, userId)))
   if (!cliente) return NextResponse.json({ error: 'Cliente no encontrado' }, { status: 404 })
+
+  if (causaId && (await referenciaAjena(userId, { causaId }))) {
+    return NextResponse.json({ error: 'Causa no encontrada' }, { status: 404 })
+  }
 
   const id = nanoid()
   const now = new Date().toISOString()

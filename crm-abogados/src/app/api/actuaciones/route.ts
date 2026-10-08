@@ -4,6 +4,7 @@ import { actuaciones, causas } from '@/lib/schema'
 import { eq, and, asc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
+import { urlArchivoValida } from '@/lib/blobUrl'
 
 export const dynamic = 'force-dynamic'
 
@@ -33,6 +34,10 @@ export async function POST(req: NextRequest) {
   }
 
   // Verificar que la causa pertenece al usuario
+  if (!urlArchivoValida(body.archivoUrl)) {
+    return NextResponse.json({ error: 'URL de archivo no válida' }, { status: 400 })
+  }
+
   const [causa] = await db.select().from(causas).where(and(eq(causas.id, causaId), eq(causas.userId, userId)))
   if (!causa) return NextResponse.json({ error: 'Causa no encontrada' }, { status: 404 })
 

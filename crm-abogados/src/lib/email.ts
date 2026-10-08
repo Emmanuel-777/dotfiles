@@ -5,6 +5,30 @@ export function getResend() {
   return new Resend(process.env.RESEND_API_KEY)
 }
 
+/**
+ * Escapa texto controlado por el usuario antes de meterlo en HTML de correo.
+ * Los correos de citas salen hacia terceros (clientes del abogado) desde el
+ * dominio verificado de LexCRM: sin esto, cualquier usuario podría inyectar
+ * HTML/enlaces propios en un correo con nuestra marca.
+ */
+export function esc(valor: unknown): string {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+/** Enlace http(s) válido y ya escapado; cualquier otra cosa (javascript:, data:…) → ''. */
+export function urlSeg(valor: unknown): string {
+  if (typeof valor !== 'string') return ''
+  const v = valor.trim()
+  if (!/^https?:\/\//i.test(v)) return ''
+  try { new URL(v) } catch { return '' }
+  return esc(v)
+}
+
 interface CitaItem {
   titulo: string
   horaInicio: string
@@ -87,23 +111,23 @@ export function buildCitaConfirmationEmail({
     <!-- Body -->
     <div style="padding:28px 32px;">
       <p style="margin:0 0 20px;font-size:15px;color:#334155;">
-        Hola ${contactoNombre}, tu cita con ${abogadoNombre} ha sido agendada:
+        Hola ${esc(contactoNombre)}, tu cita con ${esc(abogadoNombre)} ha sido agendada:
       </p>
 
       <div style="background:#f8fafc;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#334155;text-transform:capitalize;">📅 ${fechaFormateada}</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
-        <p style="margin:0;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${esc(titulo)}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;text-transform:capitalize;">📅 ${esc(fechaFormateada)}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${esc(horaInicio)}${horaFin ? ` – ${esc(horaFin)}` : ''}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">📍 ${esc(tipoLabel)}</p>
       </div>
 
-      ${linkReunion ? `
+      ${urlSeg(linkReunion) ? `
       <div style="margin-bottom:20px;text-align:center;">
-        <a href="${linkReunion}"
+        <a href="${urlSeg(linkReunion)}"
            style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
           Unirse a la reunión
         </a>
-        <p style="margin:10px 0 0;font-size:12px;color:#94a3b8;word-break:break-all;">${linkReunion}</p>
+        <p style="margin:10px 0 0;font-size:12px;color:#94a3b8;word-break:break-all;">${urlSeg(linkReunion)}</p>
       </div>` : ''}
 
       ${calendarButtonHtml(googleCalendarLink)}
@@ -167,19 +191,19 @@ export function buildCitaAbogadoConfirmEmail({
     <!-- Body -->
     <div style="padding:28px 32px;">
       <p style="margin:0 0 20px;font-size:15px;color:#334155;">
-        Hola ${userName}, has agendado una cita con <strong>${contactoNombre}</strong>${causaRol ? ` — causa <strong>${causaRol}</strong>` : ''}:
+        Hola ${esc(userName)}, has agendado una cita con <strong>${esc(contactoNombre)}</strong>${causaRol ? ` — causa <strong>${esc(causaRol)}</strong>` : ''}:
       </p>
 
       <div style="background:#f8fafc;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#334155;text-transform:capitalize;">📅 ${fechaFormateada}</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
-        <p style="margin:0;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${esc(titulo)}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;text-transform:capitalize;">📅 ${esc(fechaFormateada)}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${esc(horaInicio)}${horaFin ? ` – ${esc(horaFin)}` : ''}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">📍 ${esc(tipoLabel)}</p>
       </div>
 
-      ${linkReunion ? `
+      ${urlSeg(linkReunion) ? `
       <div style="margin-bottom:20px;text-align:center;">
-        <a href="${linkReunion}"
+        <a href="${urlSeg(linkReunion)}"
            style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
           Unirse a la reunión
         </a>
@@ -235,18 +259,18 @@ export function buildCitaRecordatorioProximoEmail({
     <!-- Body -->
     <div style="padding:28px 32px;">
       <p style="margin:0 0 20px;font-size:15px;color:#334155;">
-        Hola ${userName}, tu cita con <strong>${contactoNombre}</strong> es en <strong>${texto}</strong>:
+        Hola ${esc(userName)}, tu cita con <strong>${esc(contactoNombre)}</strong> es en <strong>${texto}</strong>:
       </p>
 
       <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${titulo}</p>
-        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${horaInicio}${horaFin ? ` – ${horaFin}` : ''}</p>
-        <p style="margin:0;font-size:14px;color:#334155;">📍 ${tipoLabel}</p>
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#14254c;">${esc(titulo)}</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#334155;">🕐 ${esc(horaInicio)}${horaFin ? ` – ${esc(horaFin)}` : ''}</p>
+        <p style="margin:0;font-size:14px;color:#334155;">📍 ${esc(tipoLabel)}</p>
       </div>
 
-      ${linkReunion ? `
+      ${urlSeg(linkReunion) ? `
       <div style="margin-bottom:20px;text-align:center;">
-        <a href="${linkReunion}"
+        <a href="${urlSeg(linkReunion)}"
            style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;">
           Unirse a la reunión
         </a>
@@ -296,15 +320,15 @@ export function buildCitaReminderEmail({
 
   const citasHtml = citas.map(c => `
     <div style="padding:14px 18px;border-bottom:1px solid #e2e8f0;">
-      <div style="font-weight:700;font-size:15px;color:#14254c;margin-bottom:4px;">${c.titulo}</div>
+      <div style="font-weight:700;font-size:15px;color:#14254c;margin-bottom:4px;">${esc(c.titulo)}</div>
       <div style="font-size:13px;color:#334155;margin-bottom:2px;">
-        🕐 <strong>${c.horaInicio}${c.horaFin ? ` – ${c.horaFin}` : ''}</strong>
+        🕐 <strong>${esc(c.horaInicio)}${c.horaFin ? ` – ${esc(c.horaFin)}` : ''}</strong>
         &nbsp;&nbsp;${TIPO_LABEL[c.tipo] ?? c.tipo}
       </div>
-      ${c.contacto ? `<div style="font-size:13px;color:#64748b;">👤 ${c.contacto}</div>` : ''}
-      ${c.linkReunion ? `
+      ${c.contacto ? `<div style="font-size:13px;color:#64748b;">👤 ${esc(c.contacto)}</div>` : ''}
+      ${urlSeg(c.linkReunion) ? `
         <div style="margin-top:8px;">
-          <a href="${c.linkReunion}"
+          <a href="${urlSeg(c.linkReunion)}"
              style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:6px 16px;border-radius:6px;font-size:12px;font-weight:600;">
             Unirse a la reunión
           </a>
@@ -326,10 +350,10 @@ export function buildCitaReminderEmail({
     <!-- Body -->
     <div style="padding:28px 32px 16px;">
       <p style="margin:0 0 4px;font-size:15px;color:#334155;">
-        Hola <strong>${userName}</strong>, tienes <strong>${citas.length} ${citas.length === 1 ? 'cita' : 'citas'}</strong> programadas para:
+        Hola <strong>${esc(userName)}</strong>, tienes <strong>${citas.length} ${citas.length === 1 ? 'cita' : 'citas'}</strong> programadas para:
       </p>
       <p style="margin:0 0 20px;font-size:17px;font-weight:700;color:#14254c;text-transform:capitalize;">
-        📅 ${fechaFormateada}
+        📅 ${esc(fechaFormateada)}
       </p>
 
       <div style="background:#f8fafc;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
@@ -371,7 +395,7 @@ export function buildTareasPendientesEmail({
 }): string {
   const tareasHtml = tareas.slice(0, 10).map(t => `
     <div style="padding:12px 18px;border-bottom:1px solid #e2e8f0;">
-      <div style="font-weight:600;font-size:14px;color:#1e293b;">${t.titulo}</div>
+      <div style="font-weight:600;font-size:14px;color:#1e293b;">${esc(t.titulo)}</div>
       ${t.fechaVencimiento ? `<div style="font-size:12px;color:#64748b;margin-top:2px;">📅 Vence ${formatFechaHoraChile(t.fechaVencimiento)}</div>` : ''}
     </div>`).join('')
 
@@ -394,7 +418,7 @@ export function buildTareasPendientesEmail({
     <!-- Body -->
     <div style="padding:28px 32px 16px;">
       <p style="margin:0 0 20px;font-size:15px;color:#334155;">
-        Hola <strong>${userName}</strong>, tienes <strong>${tareas.length} ${tareas.length === 1 ? 'tarea pendiente' : 'tareas pendientes'}</strong>:
+        Hola <strong>${esc(userName)}</strong>, tienes <strong>${tareas.length} ${tareas.length === 1 ? 'tarea pendiente' : 'tareas pendientes'}</strong>:
       </p>
 
       <div style="background:#f8fafc;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
@@ -444,19 +468,19 @@ export function buildNotificationEmail({
   const section = (titulo: string, color: string, items: string[]) =>
     items.length === 0 ? '' : `
       <div style="margin-bottom:24px;">
-        <h3 style="margin:0 0 8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:${color};">${titulo}</h3>
+        <h3 style="margin:0 0 8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:${color};">${esc(titulo)}</h3>
         <div style="background:#f8fafc;border-radius:8px;overflow:hidden;">
           ${items.map(i => `<div style="padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#1e293b;">${i}</div>`).join('')}
         </div>
       </div>`
 
-  const citasHoyHtml = citasHoy.map(c => `🕐 <strong>${c.horaInicio}</strong> — ${c.titulo}${c.cliente ? ` <span style="color:#64748b;">(${c.cliente})</span>` : ''}`)
-  const citasMañanaHtml = citasMañana.map(c => `🕐 <strong>${c.horaInicio}</strong> — ${c.titulo}${c.cliente ? ` <span style="color:#64748b;">(${c.cliente})</span>` : ''}`)
-  const plazosHtml = plazosProximos.map(p => `📅 <strong>${p.fecha}</strong> — ${p.titulo}${p.rol ? ` <span style="color:#64748b;">[${p.rol}]</span>` : ''}`)
-  const tareasHtml = tareasProximas.map(t => `✅ <strong>${t.fecha}</strong> — ${t.titulo}`)
-  const honorariosHtml = honorariosVencidos.map(h => `💸 <strong>${h.monto}</strong> — ${h.descripcion}${h.cliente ? ` <span style="color:#64748b;">(${h.cliente})</span>` : ''} · vencido el ${h.fechaVence}`)
-  const honorariosProximosHtml = honorariosProximos.map(h => `💰 <strong>${h.monto}</strong> — ${h.descripcion}${h.cliente ? ` <span style="color:#64748b;">(${h.cliente})</span>` : ''} · vence el ${h.fechaVence}`)
-  const causasPenalesHtml = causasPenalesProximas.map(c => `⚠️ <strong>${c.rol}</strong> — prescribe el ${c.fechaPrescripcion}`)
+  const citasHoyHtml = citasHoy.map(c => `🕐 <strong>${esc(c.horaInicio)}</strong> — ${esc(c.titulo)}${c.cliente ? ` <span style="color:#64748b;">(${esc(c.cliente)})</span>` : ''}`)
+  const citasMañanaHtml = citasMañana.map(c => `🕐 <strong>${esc(c.horaInicio)}</strong> — ${esc(c.titulo)}${c.cliente ? ` <span style="color:#64748b;">(${esc(c.cliente)})</span>` : ''}`)
+  const plazosHtml = plazosProximos.map(p => `📅 <strong>${esc(p.fecha)}</strong> — ${esc(p.titulo)}${p.rol ? ` <span style="color:#64748b;">[${esc(p.rol)}]</span>` : ''}`)
+  const tareasHtml = tareasProximas.map(t => `✅ <strong>${esc(t.fecha)}</strong> — ${esc(t.titulo)}`)
+  const honorariosHtml = honorariosVencidos.map(h => `💸 <strong>${h.monto}</strong> — ${esc(h.descripcion)}${h.cliente ? ` <span style="color:#64748b;">(${esc(h.cliente)})</span>` : ''} · vencido el ${esc(h.fechaVence)}`)
+  const honorariosProximosHtml = honorariosProximos.map(h => `💰 <strong>${h.monto}</strong> — ${esc(h.descripcion)}${h.cliente ? ` <span style="color:#64748b;">(${esc(h.cliente)})</span>` : ''} · vence el ${esc(h.fechaVence)}`)
+  const causasPenalesHtml = causasPenalesProximas.map(c => `⚠️ <strong>${esc(c.rol)}</strong> — prescribe el ${esc(c.fechaPrescripcion)}`)
 
   const totalItems = citasHoy.length + citasMañana.length + plazosProximos.length + tareasProximas.length
     + honorariosVencidos.length + honorariosProximos.length + causasPenalesProximas.length
@@ -472,7 +496,7 @@ export function buildNotificationEmail({
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:22px;font-weight:800;color:#fff;">Lex<span style="color:#60a5fa;">CRM</span></span>
       </div>
-      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Resumen diario para ${userName}</p>
+      <p style="margin:8px 0 0;color:#94a3b8;font-size:13px;">Resumen diario para ${esc(userName)}</p>
     </div>
 
     <!-- Body -->
@@ -535,7 +559,7 @@ export function buildSolicitudAccesoEmail({
       </p>
 
       <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#92400e;">${email}</p>
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#92400e;">${esc(email)}</p>
         <p style="margin:0;font-size:13px;color:#b45309;">
           ${intentos === 1 ? 'Primer intento de acceso' : `${intentos} intentos de acceso`}
         </p>
@@ -583,7 +607,7 @@ export function buildPruebaVenceEmail({
     <div style="padding:28px 32px;">
       <p style="margin:0 0 16px;font-size:15px;color:#334155;">Hola ${nombre || 'abogado/a'},</p>
       <p style="margin:0 0 20px;font-size:15px;color:#334155;">
-        Tu prueba gratuita de LexCRM termina el <strong>${finFmt}</strong>. Después de esa fecha,
+        Tu prueba gratuita de LexCRM termina el <strong>${esc(finFmt)}</strong>. Después de esa fecha,
         tu cuenta se pausará, pero <strong>todos tus datos quedan guardados</strong> y los recuperas
         al suscribirte.
       </p>
@@ -631,10 +655,10 @@ export function buildNuevaPruebaEmail({
         Un abogado inició la prueba gratuita de 7 días de LexCRM:
       </p>
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#166534;">${nombre}</p>
-        <p style="margin:0 0 4px;font-size:13px;color:#15803d;">RUT: ${rut}</p>
-        <p style="margin:0 0 4px;font-size:13px;color:#15803d;">Correo: ${email}</p>
-        <p style="margin:0;font-size:13px;color:#15803d;">Prueba vigente hasta el ${finFmt}</p>
+        <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#166534;">${esc(nombre)}</p>
+        <p style="margin:0 0 4px;font-size:13px;color:#15803d;">RUT: ${esc(rut)}</p>
+        <p style="margin:0 0 4px;font-size:13px;color:#15803d;">Correo: ${esc(email)}</p>
+        <p style="margin:0;font-size:13px;color:#15803d;">Prueba vigente hasta el ${esc(finFmt)}</p>
       </div>
       <p style="margin:0;font-size:13px;color:#64748b;">
         Ya está usando el CRM en modo Pro. Cuando confirmes su pago, actívalo como cliente permanente desde el panel de administración.

@@ -3,6 +3,7 @@ import { db, initDB } from '@/lib/db'
 import { citas, clientes, causas, prospectos } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { getUserId } from '@/lib/auth'
+import { referenciaAjena } from '@/lib/propiedad'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +29,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const userId = await getUserId()
   if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   const body = await req.json()
+
+  const ajena = await referenciaAjena(userId, { clienteId: body.clienteId, prospectoId: body.prospectoId, causaId: body.causaId })
+  if (ajena) return NextResponse.json({ error: `${ajena[0].toUpperCase()}${ajena.slice(1)} no encontrado` }, { status: 404 })
 
   const updates: Record<string, unknown> = {}
   const allowed = ['titulo', 'descripcion', 'clienteId', 'prospectoId', 'causaId', 'fecha', 'horaInicio', 'horaFin', 'tipo', 'linkReunion', 'esGratuita', 'valor', 'estado', 'notas']

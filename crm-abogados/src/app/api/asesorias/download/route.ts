@@ -3,6 +3,7 @@ import { db, initDB } from '@/lib/db'
 import { asesorias } from '@/lib/schema'
 import { eq, and } from 'drizzle-orm'
 import { requireUserId } from '@/lib/auth'
+import { esUrlBlobPropia } from '@/lib/blobUrl'
 
 export async function GET(req: NextRequest) {
   await initDB()
@@ -11,6 +12,8 @@ export async function GET(req: NextRequest) {
 
   const url = req.nextUrl.searchParams.get('url')
   if (!url) return new NextResponse('URL requerida', { status: 400 })
+  // Nunca enviar el token de Blob a un host que no sea de Blob.
+  if (!esUrlBlobPropia(url)) return new NextResponse('URL no válida', { status: 400 })
 
   // Verificar que el archivo pertenece a un registro de asesoría del usuario
   const [asesoria] = await db.select({ id: asesorias.id, archivoNombre: asesorias.archivoNombre })

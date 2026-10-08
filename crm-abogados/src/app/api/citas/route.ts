@@ -4,6 +4,7 @@ import { citas, clientes, causas, prospectos } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
+import { referenciaAjena } from '@/lib/propiedad'
 import { getResend, buildCitaConfirmationEmail, buildCitaAbogadoConfirmEmail } from '@/lib/email'
 import { buildICS, buildGoogleCalendarLink } from '@/lib/calendario'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -47,6 +48,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'La cita debe asociarse a un cliente o prospecto existente' }, { status: 400 })
   }
 
+  const ajena = await referenciaAjena(userId, { clienteId: body.clienteId, prospectoId: body.prospectoId, causaId: body.causaId })
+  if (ajena) return NextResponse.json({ error: `${ajena[0].toUpperCase()}${ajena.slice(1)} no encontrado` }, { status: 404 })
+
   const id = nanoid()
 
   const nueva = {
@@ -73,11 +77,11 @@ export async function POST(req: NextRequest) {
   // Correos — best effort, no bloquean la creación de la cita
   try {
     const contacto = nueva.clienteId
-      ? (await db.select({ nombre: clientes.nombre, email: clientes.email }).from(clientes).where(eq(clientes.id, nueva.clienteId)).limit(1))[0]
-      : (await db.select({ nombre: prospectos.nombre, email: prospectos.email }).from(prospectos).where(eq(prospectos.id, nueva.prospectoId!)).limit(1))[0]
+      ? (await db.select({ nombre: clientes.nombre, email: clientes.email }).from(clientes).where(and(eq(clientes.id, nueva.clienteId), eq(clientes.userId, userId))).limit(1))[0]
+      : (await db.select({ nombre: prospectos.nombre, email: prospectos.email }).from(prospectos).where(and(eq(prospectos.id, nueva.prospectoId!), eq(prospectos.userId, userId))).limit(1))[0]
 
     const causa = nueva.causaId
-      ? (await db.select({ rol: causas.rol }).from(causas).where(eq(causas.id, nueva.causaId)).limit(1))[0]
+      ? (await db.select({ rol: causas.rol }).from(causas).where(and(eq(causas.id, nueva.causaId), eq(causas.userId, userId))).limit(1))[0]
       : null
 
     const client = await clerkClient()

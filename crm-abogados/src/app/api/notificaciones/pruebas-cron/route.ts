@@ -1,4 +1,5 @@
 import { db, initDB } from '@/lib/db'
+import { cronAutorizado } from '@/lib/cronAuth'
 import { cuentas } from '@/lib/schema'
 import { and, eq, gt, lte } from 'drizzle-orm'
 import { getResend, buildPruebaVenceEmail } from '@/lib/email'
@@ -8,8 +9,7 @@ export const dynamic = 'force-dynamic'
 // Aviso "tu prueba vence pronto" — corre a diario. Busca cuentas en prueba cuyo
 // fin esté dentro de las próximas ~36h y que aún no recibieron el aviso.
 export async function GET(request: Request) {
-  const auth = request.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronAutorizado(request)) {
     return new Response('No autorizado', { status: 401 })
   }
 

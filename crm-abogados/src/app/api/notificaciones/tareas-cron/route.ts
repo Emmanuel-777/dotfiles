@@ -1,4 +1,5 @@
 import { db, initDB } from '@/lib/db'
+import { cronAutorizado } from '@/lib/cronAuth'
 import { tareas } from '@/lib/schema'
 import { eq, ne, and } from 'drizzle-orm'
 import { getResend, buildTareasPendientesEmail } from '@/lib/email'
@@ -7,8 +8,7 @@ import { clerkClient } from '@clerk/nextjs/server'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
-  const auth = request.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronAutorizado(request)) {
     return new Response('No autorizado', { status: 401 })
   }
 

@@ -1,4 +1,5 @@
 import { db, initDB } from '@/lib/db'
+import { cronAutorizado } from '@/lib/cronAuth'
 import { citas, clientes, prospectos } from '@/lib/schema'
 import { eq, and, or } from 'drizzle-orm'
 import { getResend, buildCitaRecordatorioProximoEmail } from '@/lib/email'
@@ -20,8 +21,7 @@ const TIPO_LABEL: Record<string, string> = {
  * y ya completadas.
  */
 export async function GET(request: Request) {
-  const auth = request.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronAutorizado(request)) {
     return new Response('No autorizado', { status: 401 })
   }
 

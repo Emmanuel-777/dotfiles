@@ -4,6 +4,7 @@ import { documentos, causas, clientes } from '@/lib/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { nanoid } from '@/lib/nanoid'
 import { getUserId } from '@/lib/auth'
+import { urlArchivoValida } from '@/lib/blobUrl'
 
 export async function GET() {
   await initDB()
@@ -28,6 +29,9 @@ export async function POST(req: Request) {
 
   if (!nombre || !causaId) {
     return NextResponse.json({ error: 'Nombre y causa son requeridos' }, { status: 400 })
+  }
+  if (!urlArchivoValida(archivo)) {
+    return NextResponse.json({ error: 'URL de archivo no válida' }, { status: 400 })
   }
 
   const [causa] = await db.select().from(causas).where(and(eq(causas.id, causaId), eq(causas.userId, userId)))
